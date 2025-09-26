@@ -238,6 +238,6 @@ class ConversationAgent:
             'timestamp': datetime.now().isoformat()
         })
         
-        # Keep only last 8 exchanges
+        # Keep only last 20 exchanges
         if len(self.conversation_history[upload_id]) > 20:
-            self.conversation_history[upload_id] = self.conversation_history[upload_id][-8:]
+            self.conversation_history[upload_id] = self.conversation_history[upload_id][-20:]
