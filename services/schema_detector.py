@@ -389,3 +389,89 @@ class PythonSchemaDetector:
         except Exception as e:
             logger.error(f"Error extracting sample data: {str(e)}")
             return {'first_rows': {}, 'data_preview': {}}
+    
+    
+
+    def detect_multi_sheet_schema(self, sheets_dict: Dict[str, pd.DataFrame]) -> Dict[str, Any]:
+        """Detect schema for all sheets and build metadata map"""
+        logger.info(f"Starting multi-sheet schema detection for {len(sheets_dict)} sheets")
+        
+        try:
+            multi_schema = {
+                'sheet_count': len(sheets_dict),
+                'sheet_names': list(sheets_dict.keys()),
+                'sheets': {},
+                'column_to_sheet_map': {},
+                'all_columns': [],
+                'cross_sheet_analysis': {}
+            }
+            
+            # Analyze each sheet
+            for sheet_name, df in sheets_dict.items():
+                logger.info(f"Analyzing sheet: {sheet_name}")
+                sheet_schema = self.detect_complete_schema(df)
+                multi_schema['sheets'][sheet_name] = sheet_schema
+                
+                # Build column-to-sheet mapping
+                for col in df.columns:
+                    col_lower = col.lower()
+                    if col_lower not in multi_schema['column_to_sheet_map']:
+                        multi_schema['column_to_sheet_map'][col_lower] = []
+                    multi_schema['column_to_sheet_map'][col_lower].append({
+                        'sheet': sheet_name,
+                        'original_name': col,
+                        'dtype': str(df[col].dtype)
+                    })
+                    
+                    if col not in multi_schema['all_columns']:
+                        multi_schema['all_columns'].append(col)
+            
+            # Detect potential relationships between sheets
+            multi_schema['cross_sheet_analysis'] = self._analyze_sheet_relationships(sheets_dict)
+            
+            logger.info(f"Multi-sheet schema detection completed. Total columns across all sheets: {len(multi_schema['all_columns'])}")
+            return multi_schema
+            
+        except Exception as e:
+            logger.error(f"Failed to detect multi-sheet schema: {str(e)}", exc_info=True)
+            raise
+
+    def _analyze_sheet_relationships(self, sheets_dict: Dict[str, pd.DataFrame]) -> Dict[str, Any]:
+        """Analyze relationships between sheets"""
+        logger.info("Analyzing relationships between sheets")
+        
+        try:
+            relationships = {
+                'common_columns': [],
+                'potential_join_keys': []
+            }
+            
+            sheet_names = list(sheets_dict.keys())
+            
+            # Find common columns between sheets
+            for i, sheet1 in enumerate(sheet_names):
+                for sheet2 in sheet_names[i+1:]:
+                    common = set(sheets_dict[sheet1].columns) & set(sheets_dict[sheet2].columns)
+                    if common:
+                        relationships['common_columns'].append({
+                            'sheet1': sheet1,
+                            'sheet2': sheet2,
+                            'columns': list(common)
+                        })
+                        
+                        # Check if common columns could be join keys
+                        for col in common:
+                            if (sheets_dict[sheet1][col].nunique() == len(sheets_dict[sheet1]) or
+                                sheets_dict[sheet2][col].nunique() == len(sheets_dict[sheet2])):
+                                relationships['potential_join_keys'].append({
+                                    'sheet1': sheet1,
+                                    'sheet2': sheet2,
+                                    'key_column': col
+                                })
+            
+            logger.info(f"Found {len(relationships['common_columns'])} common column groups")
+            return relationships
+            
+        except Exception as e:
+            logger.error(f"Error analyzing sheet relationships: {str(e)}")
+            return {'common_columns': [], 'potential_join_keys': []}

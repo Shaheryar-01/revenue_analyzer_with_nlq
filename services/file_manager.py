@@ -238,3 +238,72 @@ class FileManager:
         except Exception as e:
             logger.error(f"Failed to get upload info for upload_id: {upload_id}: {str(e)}", exc_info=True)
             return None
+        
+        
+    def load_all_sheets(self, file_path: str) -> Dict[str, pd.DataFrame]:
+        """Load all sheets from Excel file into dictionary of DataFrames"""
+        logger.info(f"Loading all sheets from file: {file_path}")
+        
+        try:
+            if not os.path.exists(file_path):
+                logger.error(f"File does not exist: {file_path}")
+                raise FileNotFoundError(f"File not found: {file_path}")
+            
+            if file_path.endswith(('.xlsx', '.xls')):
+                logger.info("Loading all Excel sheets")
+                # Load all sheets at once
+                sheets_dict = pd.read_excel(file_path, sheet_name=None)
+                logger.info(f"Loaded {len(sheets_dict)} sheets: {list(sheets_dict.keys())}")
+                return sheets_dict
+            elif file_path.endswith('.csv'):
+                logger.info("Loading CSV file (single sheet)")
+                # CSV is single sheet - wrap in dict
+                df = pd.read_csv(file_path)
+                return {'Sheet1': df}
+            else:
+                logger.error(f"Unsupported file type: {file_path}")
+                raise ValueError(f"Unsupported file type: {file_path}")
+                
+        except Exception as e:
+            logger.error(f"Failed to load sheets from {file_path}: {str(e)}", exc_info=True)
+            raise
+
+    def save_sheets_data(self, upload_id: str, sheets_dict: Dict[str, pd.DataFrame]):
+        """Save all sheets data for later use"""
+        logger.info(f"Saving sheets data for upload_id: {upload_id}")
+        
+        try:
+            sheets_path = f"{self.schema_dir}/{upload_id}_sheets.pkl"
+            
+            # Save using pickle for efficient storage
+            import pickle
+            with open(sheets_path, 'wb') as f:
+                pickle.dump(sheets_dict, f)
+            
+            logger.info(f"Sheets data saved to: {sheets_path}")
+            
+        except Exception as e:
+            logger.error(f"Failed to save sheets data: {str(e)}", exc_info=True)
+            raise
+
+    def load_sheets_data(self, upload_id: str) -> Dict[str, pd.DataFrame]:
+        """Load saved sheets data"""
+        logger.info(f"Loading sheets data for upload_id: {upload_id}")
+        
+        try:
+            sheets_path = f"{self.schema_dir}/{upload_id}_sheets.pkl"
+            
+            if os.path.exists(sheets_path):
+                import pickle
+                with open(sheets_path, 'rb') as f:
+                    sheets_dict = pickle.load(f)
+                logger.info(f"Loaded {len(sheets_dict)} sheets from disk")
+                return sheets_dict
+            else:
+                logger.warning(f"Sheets data not found, loading from original file")
+                file_path = self.get_file_path(upload_id)
+                return self.load_all_sheets(file_path)
+                
+        except Exception as e:
+            logger.error(f"Failed to load sheets data: {str(e)}", exc_info=True)
+            raise

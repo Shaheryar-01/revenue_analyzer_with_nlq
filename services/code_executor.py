@@ -6,6 +6,7 @@ from io import StringIO
 from typing import Dict, Any
 import logging
 import re
+from typing import Dict, Any, Union
 
 
 # Configure logging for this module
@@ -37,13 +38,21 @@ class SafeCodeExecutor:
 
 
 
-    def execute_code(self, df: pd.DataFrame, code: str) -> Dict[str, Any]:
-        """Execute AI-generated code safely"""
-        logger.info(f"Starting code execution, dataframe shape: {df.shape}")
+    def execute_code(self, df_or_sheets: Union[pd.DataFrame, Dict[str, pd.DataFrame]], code: str, target_sheet: str = None) -> Dict[str, Any]:
+        """Execute AI-generated code safely - supports both single DF and multi-sheet dict"""
+        
+        # Determine if multi-sheet
+        is_multi_sheet = isinstance(df_or_sheets, dict)
+        
+        if is_multi_sheet:
+            logger.info(f"Starting multi-sheet code execution, {len(df_or_sheets)} sheets available")
+            logger.debug(f"Sheet names: {list(df_or_sheets.keys())}")
+        else:
+            logger.info(f"Starting single-sheet code execution, dataframe shape: {df_or_sheets.shape}")
+        
         logger.debug(f"Code to execute: {code}")
         
         # Validate code safety
-        logger.info("Validating code safety")
         if not self._is_code_safe(code):
             logger.error("Code failed security validation")
             return {
@@ -52,21 +61,12 @@ class SafeCodeExecutor:
                 'result': None,
                 'executed_code': code
             }
-        logger.info("Code passed security validation")
         
         # Create safe execution environment
-        logger.info("Creating safe execution environment")
         safe_builtins = {
-            "str": str,
-            "int": int,
-            "float": float,
-            "len": len,
-            "range": range,
-            "min": min,
-            "max": max,
-            "sum": sum,
-            "abs": abs,
-            "round": round,
+            "str": str, "int": int, "float": float,
+            "len": len, "range": range, "min": min,
+            "max": max, "sum": sum, "abs": abs, "round": round,
         }
 
         safe_globals = {
@@ -74,28 +74,25 @@ class SafeCodeExecutor:
             "pd": pd,
             "pandas": pd,
             "np": np,
-            "df": df,   # ✅ inject dataframe
-
         }
-        logger.info("Safe execution environment created")
+        
+        # Inject data
+        if is_multi_sheet:
+            safe_globals["sheets"] = df_or_sheets
+            # Also inject specific sheet if specified
+            if target_sheet and target_sheet in df_or_sheets:
+                safe_globals["df"] = df_or_sheets[target_sheet]
+        else:
+            safe_globals["df"] = df_or_sheets
         
         try:
-            # Execute code
-            logger.info("Executing code")
             code = sanitize_code(code)
             exec(code, safe_globals)
-            logger.info("Code executed successfully")
             
             result = safe_globals.get('query_result')
-            logger.info(f"Retrieved query_result, type: {type(result)}")
             
-            # Convert result to JSON-serializable format
             if result is not None:
-                logger.info("Converting result to JSON-serializable format")
                 result = self._make_json_serializable(result)
-                logger.info(f"Result converted successfully, final type: {type(result)}")
-            else:
-                logger.warning("query_result is None after code execution")
             
             return {
                 'success': True,
@@ -105,14 +102,15 @@ class SafeCodeExecutor:
             
         except Exception as e:
             logger.error(f"Code execution failed: {str(e)}", exc_info=True)
-            logger.error(f"Failed code: {code}")
             return {
                 'success': False,
                 'error': str(e),
                 'result': None,
                 'executed_code': code
             }
-    
+        
+
+        
     def _is_code_safe(self, code: str) -> bool:
         """Basic safety validation"""
         logger.info("Performing code safety validation")
@@ -134,7 +132,7 @@ class SafeCodeExecutor:
         return True
     
     def _make_json_serializable(self, obj):
-        """Convert pandas objects to JSON-serializable format"""
+        """Convert pandas objects to JSON-serializable format, handling NaN values"""
         logger.info(f"Converting object to JSON-serializable format, input type: {type(obj)}")
         
         try:
@@ -173,8 +171,18 @@ class SafeCodeExecutor:
             elif isinstance(obj, (np.integer, np.floating)):
                 logger.info("Converting numpy number to float")
                 result = float(obj)
+                # Handle NaN values
+                if np.isnan(result) or np.isinf(result):
+                    logger.warning(f"Found NaN or Inf value, converting to None")
+                    return None
                 logger.info("Successfully converted numpy number to float")
                 return result
+            elif isinstance(obj, float):
+                # Handle Python float NaN/Inf
+                if np.isnan(obj) or np.isinf(obj):
+                    logger.warning(f"Found NaN or Inf value, converting to None")
+                    return None
+                return obj
             elif isinstance(obj, np.ndarray):
                 logger.info("Converting numpy array to list")
                 result = obj.tolist()
@@ -191,6 +199,9 @@ class SafeCodeExecutor:
                 result = str(obj)
                 logger.info("Successfully converted pandas object to string")
                 return result
+            elif pd.isna(obj):  # Check for pandas NA values
+                logger.warning("Found pandas NA value, converting to None")
+                return None
             else:
                 logger.info(f"Object already JSON-serializable, type: {type(obj)}")
                 return obj
@@ -198,5 +209,6 @@ class SafeCodeExecutor:
         except Exception as e:
             logger.error(f"Failed to convert object to JSON-serializable format: {str(e)}")
             logger.error(f"Object type: {type(obj)}, Object: {obj}")
-            # Return string representation as fallback
-            return str(obj)
+            # Return None for problematic values instead of string
+            return None
+        

@@ -79,85 +79,73 @@ class ConversationAgent:
     # Generate insights
     # -------------------
     def generate_insights_response(
-        self, 
-        upload_id: str,
-        user_query: str, 
-        analysis_results: Any,
-        schema: Dict[str, Any],
-        precision_mode: bool = False
-    ) -> str:
-        """Generate CEO-focused insights from analysis results"""
+    self, 
+    upload_id: str,
+    user_query: str, 
+    analysis_results: Any,
+    schema: Dict[str, Any],
+    precision_mode: bool = False
+) -> str:
+        """Generate well-formatted CEO-focused insights"""
         logger.info(f"Generating insights response for upload_id: {upload_id}")
         
         try:
             history = self.get_conversation_history(upload_id)
-            file_info = schema.get('basic_info', {})
 
-            # --- Use JSON for exact numeric results ---
             if isinstance(analysis_results, dict):
                 formatted_results = json.dumps(analysis_results, indent=2)
             else:
                 formatted_results = str(analysis_results)
 
-            # Detect reasoning questions
-            reasoning_triggers = ["how did you find", "how did you reach", "explain how", "what led to this", "why is that", "reason for"]
-            is_reasoning_question = any(trigger in user_query.lower() for trigger in reasoning_triggers)
+            prompt = f"""
+    You are a business analyst presenting insights to a CEO in a chat interface.
 
-            # --- Prompt selection ---
-            if is_reasoning_question:
-                prompt = f"""
-                You are a business analyst responding to the CEO.
-                
-                CEO asked: "{user_query}"
-                
-                DATA: {formatted_results}
-                
-                TASK:
-                - Explain clearly why one entity outperformed another
-                - Reference exact numeric values from DATA
-                - Highlight trends, comparisons, or anomalies
-                - Present insights in a CEO-friendly business perspective
-                - Do NOT invent any numbers or data not in DATA
-                """
-            elif precision_mode:
-                prompt = f"""
-                You are a financial analyst responding to the CEO.
-                
-                CEO asked: "{user_query}"
-                
-                DATA: {formatted_results}
-                
-                TASK:
-                - Present numbers exactly as in DATA
-                - Show full precision, commas, and two decimals
-                - Do not round or approximate
-                - Provide concise, factual answer without extra explanation
-                """
-            else:
-                prompt = f"""
-                You are a senior business analyst presenting insights to a CEO.
-                
-                CEO asked: "{user_query}"
-                
-                DATA: {formatted_results}
-                
-                CONTEXT:
-                - Dataset: {file_info.get('total_rows', 'unknown')} rows, {file_info.get('total_columns', 'unknown')} columns
-                - Previous conversation: {history[-2:] if history else "None"}
-                
-                TASK:
-                - Start with direct answer to the question
-                - Use exact numbers from DATA
-                - Highlight business implications
-                - Suggest follow-up questions if relevant
-                - Maintain professional and conversational tone
-                - Do NOT invent new data
-                """
+    CEO ASKED: "{user_query}"
+
+    RAW DATA: {formatted_results}
+
+    PREVIOUS CONTEXT: {history[-2:] if history else "None"}
+
+    FORMATTING REQUIREMENTS:
+    1. Start with a direct answer to the question
+    2. Use natural, conversational business language
+    3. Format numbers with commas and currency symbols where appropriate
+    4. Use bullet points ONLY when showing multiple items
+    5. Keep total response under 150 words unless showing a list
+    6. Be concise and actionable
+
+    EXAMPLES:
+
+    Query: "give me data about Kivell"
+    Good Response: 
+    "Kivell has 2 recorded orders:
+
+    **Order 1 (Jan 23, 2024)**
+    - Item: Binder
+    - Quantity: 50 units
+    - Total: $999.50
+
+    **Order 2 (Nov 25, 2024)**
+    - Item: Pen Set
+    - Quantity: 27 units  
+    - Total: $719.73"
+
+    Bad Response:
+    "OrderDate: 1/23/2024, Item: Binder, Units: 50, UnitCost: 19.99, Total: 999.50..."
+
+    Query: "total sales in government"
+    Good Response: "Total sales in the Government segment: **$52,504,260.67**"
+
+    Bad Response: "The number of sales in the government sector is 470673.50"
+
+    Now respond to the CEO's query using these formatting guidelines.
+    """
             
             response = self.client.chat.completions.create(
                 model="gpt-4o",
                 messages=[{"role": "user", "content": prompt}],
-                temperature=0.3
+                temperature=0.3,
+                max_tokens=800
             )
             
             insights = response.choices[0].message.content
@@ -165,51 +153,98 @@ class ConversationAgent:
             return insights
         
         except Exception as e:
-            logger.error(f"Failed to generate insights for upload_id: {upload_id}: {str(e)}", exc_info=True)
+            logger.error(f"Failed to generate insights: {str(e)}", exc_info=True)
             raise
+
+
 
     # -------------------
     # Conversational handling
     # -------------------
     def handle_conversational_response(
-        self, 
-        upload_id: str, 
-        user_message: str,
-        schema: Dict[str, Any],
-        last_analysis_results: Any = None  # <-- FIX: pass previous numeric data
-    ) -> str:
-        """Handle purely conversational messages with reference to previous analysis"""
+    self, 
+    upload_id: str, 
+    user_message: str,
+    schema: Dict[str, Any],
+    last_analysis_results: Any = None
+) -> str:
+        """Handle purely conversational messages with proper formatting"""
         logger.info(f"Handling conversational response for upload_id: {upload_id}")
         
         try:
             history = self.get_conversation_history(upload_id)
             
-            # Include last analysis numeric data if available
-            data_info = json.dumps(last_analysis_results, indent=2) if last_analysis_results else "No previous data"
+            # Simplify schema but keep accuracy
+            is_multi_sheet = schema.get('sheet_count', 1) > 1
+            
+            if is_multi_sheet:
+                schema_context = {
+                    'sheet_count': schema.get('sheet_count'),
+                    'sheet_names': schema.get('sheet_names'),
+                    'sheets': {}
+                }
+                
+                for sheet_name, sheet_data in schema.get('sheets', {}).items():
+                    basic_info = sheet_data.get('basic_info', {})
+                    data_types = sheet_data.get('data_types', {})
+                    
+                    schema_context['sheets'][sheet_name] = {
+                        'row_count': basic_info.get('total_rows'),
+                        'columns': basic_info.get('column_names', []),
+                        'numerical_columns': data_types.get('numerical', []),
+                        'categorical_columns': data_types.get('categorical', [])
+                    }
+            else:
+                basic_info = schema.get('basic_info', {})
+                data_types = schema.get('data_types', {})
+                
+                schema_context = {
+                    'row_count': basic_info.get('total_rows'),
+                    'columns': basic_info.get('column_names', []),
+                    'numerical_columns': data_types.get('numerical', []),
+                    'categorical_columns': data_types.get('categorical', [])
+                }
             
             prompt = f"""
-            Continue this business conversation with a CEO about their data.
-            
-            CONVERSATION HISTORY: {history}
-            CEO SAYS: "{user_message}"
-            
-            DATA: {data_info}
-            
-            CONTEXT: You've been analyzing the CEO's data and providing insights.
-            
-            TASK:
-            - Be helpful and insightful
-            - Reference previous analysis if relevant
-            - Ask clarifying questions if appropriate
-            - Provide business advice when suitable
-            - Maintain professional but conversational tone
-            - Do NOT make up new numbers
-            """
+    You are a business intelligence assistant. Provide clear, well-formatted responses.
+
+    CONVERSATION HISTORY: {history[-2:] if history else "None"}
+    USER QUESTION: "{user_message}"
+
+    DATA STRUCTURE:
+    {json.dumps(schema_context, indent=2)}
+
+    FORMATTING RULES:
+    1. Use natural language, not raw statistics
+    2. For "describe sheets" queries, provide:
+    - Sheet name with brief description
+    - Number of rows
+    - Main column categories in plain English
+    3. Use bullet points or numbered lists ONLY when listing items
+    4. Keep responses concise and business-focused
+    5. Avoid technical jargon like "mean", "std", "unique values" unless specifically asked
+    6. Format numbers with commas (e.g., 1,234 not 1234)
+
+    EXAMPLE GOOD RESPONSE for "describe both sheets":
+    "Your file contains 2 sheets:
+
+    **Sheet1 - Order Data**
+    Contains 700 rows of order information with columns like Region, Rep, Item, Units, and pricing details.
+
+    **Sheet2 - Financial Data**  
+    Contains 500 rows of financial performance data including Sales, Profit, Country, Segment, and Product information."
+
+    EXAMPLE BAD RESPONSE:
+    "Sheet1: 43 entries, 43 unique, most frequent: 1717200000000 (1 time), mean: 49.32558139..."
+
+    Now respond to the user's question following these formatting rules.
+    """
             
             response = self.client.chat.completions.create(
                 model="gpt-4o",
                 messages=[{"role": "user", "content": prompt}],
-                temperature=0.4
+                temperature=0.3,
+                max_tokens=800
             )
             
             conversational_response = response.choices[0].message.content
@@ -217,8 +252,10 @@ class ConversationAgent:
             return conversational_response
         
         except Exception as e:
-            logger.error(f"Failed to handle conversational response for upload_id: {upload_id}: {str(e)}", exc_info=True)
+            logger.error(f"Failed to handle conversational response: {str(e)}", exc_info=True)
             raise
+
+
 
     # -------------------
     # Conversation history
