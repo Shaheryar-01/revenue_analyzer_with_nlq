@@ -7,10 +7,6 @@ import logging
 import re
 import json  
 
-
-
-
-# Configure logging for this module
 logger = logging.getLogger(__name__)
 
 # Clear any proxy environment variables that might interfere
@@ -33,10 +29,6 @@ class AICodeAgent:
         except Exception as e:
             logger.error(f"Failed to initialize OpenAI client: {str(e)}")
             raise
-    
-
-
-
 
     def generate_analysis_code(self, schema: Dict[str, Any], user_query: str) -> Dict[str, Any]:
         """Generate pandas code for multi-sheet queries with intelligent routing"""
@@ -80,41 +72,63 @@ class AICodeAgent:
             }
         
         prompt = f"""
-    You are a pandas expert analyzing multi-sheet Excel data.
+You are a pandas expert analyzing multi-sheet Excel data.
 
-    USER QUERY: "{user_query}"
+USER QUERY: "{user_query}"
 
-    AVAILABLE SHEETS:
-    {json.dumps(sheet_summary, indent=2)}
+AVAILABLE SHEETS:
+{json.dumps(sheet_summary, indent=2)}
 
-    COLUMN TO SHEET MAPPING:
-    {json.dumps(column_map, indent=2)}
+COLUMN TO SHEET MAPPING:
+{json.dumps(column_map, indent=2)}
 
-    TASK:
-    1. Determine which sheet(s) contain the data needed for this query
-    2. Generate Python pandas code to answer the query
-    3. If all required columns are in ONE sheet, use: df = sheets['SheetName']
-    4. If columns span MULTIPLE sheets, explain which columns are in which sheets
-    5. Store result in variable 'query_result'
-    6. Make result JSON-serializable
+CRITICAL STRING MATCHING RULES:
+1. ALWAYS use case-insensitive matching for text filters: df[df['Column'].str.lower() == 'value'.lower()]
+2. For multi-word items (e.g., "Pen Set", "Desk"), use .str.lower() and .strip() to handle spaces
+3. When filtering by item/product names, ALWAYS use: df[df['Item'].str.lower().str.strip() == 'pen set']
+4. When grouping and aggregating, use .str.lower().str.strip() on categorical columns first
 
-    Return ONLY valid JSON in this format:
-    {{
-    "can_answer": true/false,
-    "target_sheet": "SheetName" or null,
-    "requires_multiple_sheets": true/false,
-    "code": "pandas code here" or null,
-    "explanation": "explanation if cannot answer or requires multiple sheets",
-    "missing_columns": [] if applicable
-    }}
+TASK:
+1. Determine which sheet(s) contain the data needed for this query
+2. Generate Python pandas code to answer the query
+3. If all required columns are in ONE sheet, use: df = sheets['SheetName']
+4. If columns span MULTIPLE sheets, explain which columns are in which sheets
+5. Store result in variable 'query_result'
+6. Make result JSON-serializable
 
-    EXAMPLES:
-    - If query asks for "profit in Canada" and both are in "Revenue" sheet:
-    {{"can_answer": true, "target_sheet": "Revenue", "requires_multiple_sheets": false, "code": "df = sheets['Revenue']\\nquery_result = df[df['Country'] == 'Canada']['Profit'].sum()", "explanation": ""}}
+Return ONLY valid JSON in this format:
+{{
+"can_answer": true/false,
+"target_sheet": "SheetName" or null,
+"requires_multiple_sheets": true/false,
+"code": "pandas code here" or null,
+"explanation": "explanation if cannot answer or requires multiple sheets",
+"missing_columns": [] if applicable
+}}
 
-    - If "profit" is in Sheet2 but "region" is in Sheet1:
-    {{"can_answer": false, "target_sheet": null, "requires_multiple_sheets": true, "code": null, "explanation": "Profit exists in Sheet2, but Region only exists in Sheet1. These sheets don't share this data directly."}}
-    """
+CODE EXAMPLES WITH PROPER STRING HANDLING:
+
+Example 1 - Filter by product name:
+Query: "which region had highest sales of pen set"
+Code:
+df = sheets['Sheet1']
+filtered = df[df['Item'].str.lower().str.strip() == 'pen set']
+query_result = filtered.groupby('Region')['Total'].sum().idxmax()
+
+Example 2 - Group by product:
+Query: "total sales by product"
+Code:
+df = sheets['Sheet1']
+df['Item_clean'] = df['Item'].str.lower().str.strip()
+query_result = df.groupby('Item_clean')['Total'].sum().to_dict()
+
+Example 3 - Multiple conditions:
+Query: "profit in Canada for binders"
+Code:
+df = sheets['Revenue']
+filtered = df[(df['Country'].str.lower() == 'canada') & (df['Item'].str.lower().str.strip() == 'binder')]
+query_result = filtered['Profit'].sum()
+"""
         
         response = self.client.chat.completions.create(
             model="gpt-4o",
@@ -151,24 +165,41 @@ class AICodeAgent:
 
     def _generate_single_sheet_code(self, schema: Dict[str, Any], user_query: str) -> str:
         """Generate code for single sheet (original logic)"""
-        # Your existing generate_analysis_code logic here
         basic_info = schema.get('basic_info', {})
         columns = basic_info.get('column_names', [])
         data_types = schema.get('data_types', {})
         
         prompt = f"""
-    You are a pandas expert. Generate Python code to answer this user query.
+You are a pandas expert. Generate Python code to answer this user query.
 
-    USER QUERY: "{user_query}"
+USER QUERY: "{user_query}"
 
-    DATASET INFO:
-    - Columns: {columns}
-    - Numerical columns: {data_types.get('numerical', [])}
-    - Categorical columns: {data_types.get('categorical', [])}
+DATASET INFO:
+- Columns: {columns}
+- Numerical columns: {data_types.get('numerical', [])}
+- Categorical columns: {data_types.get('categorical', [])}
 
-    Generate pandas code that stores result in 'query_result'. Assume dataframe is called 'df'.
-    Return ONLY the code, no explanations.
-    """
+CRITICAL STRING MATCHING RULES:
+1. ALWAYS use case-insensitive matching for text filters
+2. For filtering text columns: df[df['Column'].str.lower() == 'value'.lower()]
+3. For multi-word items (e.g., "Pen Set", "Desk"): df[df['Item'].str.lower().str.strip() == 'pen set']
+4. Before grouping on text columns, clean them: df['Item_clean'] = df['Item'].str.lower().str.strip()
+
+EXAMPLES:
+
+Query: "which region had highest sales of pen set"
+Code:
+filtered = df[df['Item'].str.lower().str.strip() == 'pen set']
+query_result = filtered.groupby('Region')['Total'].sum().idxmax()
+
+Query: "total sales by product"
+Code:
+df['Item_clean'] = df['Item'].str.lower().str.strip()
+query_result = df.groupby('Item_clean')['Total'].sum().to_dict()
+
+Generate pandas code that stores result in 'query_result'. Assume dataframe is called 'df'.
+Return ONLY the code, no explanations.
+"""
         
         response = self.client.chat.completions.create(
             model="gpt-4o",
