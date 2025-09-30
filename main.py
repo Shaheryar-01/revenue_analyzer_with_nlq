@@ -299,8 +299,37 @@ async def chat_webhook(upload_id: str, message: ChatMessage):
             error=str(e)
         )
 
+
+
+@app.delete("/api/upload/{upload_id}")
+async def delete_upload(upload_id: str):
+    """Delete an uploaded file and all associated data"""
+    logger.info(f"Delete request received for upload_id: {upload_id}")
     
+    try:
+        # Delete from file manager (this will handle all file cleanup)
+        success = file_manager.delete_upload(upload_id)
         
+        if success:
+            # Clear conversation history for this upload
+            if upload_id in conversation_agent.conversation_history:
+                del conversation_agent.conversation_history[upload_id]
+                logger.info(f"Cleared conversation history for upload_id: {upload_id}")
+            
+            logger.info(f"Successfully deleted upload_id: {upload_id}")
+            return {
+                "success": True,
+                "message": "File deleted successfully",
+                "upload_id": upload_id
+            }
+        else:
+            logger.warning(f"Upload not found for deletion: {upload_id}")
+            raise HTTPException(status_code=404, detail="Upload not found")
+            
+    except Exception as e:
+        logger.error(f"Failed to delete upload_id: {upload_id}: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Failed to delete file: {str(e)}")
+    
 
 
 @app.get("/api/upload/{upload_id}", response_model=FileInfo)

@@ -240,6 +240,60 @@ class FileManager:
             return None
         
         
+    def delete_upload(self, upload_id: str) -> bool:
+        """Delete all files and database records for an upload"""
+        logger.info(f"Deleting upload_id: {upload_id}")
+        
+        try:
+            # Get file info first
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            
+            cursor.execute(
+                "SELECT file_path, schema_path FROM file_uploads WHERE upload_id = ?",
+                (upload_id,)
+            )
+            result = cursor.fetchone()
+            
+            if not result:
+                conn.close()
+                logger.warning(f"No database record found for upload_id: {upload_id}")
+                return False
+            
+            file_path, schema_path = result
+            
+            # Delete physical files
+            files_to_delete = [
+                file_path,  # Original uploaded file
+                schema_path,  # Schema JSON
+                f"{self.schema_dir}/{upload_id}_sheets.pkl"  # Pickled sheets
+            ]
+            
+            for file in files_to_delete:
+                if file and os.path.exists(file):
+                    try:
+                        os.remove(file)
+                        logger.info(f"Deleted file: {file}")
+                    except Exception as e:
+                        logger.error(f"Failed to delete file {file}: {str(e)}")
+            
+            # Delete database record
+            cursor.execute("DELETE FROM file_uploads WHERE upload_id = ?", (upload_id,))
+            conn.commit()
+            conn.close()
+            
+            logger.info(f"Successfully deleted all data for upload_id: {upload_id}")
+            return True
+            
+        except Exception as e:
+            logger.error(f"Failed to delete upload_id: {upload_id}: {str(e)}", exc_info=True)
+            return False
+
+
+
+
+    
+        
     def load_all_sheets(self, file_path: str) -> Dict[str, pd.DataFrame]:
         """Load all sheets from Excel file into dictionary of DataFrames"""
         logger.info(f"Loading all sheets from file: {file_path}")
