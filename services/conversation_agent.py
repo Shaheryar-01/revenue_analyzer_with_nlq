@@ -37,43 +37,103 @@ class ConversationAgent:
     # Intent determination
     # -------------------
     def determine_intent(self, upload_id: str, user_message: str) -> Dict[str, Any]:
-        """Determine if user needs new analysis or just conversation"""
+        """Determine if user needs new analysis or just conversation - and resolve contextual references"""
         logger.info(f"Determining intent for upload_id: {upload_id}, message: {user_message}")
         
         try:
             history = self.get_conversation_history(upload_id)
             
+            # Build context from recent exchanges
+            context_str = ""
+            if history and len(history) > 0:
+                # Get last 2 exchanges for context
+                recent = history[-2:] if len(history) >= 2 else history
+                context_parts = []
+                for exchange in recent:
+                    user_q = exchange.get('user_message', '')
+                    assistant_a = exchange.get('assistant_response', '')[:300]  # Limit length
+                    context_parts.append(f"Q: {user_q}\nA: {assistant_a}")
+                context_str = "\n\n".join(context_parts)
+            
             prompt = f"""
-            You are analyzing a user's message in a data conversation context.
-            
-            CONVERSATION HISTORY: {history[-3:] if history else "No previous conversation"}
-            USER MESSAGE: "{user_message}"
-            
-            Determine the user's intent:
-            1. NEEDS_ANALYSIS: User is asking for new data analysis/calculations
-            2. CONVERSATIONAL: User wants explanation, discussion, or clarification about previous results
-            
-            Return JSON format:
-            {{"intent": "NEEDS_ANALYSIS" or "CONVERSATIONAL", "analysis_query": "refined query for analysis if needed"}}
-            """
+    You are analyzing a user's message in a data conversation context.
+
+    RECENT CONVERSATION:
+    {context_str if context_str else "No previous conversation"}
+
+    NEW USER MESSAGE: "{user_message}"
+
+    YOUR TASKS:
+    1. Determine the user's intent:
+    - NEEDS_ANALYSIS: User is asking for new data analysis/calculations
+    - CONVERSATIONAL: User wants explanation, discussion, or clarification about previous results
+
+    2. CRITICAL: If the message contains contextual references like:
+    - "this rep", "that region", "same product", "those items", "this person"
+    - "in that region", "for this rep", "about that product"
+    
+    You MUST replace them with the ACTUAL values from the recent conversation before returning analysis_query.
+
+    EXAMPLES:
+
+    Example 1:
+    Recent: "Q: Who was the best rep in Central? A: The best rep in Central is Kivell."
+    New: "for this rep how many pencils did he sell"
+    → {{"intent": "NEEDS_ANALYSIS", "analysis_query": "how many pencils did Kivell sell"}}
+
+    Example 2:
+    Recent: "Q: Which region had highest sales? A: Central region had the highest sales."
+    New: "who was the best rep in that region"
+    → {{"intent": "NEEDS_ANALYSIS", "analysis_query": "who was the best rep in Central region"}}
+
+    Example 3:
+    Recent: "Q: Total profit by country? A: Canada had $3.5M, USA had $3M..."
+    New: "why did Canada perform better?"
+    → {{"intent": "CONVERSATIONAL", "analysis_query": "why did Canada perform better than USA"}}
+
+    Example 4:
+    New: "what's the total profit"
+    → {{"intent": "NEEDS_ANALYSIS", "analysis_query": "what's the total profit"}}
+
+    Return ONLY valid JSON in this exact format:
+    {{"intent": "NEEDS_ANALYSIS" or "CONVERSATIONAL", "analysis_query": "query with references resolved to actual values"}}
+    """
             
             response = self.client.chat.completions.create(
                 model="gpt-4o",
                 messages=[{"role": "user", "content": prompt}],
-                temperature=0.1
+                temperature=0.1,
+                max_tokens=500
             )
+            
             raw_response = response.choices[0].message.content
+            logger.info(f"Intent determination raw response: {raw_response[:200]}")
             
             try:
-                intent_result = json.loads(raw_response)
+                # Parse JSON
+                if "```json" in raw_response:
+                    raw_response = raw_response.split("```json")[1].split("```")[0]
+                elif "```" in raw_response:
+                    raw_response = raw_response.split("```")[1].split("```")[0]
+                
+                intent_result = json.loads(raw_response.strip())
+                
+                logger.info(f"Resolved intent: {intent_result['intent']}")
+                logger.info(f"Resolved query: {intent_result['analysis_query']}")
+                
                 return intent_result
-            except json.JSONDecodeError:
+            except json.JSONDecodeError as e:
+                logger.error(f"Failed to parse intent JSON: {str(e)}")
                 # Default to analysis if parsing fails
                 return {"intent": "NEEDS_ANALYSIS", "analysis_query": user_message}
                 
         except Exception as e:
             logger.error(f"Failed to determine intent for upload_id: {upload_id}: {str(e)}", exc_info=True)
             return {"intent": "NEEDS_ANALYSIS", "analysis_query": user_message}
+        
+
+
+
 
     # -------------------
     # Generate insights
