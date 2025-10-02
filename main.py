@@ -66,8 +66,6 @@ try:
     context_resolver = ContextResolver()
     logger.info("Context resolver initialized successfully")
 
-
-
     code_executor = SafeCodeExecutor()
     logger.info("Code executor initialized successfully")
     
@@ -143,14 +141,13 @@ async def upload_file_webhook(file: UploadFile = File(...)):
             message="",
             error=str(e)
         )
-    
-
 
 
 @app.post("/webhook/chat/{upload_id}", response_model=ChatResponse)
 async def chat_webhook(upload_id: str, message: ChatMessage):
-    """Webhook for multi-sheet chat interface"""
+    """Webhook for multi-sheet chat interface with OUT_OF_SCOPE detection"""
     logger.info(f"Chat request for upload_id: {upload_id}")
+    logger.info(f"User message: {message.message}")
     
     try:
         schema = file_manager.get_schema(upload_id)
@@ -159,12 +156,26 @@ async def chat_webhook(upload_id: str, message: ChatMessage):
         
         import asyncio
         
+        # ============================================================================
+        # STEP 1: DETERMINE INTENT (with schema passed to detect OUT_OF_SCOPE)
+        # ============================================================================
         try:
-            # Increased timeout to 90 seconds
+            logger.info("=" * 80)
+            logger.info("STEP 1: DETERMINING INTENT")
+            logger.info("=" * 80)
+            
             intent_result = await asyncio.wait_for(
-                asyncio.to_thread(conversation_agent.determine_intent, upload_id, message.message),
+                asyncio.to_thread(
+                    conversation_agent.determine_intent, 
+                    upload_id, 
+                    message.message, 
+                    schema  # FIXED: Pass schema to enable OUT_OF_SCOPE detection
+                ),
                 timeout=90.0
             )
+            
+            logger.info(f"Intent Result: {intent_result}")
+            
         except asyncio.TimeoutError:
             logger.error(f"Intent determination timed out for upload_id: {upload_id}")
             return ChatResponse(
@@ -176,12 +187,60 @@ async def chat_webhook(upload_id: str, message: ChatMessage):
                 error="Request timeout"
             )
         
+        # ============================================================================
+        # STEP 2: HANDLE OUT_OF_SCOPE QUERIES
+        # ============================================================================
+        if intent_result["intent"] == "OUT_OF_SCOPE":
+            logger.info("=" * 80)
+            logger.info("QUERY IS OUT OF SCOPE - REJECTING")
+            logger.info(f"Reason: {intent_result.get('reason', 'Unknown')}")
+            logger.info("=" * 80)
+            
+            # Get column info for helpful message
+            if schema.get('sheet_count', 1) > 1:
+                columns_preview = schema.get('all_columns', [])[:5]
+            else:
+                columns_preview = schema.get('basic_info', {}).get('column_names', [])[:5]
+            
+            out_of_scope_message = (
+                f"I can only answer questions about your uploaded data. "
+                f"{intent_result.get('reason', 'Your question appears to be outside the scope of the dataset.')} "
+                f"\n\n**Your dataset contains columns like:** {', '.join(columns_preview)}..."
+                f"\n\nPlease ask questions about this data."
+            )
+            
+            return ChatResponse(
+                success=True,
+                response=out_of_scope_message,
+                analysis_performed=False,
+                upload_id=upload_id,
+                timestamp=datetime.now().isoformat()
+            )
+        
+        # ============================================================================
+        # STEP 3: HANDLE NEEDS_ANALYSIS
+        # ============================================================================
         if intent_result["intent"] == "NEEDS_ANALYSIS":
+            logger.info("=" * 80)
+            logger.info("STEP 2: GENERATING ANALYSIS CODE")
+            logger.info(f"Analysis Query: {intent_result['analysis_query']}")
+            logger.info("=" * 80)
+            
             try:
                 ai_result = await asyncio.wait_for(
-                    asyncio.to_thread(ai_code_agent.generate_analysis_code, schema, intent_result["analysis_query"]),
+                    asyncio.to_thread(
+                        ai_code_agent.generate_analysis_code, 
+                        schema, 
+                        intent_result["analysis_query"]
+                    ),
                     timeout=90.0
                 )
+                
+                logger.info(f"AI Code Generation Result:")
+                logger.info(f"  - can_answer: {ai_result.get('can_answer', True)}")
+                logger.info(f"  - target_sheet: {ai_result.get('target_sheet')}")
+                logger.info(f"  - code_length: {len(ai_result.get('code', '')) if ai_result.get('code') else 0}")
+                
             except asyncio.TimeoutError:
                 logger.error(f"Code generation timed out for upload_id: {upload_id}")
                 return ChatResponse(
@@ -194,6 +253,7 @@ async def chat_webhook(upload_id: str, message: ChatMessage):
                 )
             
             if not ai_result.get('can_answer', True):
+                logger.warning(f"AI cannot answer query: {ai_result.get('explanation', 'Unknown reason')}")
                 return ChatResponse(
                     success=True,
                     response=ai_result.get('explanation', 'Unable to process query'),
@@ -201,6 +261,14 @@ async def chat_webhook(upload_id: str, message: ChatMessage):
                     upload_id=upload_id,
                     timestamp=datetime.now().isoformat()
                 )
+            
+            # ========================================================================
+            # STEP 4: EXECUTE CODE
+            # ========================================================================
+            logger.info("=" * 80)
+            logger.info("STEP 3: EXECUTING CODE")
+            logger.info("=" * 80)
+            logger.info(f"Generated Code:\n{ai_result['code']}")
             
             # Load data and execute
             is_multi_sheet = schema.get('sheet_count', 1) > 1
@@ -217,7 +285,19 @@ async def chat_webhook(upload_id: str, message: ChatMessage):
                 df = file_manager.load_dataframe(file_path)
                 execution_result = code_executor.execute_code(df, ai_result['code'])
             
+            # ========================================================================
+            # CRITICAL LOGGING: RAW RESULTS BEFORE INSIGHTS GENERATION
+            # ========================================================================
+            logger.info("=" * 80)
+            logger.info("STEP 4: CODE EXECUTION RESULTS (BEFORE INSIGHTS)")
+            logger.info("=" * 80)
+            logger.info(f"Execution Success: {execution_result['success']}")
+            logger.info(f"Raw Result Type: {type(execution_result['result'])}")
+            logger.info(f"Raw Result Value: {execution_result['result']}")
+            logger.info(f"Raw Result Length: {len(str(execution_result['result']))}")
+            
             if not execution_result['success']:
+                logger.error(f"Code execution failed: {execution_result['error']}")
                 return ChatResponse(
                     success=False,
                     response=f"Error analyzing data: {execution_result['error']}",
@@ -227,6 +307,14 @@ async def chat_webhook(upload_id: str, message: ChatMessage):
                     error=execution_result['error']
                 )
             
+            # ========================================================================
+            # STEP 5: GENERATE INSIGHTS (with hallucination prevention)
+            # ========================================================================
+            logger.info("=" * 80)
+            logger.info("STEP 5: GENERATING INSIGHTS FROM RAW RESULTS")
+            logger.info("=" * 80)
+            
+            # After execution succeeds, around line 258 in main.py:
             try:
                 insights = await asyncio.wait_for(
                     asyncio.to_thread(
@@ -240,15 +328,12 @@ async def chat_webhook(upload_id: str, message: ChatMessage):
                     timeout=90.0
                 )
             except asyncio.TimeoutError:
-                return ChatResponse(
-                    success=True,
-                    response=f"Analysis complete: {execution_result['result']}",
-                    analysis_performed=True,
-                    upload_id=upload_id,
-                    timestamp=datetime.now().isoformat(),
-                    raw_results=execution_result['result']
-                )
-            
+                insights = f"Analysis complete: {execution_result['result']}"
+            except Exception as e:
+                logger.error(f"Insights generation failed: {str(e)}", exc_info=True)
+                insights = f"Result: {execution_result['result']}"
+
+            # THIS MUST ALWAYS EXECUTE
             return ChatResponse(
                 success=True,
                 response=insights,
@@ -257,9 +342,16 @@ async def chat_webhook(upload_id: str, message: ChatMessage):
                 timestamp=datetime.now().isoformat(),
                 raw_results=execution_result['result']
             )
+
         
+        # ============================================================================
+        # STEP 6: HANDLE CONVERSATIONAL
+        # ============================================================================
         else:
-            # Conversational response
+            logger.info("=" * 80)
+            logger.info("HANDLING CONVERSATIONAL RESPONSE")
+            logger.info("=" * 80)
+            
             try:
                 conversational_response = await asyncio.wait_for(
                     asyncio.to_thread(
@@ -268,7 +360,7 @@ async def chat_webhook(upload_id: str, message: ChatMessage):
                         message.message,
                         schema
                     ),
-                    timeout=90.0  # Increased timeout
+                    timeout=90.0
                 )
             except asyncio.TimeoutError:
                 return ChatResponse(
@@ -279,6 +371,8 @@ async def chat_webhook(upload_id: str, message: ChatMessage):
                     timestamp=datetime.now().isoformat(),
                     error="Response timeout"
                 )
+            
+            logger.info(f"Conversational Response: {conversational_response}")
             
             return ChatResponse(
                 success=True,
@@ -298,7 +392,6 @@ async def chat_webhook(upload_id: str, message: ChatMessage):
             timestamp=datetime.now().isoformat(),
             error=str(e)
         )
-
 
 
 @app.delete("/api/upload/{upload_id}")
@@ -329,7 +422,6 @@ async def delete_upload(upload_id: str):
     except Exception as e:
         logger.error(f"Failed to delete upload_id: {upload_id}: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Failed to delete file: {str(e)}")
-    
 
 
 @app.get("/api/upload/{upload_id}", response_model=FileInfo)

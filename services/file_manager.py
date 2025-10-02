@@ -3,6 +3,7 @@ import os
 import uuid
 import sqlite3
 import pandas as pd
+import numpy as np
 import json
 from datetime import datetime
 from typing import Optional, Dict, Any, List
@@ -177,7 +178,7 @@ class FileManager:
             return None
     
     def load_dataframe(self, file_path: str) -> pd.DataFrame:
-        """Load file into pandas DataFrame"""
+        """Load file into pandas DataFrame with normalization"""
         logger.info(f"Loading dataframe from file: {file_path}")
         
         try:
@@ -195,7 +196,12 @@ class FileManager:
                 logger.error(f"Unsupported file type: {file_path}")
                 raise ValueError(f"Unsupported file type: {file_path}")
             
-            logger.info(f"Dataframe loaded successfully, shape: {df.shape}")
+            logger.info(f"Dataframe loaded, shape: {df.shape}")
+            
+            # NORMALIZE THE DATAFRAME
+            df = self._normalize_dataframe(df, "single_sheet")
+            logger.info(f"Dataframe normalized successfully")
+            
             return df
             
         except Exception as e:
@@ -238,8 +244,7 @@ class FileManager:
         except Exception as e:
             logger.error(f"Failed to get upload info for upload_id: {upload_id}: {str(e)}", exc_info=True)
             return None
-        
-        
+    
     def delete_upload(self, upload_id: str) -> bool:
         """Delete all files and database records for an upload"""
         logger.info(f"Deleting upload_id: {upload_id}")
@@ -264,9 +269,9 @@ class FileManager:
             
             # Delete physical files
             files_to_delete = [
-                file_path,  # Original uploaded file
-                schema_path,  # Schema JSON
-                f"{self.schema_dir}/{upload_id}_sheets.pkl"  # Pickled sheets
+                file_path,
+                schema_path,
+                f"{self.schema_dir}/{upload_id}_sheets.pkl"
             ]
             
             for file in files_to_delete:
@@ -288,14 +293,9 @@ class FileManager:
         except Exception as e:
             logger.error(f"Failed to delete upload_id: {upload_id}: {str(e)}", exc_info=True)
             return False
-
-
-
-
     
-        
     def load_all_sheets(self, file_path: str) -> Dict[str, pd.DataFrame]:
-        """Load all sheets from Excel file into dictionary of DataFrames"""
+        """Load all sheets from Excel file with normalization"""
         logger.info(f"Loading all sheets from file: {file_path}")
         
         try:
@@ -305,22 +305,249 @@ class FileManager:
             
             if file_path.endswith(('.xlsx', '.xls')):
                 logger.info("Loading all Excel sheets")
-                # Load all sheets at once
                 sheets_dict = pd.read_excel(file_path, sheet_name=None)
                 logger.info(f"Loaded {len(sheets_dict)} sheets: {list(sheets_dict.keys())}")
-                return sheets_dict
             elif file_path.endswith('.csv'):
                 logger.info("Loading CSV file (single sheet)")
-                # CSV is single sheet - wrap in dict
                 df = pd.read_csv(file_path)
-                return {'Sheet1': df}
+                sheets_dict = {'Sheet1': df}
             else:
                 logger.error(f"Unsupported file type: {file_path}")
                 raise ValueError(f"Unsupported file type: {file_path}")
+            
+            # NORMALIZE ALL SHEETS
+            normalized_sheets = {}
+            for sheet_name, df in sheets_dict.items():
+                logger.info(f"Normalizing sheet: {sheet_name}")
+                normalized_sheets[sheet_name] = self._normalize_dataframe(df, sheet_name)
+                logger.info(f"Sheet {sheet_name} normalized successfully")
+            
+            return normalized_sheets
                 
         except Exception as e:
             logger.error(f"Failed to load sheets from {file_path}: {str(e)}", exc_info=True)
             raise
+
+    def _normalize_dataframe(self, df: pd.DataFrame, sheet_name: str = "unknown") -> pd.DataFrame:
+        """
+        CRITICAL: Normalize data types for consistent querying
+        This is the single source of truth for data cleaning
+        
+        Args:
+            df: Raw DataFrame from Excel/CSV
+            sheet_name: Name of sheet for logging
+            
+        Returns:
+            Normalized DataFrame with clean types
+            
+        Raises:
+            ValueError: If critical validation fails
+        """
+        logger.info(f"=" * 80)
+        logger.info(f"NORMALIZING SHEET: {sheet_name}")
+        logger.info(f"Input shape: {df.shape}")
+        logger.info(f"Input columns: {list(df.columns)}")
+        logger.info(f"=" * 80)
+        
+        df = df.copy()
+        
+        # Track what changed
+        normalization_report = []
+        errors = []
+        warnings = []
+        
+        # STEP 1: Clean column names (remove leading/trailing spaces)
+        original_columns = df.columns.tolist()
+        df.columns = df.columns.str.strip()
+        renamed_cols = [(old, new) for old, new in zip(original_columns, df.columns) if old != new]
+        if renamed_cols:
+            logger.info(f"Cleaned column names: {renamed_cols}")
+            normalization_report.append(f"Cleaned {len(renamed_cols)} column names")
+        
+        # STEP 2: Check for duplicate column names (CRITICAL ERROR)
+        if len(df.columns) != len(set(df.columns)):
+            duplicates = df.columns[df.columns.duplicated()].tolist()
+            error_msg = f"Duplicate column names found: {duplicates}"
+            logger.error(error_msg)
+            raise ValueError(error_msg)
+        
+        # STEP 3: Check for empty column names (CRITICAL ERROR)
+        empty_cols = [col for col in df.columns if not col or str(col).strip() == '']
+        if empty_cols:
+            error_msg = f"Empty column names found at positions: {[df.columns.get_loc(c) for c in empty_cols]}"
+            logger.error(error_msg)
+            raise ValueError(error_msg)
+        
+        # STEP 4: Normalize each column
+        for col in df.columns:
+            original_dtype = df[col].dtype
+            col_sample = df[col].dropna().head(5).tolist()
+            
+            try:
+                # 4A. DATE NORMALIZATION
+                if self._looks_like_date_column(df[col]):
+                    logger.info(f"Normalizing date column: {col}")
+                    logger.debug(f"  Sample values before: {col_sample}")
+                    
+                    df[col] = pd.to_datetime(df[col], errors='coerce')
+                    
+                    # Validate: check how many failed to parse
+                    null_count = df[col].isnull().sum()
+                    total_count = len(df)
+                    parse_success_rate = ((total_count - null_count) / total_count) * 100
+                    
+                    logger.info(f"  Parsed as datetime64: {parse_success_rate:.1f}% success")
+                    
+                    if parse_success_rate < 50:
+                        warnings.append(f"Column '{col}': Only {parse_success_rate:.1f}% parsed as dates")
+                    
+                    normalization_report.append(f"{col}: {original_dtype} → datetime64[ns]")
+                
+                # 4B. STRING NORMALIZATION
+                elif df[col].dtype == 'object':
+                    logger.info(f"Normalizing string column: {col}")
+                    logger.debug(f"  Sample values before: {col_sample}")
+                    
+                    # Convert to string and strip whitespace
+                    df[col] = df[col].astype(str).str.strip()
+                    
+                    # Replace common null representations
+                    null_values = ['nan', 'NaN', 'None', 'NULL', 'null', '', 'N/A', 'n/a', 'NA']
+                    df[col] = df[col].replace(null_values, pd.NA)
+                    
+                    # Check if column became entirely null
+                    if df[col].notna().sum() == 0:
+                        warnings.append(f"Column '{col}': All values are null after cleaning")
+                    
+                    normalization_report.append(f"{col}: cleaned strings")
+                
+                # 4C. NUMERIC NORMALIZATION
+                elif pd.api.types.is_numeric_dtype(df[col]):
+                    # Check if needs conversion
+                    if df[col].dtype not in ['float64', 'int64']:
+                        logger.info(f"Normalizing numeric column: {col}")
+                        df[col] = pd.to_numeric(df[col], errors='coerce')
+                        normalization_report.append(f"{col}: {original_dtype} → numeric")
+                
+                # 4D. UNKNOWN TYPE
+                else:
+                    logger.warning(f"Column '{col}' has unhandled dtype: {original_dtype}")
+                    warnings.append(f"Column '{col}': Unknown dtype {original_dtype}")
+            
+            except Exception as e:
+                error_msg = f"Failed to normalize column '{col}': {str(e)}"
+                logger.error(error_msg, exc_info=True)
+                errors.append(error_msg)
+                # Keep original column if normalization fails
+                continue
+        
+        # STEP 5: Post-normalization validation
+        logger.info(f"=" * 80)
+        logger.info(f"VALIDATION RESULTS FOR SHEET: {sheet_name}")
+        logger.info(f"=" * 80)
+        
+        # Log dtype distribution
+        dtype_counts = df.dtypes.value_counts().to_dict()
+        logger.info(f"Data type distribution: {dtype_counts}")
+        
+        # Log normalization summary
+        logger.info(f"Normalization changes: {len(normalization_report)}")
+        for change in normalization_report:
+            logger.info(f"  ✓ {change}")
+        
+        # Log warnings
+        if warnings:
+            logger.warning(f"Warnings: {len(warnings)}")
+            for warning in warnings:
+                logger.warning(f"  ⚠️  {warning}")
+        
+        # Log errors (non-critical)
+        if errors:
+            logger.error(f"Errors encountered: {len(errors)}")
+            for error in errors:
+                logger.error(f"  ❌ {error}")
+        
+        # Check for columns that are entirely null
+        null_cols = [col for col in df.columns if df[col].isnull().all()]
+        if null_cols:
+            logger.warning(f"Columns with all null values: {null_cols}")
+        
+        # Final shape check
+        if df.shape != (len(df), len(df.columns)):
+            raise ValueError(f"Shape mismatch after normalization: expected {df.shape}, got something else")
+        
+        logger.info(f"✅ Normalization complete for '{sheet_name}'")
+        logger.info(f"Final shape: {df.shape}")
+        logger.info(f"=" * 80)
+        
+        return df
+    
+    def _looks_like_date_column(self, series: pd.Series) -> bool:
+        """
+        Heuristic to detect date columns with comprehensive checks
+        """
+        # CRITICAL: If column is already numeric, it's NOT a date
+        if pd.api.types.is_numeric_dtype(series):
+            logger.debug(f"Column '{series.name}' is numeric - NOT a date column")
+            return False
+        
+        # Skip if too few non-null values
+        non_null_count = series.notna().sum()
+        if non_null_count == 0:
+            return False
+        
+        # Check 1: Column name contains date keywords
+        date_keywords = ['date', 'time', 'created', 'modified', 'timestamp', 'datetime', 
+                        'day', 'dated']  # Removed 'year', 'month' - too generic
+        column_name_lower = series.name.lower() if series.name else ''
+        
+        name_match = any(keyword in column_name_lower for keyword in date_keywords)
+        
+        # Check 2: Column dtype is already object (string-like)
+        if series.dtype != 'object':
+            logger.debug(f"Column '{series.name}' is not object dtype - NOT a date column")
+            return False
+        
+        if name_match:
+            logger.debug(f"Column '{series.name}' matched date keyword in name")
+        
+        # Check 3: Try parsing sample data
+        sample_size = min(100, non_null_count)
+        sample = series.dropna().head(sample_size)
+        
+        try:
+            # Check if values look like dates (contain /, -, or are long strings)
+            sample_str = sample.astype(str)
+            looks_like_date_format = sample_str.str.contains(r'[/-]|^\d{4}', na=False).sum() / len(sample)
+            
+            if looks_like_date_format < 0.5:
+                logger.debug(f"Column '{series.name}' doesn't have date-like format")
+                return False
+            
+            # Now try parsing
+            parsed = pd.to_datetime(sample, errors='coerce')
+            parse_success_rate = parsed.notna().sum() / len(sample)
+            
+            logger.debug(f"Column '{series.name}' date parse rate: {parse_success_rate*100:.1f}%")
+            
+            # Decision logic:
+            # - Must have name match OR >90% parse rate (very high bar)
+            # - AND must look like date format
+            
+            if name_match and parse_success_rate > 0.7:
+                return True
+            elif parse_success_rate > 0.95:  # Very high threshold for non-name-matched columns
+                return True
+            else:
+                return False
+                
+        except Exception as e:
+            logger.debug(f"Column '{series.name}' failed date detection: {str(e)}")
+            return False
+        
+
+
+
 
     def save_sheets_data(self, upload_id: str, sheets_dict: Dict[str, pd.DataFrame]):
         """Save all sheets data for later use"""

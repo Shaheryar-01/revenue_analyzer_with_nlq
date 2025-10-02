@@ -8,11 +8,8 @@ import logging
 import re
 from typing import Dict, Any, Union
 
-
 # Configure logging for this module
 logger = logging.getLogger(__name__)
-
-
 
 def sanitize_code(code: str) -> str:
     # Remove unsafe or redundant import statements
@@ -21,7 +18,7 @@ def sanitize_code(code: str) -> str:
     return code
     
 class SafeCodeExecutor:
-    """Safely execute AI-generated pandas code"""
+    """Safely execute AI-generated pandas code with full observability"""
     
     def __init__(self):
         self.safe_builtins = {
@@ -32,25 +29,34 @@ class SafeCodeExecutor:
             'range': range, 'zip': zip
         }
         logger.info("Safe Code Executor initialized with allowed builtins")
-    
-
-
-
-
 
     def execute_code(self, df_or_sheets: Union[pd.DataFrame, Dict[str, pd.DataFrame]], code: str, target_sheet: str = None) -> Dict[str, Any]:
-        """Execute AI-generated code safely - supports both single DF and multi-sheet dict"""
+        """Execute AI-generated code safely with comprehensive logging"""
         
         # Determine if multi-sheet
         is_multi_sheet = isinstance(df_or_sheets, dict)
         
-        if is_multi_sheet:
-            logger.info(f"Starting multi-sheet code execution, {len(df_or_sheets)} sheets available")
-            logger.debug(f"Sheet names: {list(df_or_sheets.keys())}")
-        else:
-            logger.info(f"Starting single-sheet code execution, dataframe shape: {df_or_sheets.shape}")
+        # LOGGING: Data structure info
+        logger.info(f"=" * 80)
+        logger.info("CODE EXECUTION START")
+        logger.info(f"=" * 80)
         
-        logger.debug(f"Code to execute: {code}")
+        if is_multi_sheet:
+            logger.info(f"Multi-sheet execution: {list(df_or_sheets.keys())}")
+            for sheet_name, df in df_or_sheets.items():
+                logger.info(f"  Sheet '{sheet_name}':")
+                logger.info(f"    Shape: {df.shape}")
+                logger.info(f"    Columns: {list(df.columns)}")
+                logger.info(f"    Column dtypes:")
+                for col in df.columns:
+                    logger.info(f"      {col}: {df[col].dtype}")
+        else:
+            logger.info(f"Single sheet execution:")
+            logger.info(f"  Shape: {df_or_sheets.shape}")
+            logger.info(f"  Columns: {list(df_or_sheets.columns)}")
+            logger.info(f"  Column dtypes:")
+            for col in df_or_sheets.columns:
+                logger.info(f"    {col}: {df_or_sheets[col].dtype}")
         
         # Validate code safety
         if not self._is_code_safe(code):
@@ -79,7 +85,6 @@ class SafeCodeExecutor:
         # Inject data
         if is_multi_sheet:
             safe_globals["sheets"] = df_or_sheets
-            # Also inject specific sheet if specified
             if target_sheet and target_sheet in df_or_sheets:
                 safe_globals["df"] = df_or_sheets[target_sheet]
         else:
@@ -87,12 +92,31 @@ class SafeCodeExecutor:
         
         try:
             code = sanitize_code(code)
+            
+            logger.info("=" * 50)
+            logger.info("EXECUTING CODE:")
+            logger.info(code)
+            logger.info("=" * 50)
+            
             exec(code, safe_globals)
             
             result = safe_globals.get('query_result')
             
+            # LOGGING: Execution details
+            logger.info(f"✅ Execution successful")
+            logger.info(f"Result type: {type(result)}")
+            logger.info(f"Result value: {result}")
+            
+            # Check if result makes sense
+            if result is None:
+                logger.warning("⚠️  query_result is None - code may not have set it")
+            
             if result is not None:
                 result = self._make_json_serializable(result)
+            
+            logger.info(f"=" * 80)
+            logger.info("CODE EXECUTION COMPLETE")
+            logger.info(f"=" * 80)
             
             return {
                 'success': True,
@@ -101,15 +125,38 @@ class SafeCodeExecutor:
             }
             
         except Exception as e:
-            logger.error(f"Code execution failed: {str(e)}", exc_info=True)
+            logger.error(f"=" * 80)
+            logger.error(f"❌ CODE EXECUTION FAILED ❌")
+            logger.error(f"=" * 80)
+            logger.error(f"Error type: {type(e).__name__}")
+            logger.error(f"Error message: {str(e)}")
+            logger.error(f"Code that failed:")
+            logger.error(code)
+            logger.error(f"Full traceback:", exc_info=True)
+            
+            # Provide helpful context
+            error_str = str(e)
+            if "does not support reduction" in error_str:
+                logger.error("⚠️  LIKELY CAUSE: Trying to aggregate wrong column type (e.g., datetime instead of numeric)")
+                logger.error("This usually means:")
+                logger.error("  1. Filter returned 0 rows (empty DataFrame)")
+                logger.error("  2. Wrong column was selected after filtering")
+                logger.error("  3. Column name has extra spaces")
+            elif "KeyError" in error_str:
+                logger.error("⚠️  LIKELY CAUSE: Column doesn't exist")
+                if is_multi_sheet:
+                    logger.error(f"Available columns: {list(df_or_sheets[list(df_or_sheets.keys())[0]].columns)}")
+                else:
+                    logger.error(f"Available columns: {list(df_or_sheets.columns)}")
+            
+            logger.error(f"=" * 80)
+            
             return {
                 'success': False,
                 'error': str(e),
                 'result': None,
                 'executed_code': code
             }
-        
-
         
     def _is_code_safe(self, code: str) -> bool:
         """Basic safety validation"""
@@ -133,82 +180,52 @@ class SafeCodeExecutor:
     
     def _make_json_serializable(self, obj):
         """Convert pandas objects to JSON-serializable format, handling NaN values"""
-        logger.info(f"Converting object to JSON-serializable format, input type: {type(obj)}")
+        logger.debug(f"Converting object to JSON-serializable format, input type: {type(obj)}")
         
         try:
             if isinstance(obj, dict):
-                # Recursively handle dictionary values
-                logger.info("Processing dictionary recursively")
                 result = {}
                 for key, value in obj.items():
-                    # Handle pandas Period keys
                     if hasattr(key, '__str__') and not isinstance(key, (str, int, float)):
                         new_key = str(key)
                     else:
                         new_key = key
                     result[new_key] = self._make_json_serializable(value)
-                logger.info("Successfully processed dictionary")
                 return result
             elif isinstance(obj, (list, tuple)):
-                # Recursively handle list/tuple items
-                logger.info("Processing list/tuple recursively")
                 result = [self._make_json_serializable(item) for item in obj]
-                logger.info("Successfully processed list/tuple")
                 return result
             elif isinstance(obj, (pd.Series, pd.Index)):
-                logger.info("Converting pandas Series/Index to dict")
-                # Convert to dict first, then recursively process
                 dict_result = obj.to_dict()
                 result = self._make_json_serializable(dict_result)
-                logger.info("Successfully converted Series/Index to dict")
                 return result
             elif isinstance(obj, pd.DataFrame):
-                logger.info("Converting pandas DataFrame to dict")
                 dict_result = obj.to_dict()
                 result = self._make_json_serializable(dict_result)
-                logger.info("Successfully converted DataFrame to dict")
                 return result
             elif isinstance(obj, (np.integer, np.floating)):
-                logger.info("Converting numpy number to float")
                 result = float(obj)
-                # Handle NaN values
                 if np.isnan(result) or np.isinf(result):
-                    logger.warning(f"Found NaN or Inf value, converting to None")
                     return None
-                logger.info("Successfully converted numpy number to float")
                 return result
             elif isinstance(obj, float):
-                # Handle Python float NaN/Inf
                 if np.isnan(obj) or np.isinf(obj):
-                    logger.warning(f"Found NaN or Inf value, converting to None")
                     return None
                 return obj
             elif isinstance(obj, np.ndarray):
-                logger.info("Converting numpy array to list")
                 result = obj.tolist()
-                logger.info("Successfully converted numpy array to list")
                 return result
-            elif hasattr(obj, 'isoformat'):  # datetime objects
-                logger.info("Converting datetime object to ISO format")
+            elif hasattr(obj, 'isoformat'):
                 result = obj.isoformat()
-                logger.info("Successfully converted datetime to ISO format")
                 return result
             elif hasattr(obj, '__str__') and 'pandas' in str(type(obj)):
-                # Handle pandas Period and other pandas objects
-                logger.info(f"Converting pandas object to string: {type(obj)}")
                 result = str(obj)
-                logger.info("Successfully converted pandas object to string")
                 return result
-            elif pd.isna(obj):  # Check for pandas NA values
-                logger.warning("Found pandas NA value, converting to None")
+            elif pd.isna(obj):
                 return None
             else:
-                logger.info(f"Object already JSON-serializable, type: {type(obj)}")
                 return obj
                 
         except Exception as e:
             logger.error(f"Failed to convert object to JSON-serializable format: {str(e)}")
-            logger.error(f"Object type: {type(obj)}, Object: {obj}")
-            # Return None for problematic values instead of string
             return None
-        

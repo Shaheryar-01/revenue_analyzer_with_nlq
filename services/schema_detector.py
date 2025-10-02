@@ -10,7 +10,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 class PythonSchemaDetector:
-    """Pure Python schema detection - no AI needed"""
+    """Pure Python schema detection - works with normalized data"""
     
     def __init__(self):
         self.business_keywords = {
@@ -26,7 +26,7 @@ class PythonSchemaDetector:
         logger.info("Python Schema Detector initialized successfully")
     
     def detect_complete_schema(self, df: pd.DataFrame) -> Dict[str, Any]:
-        """Detect complete schema with business context"""
+        """Detect complete schema - assumes normalized data"""
         logger.info(f"Starting complete schema detection for dataframe with shape: {df.shape}")
         
         try:
@@ -68,7 +68,7 @@ class PythonSchemaDetector:
             raise
     
     def _analyze_all_columns(self, df: pd.DataFrame) -> Dict[str, Dict]:
-        """Analyze each column individually"""
+        """Analyze each column individually - recognizes normalized types"""
         logger.info(f"Analyzing all columns: {len(df.columns)} columns to process")
         
         try:
@@ -86,7 +86,8 @@ class PythonSchemaDetector:
                     'unique_percentage': round((df[col].nunique() / len(df)) * 100, 2),
                     'sample_values': self._get_safe_sample_values(df[col]),
                     'is_constant': df[col].nunique() <= 1,
-                    'data_characteristics': self._analyze_column_characteristics(df[col])
+                    'data_characteristics': self._analyze_column_characteristics(df[col]),
+                    'normalized_type': self._get_normalized_type(df[col])
                 }
             
             logger.info(f"Column analysis completed for all {len(df.columns)} columns")
@@ -96,8 +97,21 @@ class PythonSchemaDetector:
             logger.error(f"Failed to analyze columns: {str(e)}", exc_info=True)
             raise
     
+    def _get_normalized_type(self, series: pd.Series) -> str:
+        """Get the normalized data type category"""
+        if pd.api.types.is_datetime64_any_dtype(series):
+            return 'datetime'
+        elif pd.api.types.is_numeric_dtype(series):
+            return 'numeric'
+        elif series.dtype == 'object' or pd.api.types.is_string_dtype(series):
+            return 'string'
+        elif pd.api.types.is_bool_dtype(series):
+            return 'boolean'
+        else:
+            return 'unknown'
+    
     def _categorize_columns(self, df: pd.DataFrame) -> Dict[str, List[str]]:
-        """Categorize columns by data type"""
+        """Categorize columns by normalized data type"""
         logger.info("Categorizing columns by data type")
         
         try:
@@ -135,10 +149,9 @@ class PythonSchemaDetector:
                 for col in df.columns:
                     col_lower = col.lower().strip()
                     
-                    # Check if column name contains business keywords
                     if any(keyword in col_lower for keyword in keywords):
                         confidence = self._calculate_business_confidence(df[col], entity_type)
-                        if confidence > 0.3:  # Threshold for business relevance
+                        if confidence > 0.3:
                             detected_columns.append({
                                 'column': col,
                                 'confidence': confidence,
@@ -149,7 +162,7 @@ class PythonSchemaDetector:
                 if detected_columns:
                     entities[entity_type] = detected_columns
             
-            logger.info(f"Business entity detection completed: found {entities_found} business entities across {len(entities)} types")
+            logger.info(f"Business entity detection completed: found {entities_found} business entities")
             return entities
             
         except Exception as e:
@@ -161,29 +174,25 @@ class PythonSchemaDetector:
         logger.debug(f"Calculating business confidence for entity type: {entity_type}")
         
         try:
-            confidence = 0.5  # Base confidence from keyword match
+            confidence = 0.5
             
-            # Additional checks based on entity type
             if entity_type == 'revenue' and pd.api.types.is_numeric_dtype(series):
-                if (series > 0).sum() / len(series) > 0.8:  # Most values positive
+                if (series > 0).sum() / len(series) > 0.8:
                     confidence += 0.3
             
             elif entity_type == 'date':
-                try:
-                    pd.to_datetime(series.dropna().head(10))
+                if pd.api.types.is_datetime64_any_dtype(series):
                     confidence += 0.4
-                except:
-                    confidence -= 0.2
             
             elif entity_type == 'geography':
                 if series.dtype == 'object' and series.nunique() < len(series) * 0.1:
-                    confidence += 0.2  # Geographic data usually has repeated values
+                    confidence += 0.2
             
             return min(confidence, 1.0)
             
         except Exception as e:
             logger.warning(f"Error calculating business confidence: {str(e)}")
-            return 0.5  # Return base confidence on error
+            return 0.5
     
     def _assess_data_quality(self, df: pd.DataFrame) -> Dict[str, Any]:
         """Assess overall data quality"""
@@ -219,9 +228,7 @@ class PythonSchemaDetector:
                 'high_correlations': []
             }
             
-            # Detect hierarchical relationships (e.g., Country -> State -> City)
             categorical_cols = df.select_dtypes(include=['object']).columns
-            logger.debug(f"Checking hierarchical relationships among {len(categorical_cols)} categorical columns")
             
             for i, col1 in enumerate(categorical_cols):
                 for col2 in categorical_cols[i+1:]:
@@ -233,11 +240,8 @@ class PythonSchemaDetector:
                             'strength': hierarchy_strength
                         })
             
-            # Detect numerical correlations
             numerical_cols = df.select_dtypes(include=[np.number]).columns
             if len(numerical_cols) > 1:
-                logger.debug(f"Checking correlations among {len(numerical_cols)} numerical columns")
-                
                 corr_matrix = df[numerical_cols].corr()
                 for i, col1 in enumerate(numerical_cols):
                     for col2 in numerical_cols[i+1:]:
@@ -249,7 +253,7 @@ class PythonSchemaDetector:
                                 'correlation': round(corr_value, 3)
                             })
             
-            logger.info(f"Relationship detection completed: {len(relationships['potential_hierarchies'])} hierarchies, {len(relationships['high_correlations'])} correlations")
+            logger.info(f"Relationship detection completed")
             return relationships
             
         except Exception as e:
@@ -267,26 +271,22 @@ class PythonSchemaDetector:
             categorical_cols = df.select_dtypes(include=['object']).columns
             datetime_cols = df.select_dtypes(include=['datetime64']).columns
             
-            # Basic aggregation suggestions
             if len(numerical_cols) > 0:
                 suggestions.append(f"Calculate totals and averages for {', '.join(numerical_cols[:3])}")
             
-            # Groupby analysis suggestions
             if len(categorical_cols) > 0 and len(numerical_cols) > 0:
                 suggestions.append(f"Analyze {numerical_cols[0]} by {categorical_cols[0]}")
             
-            # Time series suggestions
             if len(datetime_cols) > 0 and len(numerical_cols) > 0:
                 suggestions.append(f"Analyze trends over time using {datetime_cols[0]}")
             
-            # Business-specific suggestions
             business_entities = self._detect_business_entities(df)
             if 'revenue' in business_entities:
                 suggestions.append("Revenue analysis: totals, trends, and breakdowns")
             if 'geography' in business_entities:
                 suggestions.append("Geographic performance analysis")
             
-            final_suggestions = suggestions[:5]  # Limit to top 5 suggestions
+            final_suggestions = suggestions[:5]
             logger.info(f"Generated {len(final_suggestions)} analysis suggestions")
             return final_suggestions
             
@@ -298,31 +298,38 @@ class PythonSchemaDetector:
         """Get sample values safely handling different data types"""
         try:
             sample = series.dropna().head(n)
-            return sample.tolist()
+            return [str(val) for val in sample.tolist()]
         except Exception as e:
             logger.warning(f"Error getting sample values: {str(e)}")
-            return [str(val) for val in series.dropna().head(n).tolist()]
+            return []
     
     def _analyze_column_characteristics(self, series: pd.Series) -> Dict[str, Any]:
-        """Analyze specific characteristics of a column"""
+        """Analyze specific characteristics - recognizes normalized types"""
         try:
             characteristics = {}
             
-            if pd.api.types.is_numeric_dtype(series):
+            if pd.api.types.is_datetime64_any_dtype(series):
                 characteristics.update({
-                    'min_value': series.min(),
-                    'max_value': series.max(),
-                    'mean_value': round(series.mean(), 2),
-                    'has_negative_values': (series < 0).any(),
-                    'all_integers': series.dropna().apply(lambda x: float(x).is_integer()).all()
+                    'data_type': 'datetime',
+                    'min_date': str(series.min()) if pd.notna(series.min()) else None,
+                    'max_date': str(series.max()) if pd.notna(series.max()) else None,
+                    'date_format': 'ISO 8601 (normalized)'
+                })
+            
+            elif pd.api.types.is_numeric_dtype(series):
+                characteristics.update({
+                    'data_type': 'numeric',
+                    'min_value': float(series.min()) if pd.notna(series.min()) else None,
+                    'max_value': float(series.max()) if pd.notna(series.max()) else None,
+                    'mean_value': round(float(series.mean()), 2) if pd.notna(series.mean()) else None,
+                    'has_negative_values': bool((series < 0).any()),
+                    'all_integers': bool(series.dropna().apply(lambda x: float(x).is_integer()).all()) if len(series.dropna()) > 0 else False
                 })
             
             elif series.dtype == 'object':
                 characteristics.update({
-                    'avg_string_length': round(series.astype(str).str.len().mean(), 1),
-                    'contains_numbers': series.astype(str).str.contains(r'\d').any(),
-                    'all_uppercase': series.astype(str).str.isupper().all(),
-                    'all_lowercase': series.astype(str).str.islower().all()
+                    'data_type': 'string',
+                    'avg_string_length': round(series.astype(str).str.len().mean(), 1) if len(series.dropna()) > 0 else 0
                 })
             
             return characteristics
@@ -336,19 +343,16 @@ class PythonSchemaDetector:
         try:
             issues = []
             
-            # Check for high null percentage
             high_null_cols = [col for col in df.columns if df[col].isnull().sum() / len(df) > 0.5]
             if high_null_cols:
-                issues.append(f"High missing values in: {', '.join(high_null_cols)}")
+                issues.append(f"High missing values in: {', '.join(high_null_cols[:3])}")
             
-            # Check for duplicate rows
             if df.duplicated().sum() > 0:
                 issues.append(f"{df.duplicated().sum()} duplicate rows found")
             
-            # Check for constant columns
             constant_cols = [col for col in df.columns if df[col].nunique() <= 1]
             if constant_cols:
-                issues.append(f"Constant columns (no variation): {', '.join(constant_cols)}")
+                issues.append(f"Constant columns: {', '.join(constant_cols)}")
             
             return issues
             
@@ -359,27 +363,26 @@ class PythonSchemaDetector:
     def _check_hierarchy_relationship(self, df: pd.DataFrame, col1: str, col2: str) -> float:
         """Check if two columns have a hierarchical relationship"""
         try:
-            # Check if each value in col1 consistently maps to same values in col2
             grouped = df.groupby(col1)[col2].nunique()
-            if grouped.max() == 1:  # Perfect hierarchy
+            if grouped.max() == 1:
                 return 1.0
-            elif grouped.mean() < 2:  # Good hierarchy
+            elif grouped.mean() < 2:
                 return 0.8
             else:
                 return 0.0
         except Exception as e:
-            logger.warning(f"Error checking hierarchy relationship between {col1} and {col2}: {str(e)}")
+            logger.warning(f"Error checking hierarchy: {str(e)}")
             return 0.0
     
     def _get_sample_data(self, df: pd.DataFrame, n: int = 3) -> Dict[str, Any]:
-        """Get sample data for AI context"""
+        """Get sample data"""
         logger.info("Extracting sample data")
         
         try:
             sample_data = {
-                'first_rows': df.head(n).to_dict(),
+                'first_rows': df.head(n).astype(str).to_dict(),
                 'data_preview': {
-                    col: df[col].dropna().head(n).tolist()
+                    col: [str(val) for val in df[col].dropna().head(n).tolist()]
                     for col in df.columns
                 }
             }
@@ -390,10 +393,8 @@ class PythonSchemaDetector:
             logger.error(f"Error extracting sample data: {str(e)}")
             return {'first_rows': {}, 'data_preview': {}}
     
-    
-
     def detect_multi_sheet_schema(self, sheets_dict: Dict[str, pd.DataFrame]) -> Dict[str, Any]:
-        """Detect schema for all sheets and build metadata map"""
+        """Detect schema for all sheets"""
         logger.info(f"Starting multi-sheet schema detection for {len(sheets_dict)} sheets")
         
         try:
@@ -406,13 +407,11 @@ class PythonSchemaDetector:
                 'cross_sheet_analysis': {}
             }
             
-            # Analyze each sheet
             for sheet_name, df in sheets_dict.items():
                 logger.info(f"Analyzing sheet: {sheet_name}")
                 sheet_schema = self.detect_complete_schema(df)
                 multi_schema['sheets'][sheet_name] = sheet_schema
                 
-                # Build column-to-sheet mapping
                 for col in df.columns:
                     col_lower = col.lower()
                     if col_lower not in multi_schema['column_to_sheet_map']:
@@ -426,10 +425,9 @@ class PythonSchemaDetector:
                     if col not in multi_schema['all_columns']:
                         multi_schema['all_columns'].append(col)
             
-            # Detect potential relationships between sheets
             multi_schema['cross_sheet_analysis'] = self._analyze_sheet_relationships(sheets_dict)
             
-            logger.info(f"Multi-sheet schema detection completed. Total columns across all sheets: {len(multi_schema['all_columns'])}")
+            logger.info(f"Multi-sheet schema detection completed")
             return multi_schema
             
         except Exception as e:
@@ -448,7 +446,6 @@ class PythonSchemaDetector:
             
             sheet_names = list(sheets_dict.keys())
             
-            # Find common columns between sheets
             for i, sheet1 in enumerate(sheet_names):
                 for sheet2 in sheet_names[i+1:]:
                     common = set(sheets_dict[sheet1].columns) & set(sheets_dict[sheet2].columns)
@@ -459,7 +456,6 @@ class PythonSchemaDetector:
                             'columns': list(common)
                         })
                         
-                        # Check if common columns could be join keys
                         for col in common:
                             if (sheets_dict[sheet1][col].nunique() == len(sheets_dict[sheet1]) or
                                 sheets_dict[sheet2][col].nunique() == len(sheets_dict[sheet2])):
@@ -469,7 +465,7 @@ class PythonSchemaDetector:
                                     'key_column': col
                                 })
             
-            logger.info(f"Found {len(relationships['common_columns'])} common column groups")
+            logger.info(f"Sheet relationship analysis complete")
             return relationships
             
         except Exception as e:

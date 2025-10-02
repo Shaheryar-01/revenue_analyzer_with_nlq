@@ -7,7 +7,6 @@ from datetime import datetime
 import os
 import logging
 
-# Configure logging
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
@@ -34,70 +33,97 @@ class ConversationAgent:
             raise
 
     # -------------------
-    # Intent determination
+    # Intent determination - FIXED VERSION
     # -------------------
-    def determine_intent(self, upload_id: str, user_message: str) -> Dict[str, Any]:
+    def determine_intent(self, upload_id: str, user_message: str, schema: Dict[str, Any]) -> Dict[str, Any]:
         """Determine if user needs new analysis or just conversation - and resolve contextual references"""
         logger.info(f"Determining intent for upload_id: {upload_id}, message: {user_message}")
         
         try:
             history = self.get_conversation_history(upload_id)
             
+            # Get available columns for context
+            if schema.get('sheet_count', 1) > 1:
+                available_columns = schema.get('all_columns', [])
+                sheet_info = f"Multi-sheet data with sheets: {schema.get('sheet_names', [])}"
+            else:
+                available_columns = schema.get('basic_info', {}).get('column_names', [])
+                sheet_info = f"Single sheet with {len(available_columns)} columns"
+            
             # Build context from recent exchanges
             context_str = ""
             if history and len(history) > 0:
-                # Get last 2 exchanges for context
                 recent = history[-2:] if len(history) >= 2 else history
                 context_parts = []
                 for exchange in recent:
                     user_q = exchange.get('user_message', '')
-                    assistant_a = exchange.get('assistant_response', '')[:300]  # Limit length
+                    assistant_a = exchange.get('assistant_response', '')[:300]
                     context_parts.append(f"Q: {user_q}\nA: {assistant_a}")
                 context_str = "\n\n".join(context_parts)
             
             prompt = f"""
-    You are analyzing a user's message in a data conversation context.
+You are analyzing a user's message in a data analysis context.
 
-    RECENT CONVERSATION:
-    {context_str if context_str else "No previous conversation"}
+DATASET INFO: {sheet_info}
+AVAILABLE COLUMNS: {available_columns}
 
-    NEW USER MESSAGE: "{user_message}"
+RECENT CONVERSATION:
+{context_str if context_str else "No previous conversation"}
 
-    YOUR TASKS:
-    1. Determine the user's intent:
-    - NEEDS_ANALYSIS: User is asking for new data analysis/calculations
-    - CONVERSATIONAL: User wants explanation, discussion, or clarification about previous results
+NEW USER MESSAGE: "{user_message}"
 
-    2. CRITICAL: If the message contains contextual references like:
-    - "this rep", "that region", "same product", "those items", "this person"
-    - "in that region", "for this rep", "about that product"
-    
-    You MUST replace them with the ACTUAL values from the recent conversation before returning analysis_query.
+CRITICAL SCOPE RULES:
+1. The user ONLY has access to data with columns: {available_columns}
+2. Questions must be DIRECTLY answerable using ONLY these columns
+3. General knowledge questions (e.g., "who is donald trump", "what is python") are OUT OF SCOPE
+4. Questions about columns/data NOT in the available columns are OUT OF SCOPE
+5. If asking about entities not in the data, mark as OUT_OF_SCOPE
 
-    EXAMPLES:
+YOUR TASKS:
+1. First check: Is this query IN SCOPE or OUT OF SCOPE?
+   - IN SCOPE: Can be answered with the available columns
+   - OUT OF SCOPE: Requires data not in the columns OR general knowledge
 
-    Example 1:
-    Recent: "Q: Who was the best rep in Central? A: The best rep in Central is Kivell."
-    New: "for this rep how many pencils did he sell"
-    → {{"intent": "NEEDS_ANALYSIS", "analysis_query": "how many pencils did Kivell sell"}}
+2. If IN SCOPE, determine intent:
+   - NEEDS_ANALYSIS: Requires data calculations/aggregations
+   - CONVERSATIONAL: Asks about dataset structure, explanations, clarifications
 
-    Example 2:
-    Recent: "Q: Which region had highest sales? A: Central region had the highest sales."
-    New: "who was the best rep in that region"
-    → {{"intent": "NEEDS_ANALYSIS", "analysis_query": "who was the best rep in Central region"}}
+3. CRITICAL: Replace contextual references with actual values from recent conversation:
+   - "this rep", "that region", "these items" → Replace with actual names
+   - "from this", "in that", "about this" → Replace with specific values
 
-    Example 3:
-    Recent: "Q: Total profit by country? A: Canada had $3.5M, USA had $3M..."
-    New: "why did Canada perform better?"
-    → {{"intent": "CONVERSATIONAL", "analysis_query": "why did Canada perform better than USA"}}
+EXAMPLES:
 
-    Example 4:
-    New: "what's the total profit"
-    → {{"intent": "NEEDS_ANALYSIS", "analysis_query": "what's the total profit"}}
+Example 1 - OUT OF SCOPE:
+User: "who is donald trump"
+→ {{"intent": "OUT_OF_SCOPE", "analysis_query": "", "reason": "General knowledge question, not about the dataset"}}
 
-    Return ONLY valid JSON in this exact format:
-    {{"intent": "NEEDS_ANALYSIS" or "CONVERSATIONAL", "analysis_query": "query with references resolved to actual values"}}
-    """
+Example 2 - OUT OF SCOPE:
+User: "show me customer emails"
+Available columns: ['OrderDate', 'Region', 'Rep']
+→ {{"intent": "OUT_OF_SCOPE", "analysis_query": "", "reason": "Dataset does not contain email addresses"}}
+
+Example 3 - IN SCOPE with context:
+Recent: "Q: pencils in East region A: 130 units sold"
+User: "which dates were these"
+→ {{"intent": "NEEDS_ANALYSIS", "analysis_query": "which dates were pencils sold in East region"}}
+
+Example 4 - IN SCOPE with context:
+Recent: "Q: best rep in Central? A: Kivell"
+User: "how many units did he sell"
+→ {{"intent": "NEEDS_ANALYSIS", "analysis_query": "how many units did Kivell sell"}}
+
+Example 5 - IN SCOPE simple:
+User: "total sales in East region"
+→ {{"intent": "NEEDS_ANALYSIS", "analysis_query": "total sales in East region"}}
+
+Example 6 - CONVERSATIONAL:
+User: "what columns do I have"
+→ {{"intent": "CONVERSATIONAL", "analysis_query": "what columns do I have"}}
+
+Return ONLY valid JSON:
+{{"intent": "NEEDS_ANALYSIS" | "CONVERSATIONAL" | "OUT_OF_SCOPE", "analysis_query": "resolved query", "reason": "if OUT_OF_SCOPE"}}
+"""
             
             response = self.client.chat.completions.create(
                 model="gpt-4o",
@@ -107,10 +133,9 @@ class ConversationAgent:
             )
             
             raw_response = response.choices[0].message.content
-            logger.info(f"Intent determination raw response: {raw_response[:200]}")
+            logger.info(f"Intent determination raw response: {raw_response[:300]}")
             
             try:
-                # Parse JSON
                 if "```json" in raw_response:
                     raw_response = raw_response.split("```json")[1].split("```")[0]
                 elif "```" in raw_response:
@@ -119,7 +144,7 @@ class ConversationAgent:
                 intent_result = json.loads(raw_response.strip())
                 
                 logger.info(f"Resolved intent: {intent_result['intent']}")
-                logger.info(f"Resolved query: {intent_result['analysis_query']}")
+                logger.info(f"Resolved query: {intent_result.get('analysis_query', 'N/A')}")
                 
                 return intent_result
             except json.JSONDecodeError as e:
@@ -130,24 +155,21 @@ class ConversationAgent:
         except Exception as e:
             logger.error(f"Failed to determine intent for upload_id: {upload_id}: {str(e)}", exc_info=True)
             return {"intent": "NEEDS_ANALYSIS", "analysis_query": user_message}
-        
-
-
-
 
     # -------------------
-    # Generate insights
+    # Generate insights - FIXED TO PREVENT HALLUCINATION
     # -------------------
     def generate_insights_response(
-    self, 
-    upload_id: str,
-    user_query: str, 
-    analysis_results: Any,
-    schema: Dict[str, Any],
-    precision_mode: bool = False
-) -> str:
-        """Generate well-formatted CEO-focused insights"""
+        self, 
+        upload_id: str,
+        user_query: str, 
+        analysis_results: Any,
+        schema: Dict[str, Any],
+        precision_mode: bool = False
+    ) -> str:
+        """Generate well-formatted CEO-focused insights - STRICTLY based on raw results"""
         logger.info(f"Generating insights response for upload_id: {upload_id}")
+        logger.info(f"Raw results type: {type(analysis_results)}, value: {analysis_results}")
         
         try:
             history = self.get_conversation_history(upload_id)
@@ -158,76 +180,73 @@ class ConversationAgent:
                 formatted_results = str(analysis_results)
 
             prompt = f"""
-    You are a business analyst presenting insights to a CEO in a chat interface.
+You are presenting data analysis results to a business user.
 
-    CEO ASKED: "{user_query}"
+USER ASKED: "{user_query}"
 
-    RAW DATA: {formatted_results}
+RAW ANALYSIS RESULT: {formatted_results}
 
-    PREVIOUS CONTEXT: {history[-2:] if history else "None"}
+CRITICAL RULES - PREVENT HALLUCINATION:
+1. Use ONLY the data in "RAW ANALYSIS RESULT" above
+2. DO NOT invent, assume, or add ANY information not in the raw result
+3. DO NOT add percentages, metrics, or details unless they are in the raw result
+4. DO NOT make up names, numbers, or explanations
+5. If the raw result is just a name/number, present it simply without elaboration
+6. If the raw result is a list/dict, format it clearly but add NO new data
 
-    FORMATTING REQUIREMENTS:
-    1. Start with a direct answer to the question
-    2. Use natural, conversational business language
-    3. Format numbers with commas and currency symbols where appropriate
-    4. Use bullet points ONLY when showing multiple items
-    5. Keep total response under 150 words unless showing a list
-    6. Be concise and actionable
+FORMATTING GUIDELINES:
+1. Start with a direct answer
+2. Format numbers with commas (e.g., 1,234)
+3. Use bullet points ONLY when raw result has multiple items
+4. Keep response under 100 words unless showing a list
+5. Be concise and factual
 
-    EXAMPLES:
+EXAMPLES:
 
-    Query: "give me data about Kivell"
-    Good Response: 
-    "Kivell has 2 recorded orders:
+Query: "best rep in east region"
+Raw Result: "Jones"
+GOOD Response: "The best performing rep in the East region is **Jones**."
+BAD Response: "The best rep is Alex Johnson with $1.2M sales and 15% growth..." ← HALLUCINATION
 
-    **Order 1 (Jan 23, 2024)**
-    - Item: Binder
-    - Quantity: 50 units
-    - Total: $999.50
+Query: "total units in Central"
+Raw Result: 1199
+GOOD Response: "Total units sold in the Central region: **1,199 units**."
+BAD Response: "1,199 units with strong growth and high customer satisfaction..." ← HALLUCINATION
 
-    **Order 2 (Nov 25, 2024)**
-    - Item: Pen Set
-    - Quantity: 27 units  
-    - Total: $719.73"
+Query: "dates of pencil sales"
+Raw Result: ["2024-01-04", "2024-01-09", "2024-02-26"]
+GOOD Response: "Pencils were sold on these dates:\n- January 4, 2024\n- January 9, 2024\n- February 26, 2024"
+BAD Response: Lists dates not in the raw result ← HALLUCINATION
 
-    Bad Response:
-    "OrderDate: 1/23/2024, Item: Binder, Units: 50, UnitCost: 19.99, Total: 999.50..."
-
-    Query: "total sales in government"
-    Good Response: "Total sales in the Government segment: **$52,504,260.67**"
-
-    Bad Response: "The number of sales in the government sector is 470673.50"
-
-    Now respond to the CEO's query using these formatting guidelines.
-    """
+Now respond using ONLY the raw result data, with NO additions:
+"""
             
             response = self.client.chat.completions.create(
                 model="gpt-4o",
                 messages=[{"role": "user", "content": prompt}],
-                temperature=0.3,
-                max_tokens=800
+                temperature=0.1,  # Lower temperature to reduce creativity
+                max_tokens=500
             )
             
             insights = response.choices[0].message.content
+            logger.info(f"Generated insights: {insights[:200]}")
             self.add_to_history(upload_id, user_query, insights)
             return insights
         
         except Exception as e:
             logger.error(f"Failed to generate insights: {str(e)}", exc_info=True)
-            raise
+            # Fallback to raw result if insights generation fails
+            return f"Analysis result: {analysis_results}"
 
-
-
-    # -------------------
-    # Conversational handling
-    # -------------------
+    # ... rest of the methods remain the same ...
+    
     def handle_conversational_response(
-    self, 
-    upload_id: str, 
-    user_message: str,
-    schema: Dict[str, Any],
-    last_analysis_results: Any = None
-) -> str:
+        self, 
+        upload_id: str, 
+        user_message: str,
+        schema: Dict[str, Any],
+        last_analysis_results: Any = None
+    ) -> str:
         """Handle purely conversational messages with proper formatting"""
         logger.info(f"Handling conversational response for upload_id: {upload_id}")
         
@@ -266,39 +285,23 @@ class ConversationAgent:
                 }
             
             prompt = f"""
-    You are a business intelligence assistant. Provide clear, well-formatted responses.
+You are a business intelligence assistant providing information about the dataset structure.
 
-    CONVERSATION HISTORY: {history[-2:] if history else "None"}
-    USER QUESTION: "{user_message}"
+CONVERSATION HISTORY: {history[-2:] if history else "None"}
+USER QUESTION: "{user_message}"
 
-    DATA STRUCTURE:
-    {json.dumps(schema_context, indent=2)}
+DATA STRUCTURE:
+{json.dumps(schema_context, indent=2)}
 
-    FORMATTING RULES:
-    1. Use natural language, not raw statistics
-    2. For "describe sheets" queries, provide:
-    - Sheet name with brief description
-    - Number of rows
-    - Main column categories in plain English
-    3. Use bullet points or numbered lists ONLY when listing items
-    4. Keep responses concise and business-focused
-    5. Avoid technical jargon like "mean", "std", "unique values" unless specifically asked
-    6. Format numbers with commas (e.g., 1,234 not 1234)
+RULES:
+1. Provide clear, factual information about the dataset
+2. Use natural language, not technical jargon
+3. Format numbers with commas
+4. Keep responses concise and business-focused
+5. DO NOT make up or assume any data
 
-    EXAMPLE GOOD RESPONSE for "describe both sheets":
-    "Your file contains 2 sheets:
-
-    **Sheet1 - Order Data**
-    Contains 700 rows of order information with columns like Region, Rep, Item, Units, and pricing details.
-
-    **Sheet2 - Financial Data**  
-    Contains 500 rows of financial performance data including Sales, Profit, Country, Segment, and Product information."
-
-    EXAMPLE BAD RESPONSE:
-    "Sheet1: 43 entries, 43 unique, most frequent: 1717200000000 (1 time), mean: 49.32558139..."
-
-    Now respond to the user's question following these formatting rules.
-    """
+Now respond to the user's question about their dataset:
+"""
             
             response = self.client.chat.completions.create(
                 model="gpt-4o",
@@ -315,11 +318,6 @@ class ConversationAgent:
             logger.error(f"Failed to handle conversational response: {str(e)}", exc_info=True)
             raise
 
-
-
-    # -------------------
-    # Conversation history
-    # -------------------
     def get_conversation_history(self, upload_id: str) -> List[Dict]:
         """Get conversation history"""
         return self.conversation_history.get(upload_id, [])

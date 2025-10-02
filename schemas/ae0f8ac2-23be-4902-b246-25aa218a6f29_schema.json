@@ -1,0 +1,1184 @@
+{
+  "sheet_count": 2,
+  "sheet_names": [
+    "Sheet1",
+    "Sheet2"
+  ],
+  "sheets": {
+    "Sheet1": {
+      "basic_info": {
+        "shape": [
+          43,
+          7
+        ],
+        "total_rows": 43,
+        "total_columns": 7,
+        "memory_usage_mb": 0.01,
+        "column_names": [
+          "OrderDate",
+          "Region",
+          "Rep",
+          "Item",
+          "Units",
+          "UnitCost",
+          "Total"
+        ]
+      },
+      "columns": {
+        "OrderDate": {
+          "dtype": "datetime64[ns]",
+          "non_null_count": 43,
+          "null_count": 0,
+          "null_percentage": 0.0,
+          "unique_values": 43,
+          "unique_percentage": 100.0,
+          "sample_values": [
+            "2024-06-01 00:00:00",
+            "2024-01-23 00:00:00",
+            "2024-09-02 00:00:00"
+          ],
+          "is_constant": false,
+          "data_characteristics": {
+            "data_type": "datetime",
+            "min_date": "2024-01-04 00:00:00",
+            "max_date": "2025-12-21 00:00:00",
+            "date_format": "ISO 8601 (normalized)"
+          },
+          "normalized_type": "datetime"
+        },
+        "Region": {
+          "dtype": "object",
+          "non_null_count": 43,
+          "null_count": 0,
+          "null_percentage": 0.0,
+          "unique_values": 3,
+          "unique_percentage": 6.98,
+          "sample_values": [
+            "East",
+            "Central",
+            "Central"
+          ],
+          "is_constant": false,
+          "data_characteristics": {
+            "data_type": "string",
+            "avg_string_length": 5.7
+          },
+          "normalized_type": "string"
+        },
+        "Rep": {
+          "dtype": "object",
+          "non_null_count": 43,
+          "null_count": 0,
+          "null_percentage": 0.0,
+          "unique_values": 11,
+          "unique_percentage": 25.58,
+          "sample_values": [
+            "Jones",
+            "Kivell",
+            "Jardine"
+          ],
+          "is_constant": false,
+          "data_characteristics": {
+            "data_type": "string",
+            "avg_string_length": 5.9
+          },
+          "normalized_type": "string"
+        },
+        "Item": {
+          "dtype": "object",
+          "non_null_count": 43,
+          "null_count": 0,
+          "null_percentage": 0.0,
+          "unique_values": 5,
+          "unique_percentage": 11.63,
+          "sample_values": [
+            "Pencil",
+            "Binder",
+            "Pencil"
+          ],
+          "is_constant": false,
+          "data_characteristics": {
+            "data_type": "string",
+            "avg_string_length": 5.7
+          },
+          "normalized_type": "string"
+        },
+        "Units": {
+          "dtype": "datetime64[ns]",
+          "non_null_count": 43,
+          "null_count": 0,
+          "null_percentage": 0.0,
+          "unique_values": 37,
+          "unique_percentage": 86.05,
+          "sample_values": [
+            "1970-01-01 00:00:00.000000095",
+            "1970-01-01 00:00:00.000000050",
+            "1970-01-01 00:00:00.000000036"
+          ],
+          "is_constant": false,
+          "data_characteristics": {
+            "data_type": "datetime",
+            "min_date": "1970-01-01 00:00:00.000000002",
+            "max_date": "1970-01-01 00:00:00.000000096",
+            "date_format": "ISO 8601 (normalized)"
+          },
+          "normalized_type": "datetime"
+        },
+        "UnitCost": {
+          "dtype": "datetime64[ns]",
+          "non_null_count": 43,
+          "null_count": 0,
+          "null_percentage": 0.0,
+          "unique_values": 10,
+          "unique_percentage": 23.26,
+          "sample_values": [
+            "1970-01-01 00:00:00.000000001",
+            "1970-01-01 00:00:00.000000019",
+            "1970-01-01 00:00:00.000000004"
+          ],
+          "is_constant": false,
+          "data_characteristics": {
+            "data_type": "datetime",
+            "min_date": "1970-01-01 00:00:00.000000001",
+            "max_date": "1970-01-01 00:00:00.000000275",
+            "date_format": "ISO 8601 (normalized)"
+          },
+          "normalized_type": "datetime"
+        },
+        "Total": {
+          "dtype": "datetime64[ns]",
+          "non_null_count": 43,
+          "null_count": 0,
+          "null_percentage": 0.0,
+          "unique_values": 38,
+          "unique_percentage": 88.37,
+          "sample_values": [
+            "1970-01-01 00:00:00.000000189",
+            "1970-01-01 00:00:00.000000999",
+            "1970-01-01 00:00:00.000000179"
+          ],
+          "is_constant": false,
+          "data_characteristics": {
+            "data_type": "datetime",
+            "min_date": "1970-01-01 00:00:00.000000009",
+            "max_date": "1970-01-01 00:00:00.000001879",
+            "date_format": "ISO 8601 (normalized)"
+          },
+          "normalized_type": "datetime"
+        }
+      },
+      "data_types": {
+        "numerical": [],
+        "categorical": [
+          "Region",
+          "Rep",
+          "Item"
+        ],
+        "datetime": [
+          "OrderDate",
+          "Units",
+          "UnitCost",
+          "Total"
+        ],
+        "boolean": [],
+        "high_cardinality": [
+          "OrderDate",
+          "Units",
+          "Total"
+        ],
+        "low_cardinality": [
+          "Region",
+          "Rep",
+          "Item",
+          "UnitCost"
+        ]
+      },
+      "business_entities": {
+        "revenue": [
+          {
+            "column": "Total",
+            "confidence": 0.5,
+            "reasoning": "Column name contains 'revenue' keywords"
+          }
+        ],
+        "cost": [
+          {
+            "column": "UnitCost",
+            "confidence": 0.5,
+            "reasoning": "Column name contains 'cost' keywords"
+          }
+        ],
+        "date": [
+          {
+            "column": "OrderDate",
+            "confidence": 0.9,
+            "reasoning": "Column name contains 'date' keywords"
+          }
+        ],
+        "geography": [
+          {
+            "column": "Region",
+            "confidence": 0.7,
+            "reasoning": "Column name contains 'geography' keywords"
+          }
+        ],
+        "product": [
+          {
+            "column": "Item",
+            "confidence": 0.5,
+            "reasoning": "Column name contains 'product' keywords"
+          }
+        ],
+        "quantity": [
+          {
+            "column": "Units",
+            "confidence": 0.5,
+            "reasoning": "Column name contains 'quantity' keywords"
+          }
+        ]
+      },
+      "data_quality": {
+        "overall_completeness": 100.0,
+        "columns_with_nulls": 0,
+        "fully_complete_columns": 7,
+        "duplicate_rows": 0,
+        "constant_columns": [],
+        "potential_issues": []
+      },
+      "relationships": {
+        "potential_hierarchies": [],
+        "high_correlations": []
+      },
+      "sample_data": {
+        "first_rows": {
+          "OrderDate": {
+            "0": "2024-06-01",
+            "1": "2024-01-23",
+            "2": "2024-09-02"
+          },
+          "Region": {
+            "0": "East",
+            "1": "Central",
+            "2": "Central"
+          },
+          "Rep": {
+            "0": "Jones",
+            "1": "Kivell",
+            "2": "Jardine"
+          },
+          "Item": {
+            "0": "Pencil",
+            "1": "Binder",
+            "2": "Pencil"
+          },
+          "Units": {
+            "0": "1970-01-01 00:00:00.000000095",
+            "1": "1970-01-01 00:00:00.000000050",
+            "2": "1970-01-01 00:00:00.000000036"
+          },
+          "UnitCost": {
+            "0": "1970-01-01 00:00:00.000000001",
+            "1": "1970-01-01 00:00:00.000000019",
+            "2": "1970-01-01 00:00:00.000000004"
+          },
+          "Total": {
+            "0": "1970-01-01 00:00:00.000000189",
+            "1": "1970-01-01 00:00:00.000000999",
+            "2": "1970-01-01 00:00:00.000000179"
+          }
+        },
+        "data_preview": {
+          "OrderDate": [
+            "2024-06-01 00:00:00",
+            "2024-01-23 00:00:00",
+            "2024-09-02 00:00:00"
+          ],
+          "Region": [
+            "East",
+            "Central",
+            "Central"
+          ],
+          "Rep": [
+            "Jones",
+            "Kivell",
+            "Jardine"
+          ],
+          "Item": [
+            "Pencil",
+            "Binder",
+            "Pencil"
+          ],
+          "Units": [
+            "1970-01-01 00:00:00.000000095",
+            "1970-01-01 00:00:00.000000050",
+            "1970-01-01 00:00:00.000000036"
+          ],
+          "UnitCost": [
+            "1970-01-01 00:00:00.000000001",
+            "1970-01-01 00:00:00.000000019",
+            "1970-01-01 00:00:00.000000004"
+          ],
+          "Total": [
+            "1970-01-01 00:00:00.000000189",
+            "1970-01-01 00:00:00.000000999",
+            "1970-01-01 00:00:00.000000179"
+          ]
+        }
+      },
+      "analysis_suggestions": [
+        "Revenue analysis: totals, trends, and breakdowns",
+        "Geographic performance analysis"
+      ]
+    },
+    "Sheet2": {
+      "basic_info": {
+        "shape": [
+          700,
+          16
+        ],
+        "total_rows": 700,
+        "total_columns": 16,
+        "memory_usage_mb": 0.22,
+        "column_names": [
+          "Segment",
+          "Country",
+          "Product",
+          "Discount Band",
+          "Units Sold",
+          "Manufacturing Price",
+          "Sale Price",
+          "Gross Sales",
+          "Discounts",
+          " Sales",
+          "COGS",
+          "Profit",
+          "Date",
+          "Month Number",
+          "Month Name",
+          "Year"
+        ]
+      },
+      "columns": {
+        "Segment": {
+          "dtype": "object",
+          "non_null_count": 700,
+          "null_count": 0,
+          "null_percentage": 0.0,
+          "unique_values": 5,
+          "unique_percentage": 0.71,
+          "sample_values": [
+            "Government",
+            "Government",
+            "Midmarket"
+          ],
+          "is_constant": false,
+          "data_characteristics": {
+            "data_type": "string",
+            "avg_string_length": 11.3
+          },
+          "normalized_type": "string"
+        },
+        "Country": {
+          "dtype": "object",
+          "non_null_count": 700,
+          "null_count": 0,
+          "null_percentage": 0.0,
+          "unique_values": 5,
+          "unique_percentage": 0.71,
+          "sample_values": [
+            "Canada",
+            "Germany",
+            "France"
+          ],
+          "is_constant": false,
+          "data_characteristics": {
+            "data_type": "string",
+            "avg_string_length": 9.8
+          },
+          "normalized_type": "string"
+        },
+        "Product": {
+          "dtype": "object",
+          "non_null_count": 700,
+          "null_count": 0,
+          "null_percentage": 0.0,
+          "unique_values": 6,
+          "unique_percentage": 0.86,
+          "sample_values": [
+            "Carretera",
+            "Carretera",
+            "Carretera"
+          ],
+          "is_constant": false,
+          "data_characteristics": {
+            "data_type": "string",
+            "avg_string_length": 5.7
+          },
+          "normalized_type": "string"
+        },
+        "Discount Band": {
+          "dtype": "object",
+          "non_null_count": 647,
+          "null_count": 53,
+          "null_percentage": 7.57,
+          "unique_values": 3,
+          "unique_percentage": 0.43,
+          "sample_values": [
+            "Low",
+            "Low",
+            "Low"
+          ],
+          "is_constant": false,
+          "data_characteristics": {
+            "data_type": "string",
+            "avg_string_length": 4.5
+          },
+          "normalized_type": "string"
+        },
+        "Units Sold": {
+          "dtype": "datetime64[ns]",
+          "non_null_count": 700,
+          "null_count": 0,
+          "null_percentage": 0.0,
+          "unique_values": 508,
+          "unique_percentage": 72.57,
+          "sample_values": [
+            "1970-01-01 00:00:00.000001618",
+            "1970-01-01 00:00:00.000001321",
+            "1970-01-01 00:00:00.000002178"
+          ],
+          "is_constant": false,
+          "data_characteristics": {
+            "data_type": "datetime",
+            "min_date": "1970-01-01 00:00:00.000000200",
+            "max_date": "1970-01-01 00:00:00.000004492",
+            "date_format": "ISO 8601 (normalized)"
+          },
+          "normalized_type": "datetime"
+        },
+        "Manufacturing Price": {
+          "dtype": "datetime64[ns]",
+          "non_null_count": 700,
+          "null_count": 0,
+          "null_percentage": 0.0,
+          "unique_values": 6,
+          "unique_percentage": 0.86,
+          "sample_values": [
+            "1970-01-01 00:00:00.000000003",
+            "1970-01-01 00:00:00.000000003",
+            "1970-01-01 00:00:00.000000003"
+          ],
+          "is_constant": false,
+          "data_characteristics": {
+            "data_type": "datetime",
+            "min_date": "1970-01-01 00:00:00.000000003",
+            "max_date": "1970-01-01 00:00:00.000000260",
+            "date_format": "ISO 8601 (normalized)"
+          },
+          "normalized_type": "datetime"
+        },
+        "Sale Price": {
+          "dtype": "datetime64[ns]",
+          "non_null_count": 700,
+          "null_count": 0,
+          "null_percentage": 0.0,
+          "unique_values": 7,
+          "unique_percentage": 1.0,
+          "sample_values": [
+            "1970-01-01 00:00:00.000000020",
+            "1970-01-01 00:00:00.000000020",
+            "1970-01-01 00:00:00.000000015"
+          ],
+          "is_constant": false,
+          "data_characteristics": {
+            "data_type": "datetime",
+            "min_date": "1970-01-01 00:00:00.000000007",
+            "max_date": "1970-01-01 00:00:00.000000350",
+            "date_format": "ISO 8601 (normalized)"
+          },
+          "normalized_type": "datetime"
+        },
+        "Gross Sales": {
+          "dtype": "datetime64[ns]",
+          "non_null_count": 700,
+          "null_count": 0,
+          "null_percentage": 0.0,
+          "unique_values": 550,
+          "unique_percentage": 78.57,
+          "sample_values": [
+            "1970-01-01 00:00:00.000032370",
+            "1970-01-01 00:00:00.000026420",
+            "1970-01-01 00:00:00.000032670"
+          ],
+          "is_constant": false,
+          "data_characteristics": {
+            "data_type": "datetime",
+            "min_date": "1970-01-01 00:00:00.000001799",
+            "max_date": "1970-01-01 00:00:00.001207500",
+            "date_format": "ISO 8601 (normalized)"
+          },
+          "normalized_type": "datetime"
+        },
+        "Discounts": {
+          "dtype": "datetime64[ns]",
+          "non_null_count": 700,
+          "null_count": 0,
+          "null_percentage": 0.0,
+          "unique_values": 502,
+          "unique_percentage": 71.71,
+          "sample_values": [
+            "1970-01-01 00:00:00",
+            "1970-01-01 00:00:00",
+            "1970-01-01 00:00:00"
+          ],
+          "is_constant": false,
+          "data_characteristics": {
+            "data_type": "datetime",
+            "min_date": "1970-01-01 00:00:00",
+            "max_date": "1970-01-01 00:00:00.000149677",
+            "date_format": "ISO 8601 (normalized)"
+          },
+          "normalized_type": "datetime"
+        },
+        " Sales": {
+          "dtype": "datetime64[ns]",
+          "non_null_count": 700,
+          "null_count": 0,
+          "null_percentage": 0.0,
+          "unique_values": 558,
+          "unique_percentage": 79.71,
+          "sample_values": [
+            "1970-01-01 00:00:00.000032370",
+            "1970-01-01 00:00:00.000026420",
+            "1970-01-01 00:00:00.000032670"
+          ],
+          "is_constant": false,
+          "data_characteristics": {
+            "data_type": "datetime",
+            "min_date": "1970-01-01 00:00:00.000001655",
+            "max_date": "1970-01-01 00:00:00.001159200",
+            "date_format": "ISO 8601 (normalized)"
+          },
+          "normalized_type": "datetime"
+        },
+        "COGS": {
+          "dtype": "datetime64[ns]",
+          "non_null_count": 700,
+          "null_count": 0,
+          "null_percentage": 0.0,
+          "unique_values": 545,
+          "unique_percentage": 77.86,
+          "sample_values": [
+            "1970-01-01 00:00:00.000016185",
+            "1970-01-01 00:00:00.000013210",
+            "1970-01-01 00:00:00.000021780"
+          ],
+          "is_constant": false,
+          "data_characteristics": {
+            "data_type": "datetime",
+            "min_date": "1970-01-01 00:00:00.000000918",
+            "max_date": "1970-01-01 00:00:00.000950625",
+            "date_format": "ISO 8601 (normalized)"
+          },
+          "normalized_type": "datetime"
+        },
+        "Profit": {
+          "dtype": "datetime64[ns]",
+          "non_null_count": 700,
+          "null_count": 0,
+          "null_percentage": 0.0,
+          "unique_values": 554,
+          "unique_percentage": 79.14,
+          "sample_values": [
+            "1970-01-01 00:00:00.000016185",
+            "1970-01-01 00:00:00.000013210",
+            "1970-01-01 00:00:00.000010890"
+          ],
+          "is_constant": false,
+          "data_characteristics": {
+            "data_type": "datetime",
+            "min_date": "1969-12-31 23:59:59.999959383",
+            "max_date": "1970-01-01 00:00:00.000262200",
+            "date_format": "ISO 8601 (normalized)"
+          },
+          "normalized_type": "datetime"
+        },
+        "Date": {
+          "dtype": "datetime64[ns]",
+          "non_null_count": 700,
+          "null_count": 0,
+          "null_percentage": 0.0,
+          "unique_values": 16,
+          "unique_percentage": 2.29,
+          "sample_values": [
+            "2014-01-01 00:00:00",
+            "2014-01-01 00:00:00",
+            "2014-06-01 00:00:00"
+          ],
+          "is_constant": false,
+          "data_characteristics": {
+            "data_type": "datetime",
+            "min_date": "2013-09-01 00:00:00",
+            "max_date": "2014-12-01 00:00:00",
+            "date_format": "ISO 8601 (normalized)"
+          },
+          "normalized_type": "datetime"
+        },
+        "Month Number": {
+          "dtype": "datetime64[ns]",
+          "non_null_count": 700,
+          "null_count": 0,
+          "null_percentage": 0.0,
+          "unique_values": 12,
+          "unique_percentage": 1.71,
+          "sample_values": [
+            "1970-01-01 00:00:00.000000001",
+            "1970-01-01 00:00:00.000000001",
+            "1970-01-01 00:00:00.000000006"
+          ],
+          "is_constant": false,
+          "data_characteristics": {
+            "data_type": "datetime",
+            "min_date": "1970-01-01 00:00:00.000000001",
+            "max_date": "1970-01-01 00:00:00.000000012",
+            "date_format": "ISO 8601 (normalized)"
+          },
+          "normalized_type": "datetime"
+        },
+        "Month Name": {
+          "dtype": "datetime64[ns]",
+          "non_null_count": 0,
+          "null_count": 700,
+          "null_percentage": 100.0,
+          "unique_values": 0,
+          "unique_percentage": 0.0,
+          "sample_values": [],
+          "is_constant": true,
+          "data_characteristics": {
+            "data_type": "datetime",
+            "min_date": null,
+            "max_date": null,
+            "date_format": "ISO 8601 (normalized)"
+          },
+          "normalized_type": "datetime"
+        },
+        "Year": {
+          "dtype": "datetime64[ns]",
+          "non_null_count": 700,
+          "null_count": 0,
+          "null_percentage": 0.0,
+          "unique_values": 2,
+          "unique_percentage": 0.29,
+          "sample_values": [
+            "1970-01-01 00:00:00.000002014",
+            "1970-01-01 00:00:00.000002014",
+            "1970-01-01 00:00:00.000002014"
+          ],
+          "is_constant": false,
+          "data_characteristics": {
+            "data_type": "datetime",
+            "min_date": "1970-01-01 00:00:00.000002013",
+            "max_date": "1970-01-01 00:00:00.000002014",
+            "date_format": "ISO 8601 (normalized)"
+          },
+          "normalized_type": "datetime"
+        }
+      },
+      "data_types": {
+        "numerical": [],
+        "categorical": [
+          "Segment",
+          "Country",
+          "Product",
+          "Discount Band"
+        ],
+        "datetime": [
+          "Units Sold",
+          "Manufacturing Price",
+          "Sale Price",
+          "Gross Sales",
+          "Discounts",
+          " Sales",
+          "COGS",
+          "Profit",
+          "Date",
+          "Month Number",
+          "Month Name",
+          "Year"
+        ],
+        "boolean": [],
+        "high_cardinality": [],
+        "low_cardinality": [
+          "Segment",
+          "Country",
+          "Product",
+          "Discount Band",
+          "Manufacturing Price",
+          "Sale Price",
+          "Date",
+          "Month Number",
+          "Year"
+        ]
+      },
+      "business_entities": {
+        "revenue": [
+          {
+            "column": "Gross Sales",
+            "confidence": 0.5,
+            "reasoning": "Column name contains 'revenue' keywords"
+          },
+          {
+            "column": " Sales",
+            "confidence": 0.5,
+            "reasoning": "Column name contains 'revenue' keywords"
+          }
+        ],
+        "profit": [
+          {
+            "column": "Gross Sales",
+            "confidence": 0.5,
+            "reasoning": "Column name contains 'profit' keywords"
+          },
+          {
+            "column": "Profit",
+            "confidence": 0.5,
+            "reasoning": "Column name contains 'profit' keywords"
+          }
+        ],
+        "date": [
+          {
+            "column": "Date",
+            "confidence": 0.9,
+            "reasoning": "Column name contains 'date' keywords"
+          },
+          {
+            "column": "Month Number",
+            "confidence": 0.9,
+            "reasoning": "Column name contains 'date' keywords"
+          },
+          {
+            "column": "Month Name",
+            "confidence": 0.9,
+            "reasoning": "Column name contains 'date' keywords"
+          },
+          {
+            "column": "Year",
+            "confidence": 0.9,
+            "reasoning": "Column name contains 'date' keywords"
+          }
+        ],
+        "geography": [
+          {
+            "column": "Country",
+            "confidence": 0.7,
+            "reasoning": "Column name contains 'geography' keywords"
+          }
+        ],
+        "product": [
+          {
+            "column": "Product",
+            "confidence": 0.5,
+            "reasoning": "Column name contains 'product' keywords"
+          }
+        ],
+        "quantity": [
+          {
+            "column": "Country",
+            "confidence": 0.5,
+            "reasoning": "Column name contains 'quantity' keywords"
+          },
+          {
+            "column": "Discount Band",
+            "confidence": 0.5,
+            "reasoning": "Column name contains 'quantity' keywords"
+          },
+          {
+            "column": "Units Sold",
+            "confidence": 0.5,
+            "reasoning": "Column name contains 'quantity' keywords"
+          },
+          {
+            "column": "Discounts",
+            "confidence": 0.5,
+            "reasoning": "Column name contains 'quantity' keywords"
+          }
+        ]
+      },
+      "data_quality": {
+        "overall_completeness": 93.28,
+        "columns_with_nulls": 2,
+        "fully_complete_columns": 14,
+        "duplicate_rows": 0,
+        "constant_columns": [
+          "Month Name"
+        ],
+        "potential_issues": [
+          "High missing values in: Month Name",
+          "Constant columns: Month Name"
+        ]
+      },
+      "relationships": {
+        "potential_hierarchies": [],
+        "high_correlations": []
+      },
+      "sample_data": {
+        "first_rows": {
+          "Segment": {
+            "0": "Government",
+            "1": "Government",
+            "2": "Midmarket"
+          },
+          "Country": {
+            "0": "Canada",
+            "1": "Germany",
+            "2": "France"
+          },
+          "Product": {
+            "0": "Carretera",
+            "1": "Carretera",
+            "2": "Carretera"
+          },
+          "Discount Band": {
+            "0": "<NA>",
+            "1": "<NA>",
+            "2": "<NA>"
+          },
+          "Units Sold": {
+            "0": "1970-01-01 00:00:00.000001618",
+            "1": "1970-01-01 00:00:00.000001321",
+            "2": "1970-01-01 00:00:00.000002178"
+          },
+          "Manufacturing Price": {
+            "0": "1970-01-01 00:00:00.000000003",
+            "1": "1970-01-01 00:00:00.000000003",
+            "2": "1970-01-01 00:00:00.000000003"
+          },
+          "Sale Price": {
+            "0": "1970-01-01 00:00:00.000000020",
+            "1": "1970-01-01 00:00:00.000000020",
+            "2": "1970-01-01 00:00:00.000000015"
+          },
+          "Gross Sales": {
+            "0": "1970-01-01 00:00:00.000032370",
+            "1": "1970-01-01 00:00:00.000026420",
+            "2": "1970-01-01 00:00:00.000032670"
+          },
+          "Discounts": {
+            "0": "1970-01-01",
+            "1": "1970-01-01",
+            "2": "1970-01-01"
+          },
+          " Sales": {
+            "0": "1970-01-01 00:00:00.000032370",
+            "1": "1970-01-01 00:00:00.000026420",
+            "2": "1970-01-01 00:00:00.000032670"
+          },
+          "COGS": {
+            "0": "1970-01-01 00:00:00.000016185",
+            "1": "1970-01-01 00:00:00.000013210",
+            "2": "1970-01-01 00:00:00.000021780"
+          },
+          "Profit": {
+            "0": "1970-01-01 00:00:00.000016185",
+            "1": "1970-01-01 00:00:00.000013210",
+            "2": "1970-01-01 00:00:00.000010890"
+          },
+          "Date": {
+            "0": "2014-01-01",
+            "1": "2014-01-01",
+            "2": "2014-06-01"
+          },
+          "Month Number": {
+            "0": "1970-01-01 00:00:00.000000001",
+            "1": "1970-01-01 00:00:00.000000001",
+            "2": "1970-01-01 00:00:00.000000006"
+          },
+          "Month Name": {
+            "0": "NaT",
+            "1": "NaT",
+            "2": "NaT"
+          },
+          "Year": {
+            "0": "1970-01-01 00:00:00.000002014",
+            "1": "1970-01-01 00:00:00.000002014",
+            "2": "1970-01-01 00:00:00.000002014"
+          }
+        },
+        "data_preview": {
+          "Segment": [
+            "Government",
+            "Government",
+            "Midmarket"
+          ],
+          "Country": [
+            "Canada",
+            "Germany",
+            "France"
+          ],
+          "Product": [
+            "Carretera",
+            "Carretera",
+            "Carretera"
+          ],
+          "Discount Band": [
+            "Low",
+            "Low",
+            "Low"
+          ],
+          "Units Sold": [
+            "1970-01-01 00:00:00.000001618",
+            "1970-01-01 00:00:00.000001321",
+            "1970-01-01 00:00:00.000002178"
+          ],
+          "Manufacturing Price": [
+            "1970-01-01 00:00:00.000000003",
+            "1970-01-01 00:00:00.000000003",
+            "1970-01-01 00:00:00.000000003"
+          ],
+          "Sale Price": [
+            "1970-01-01 00:00:00.000000020",
+            "1970-01-01 00:00:00.000000020",
+            "1970-01-01 00:00:00.000000015"
+          ],
+          "Gross Sales": [
+            "1970-01-01 00:00:00.000032370",
+            "1970-01-01 00:00:00.000026420",
+            "1970-01-01 00:00:00.000032670"
+          ],
+          "Discounts": [
+            "1970-01-01 00:00:00",
+            "1970-01-01 00:00:00",
+            "1970-01-01 00:00:00"
+          ],
+          " Sales": [
+            "1970-01-01 00:00:00.000032370",
+            "1970-01-01 00:00:00.000026420",
+            "1970-01-01 00:00:00.000032670"
+          ],
+          "COGS": [
+            "1970-01-01 00:00:00.000016185",
+            "1970-01-01 00:00:00.000013210",
+            "1970-01-01 00:00:00.000021780"
+          ],
+          "Profit": [
+            "1970-01-01 00:00:00.000016185",
+            "1970-01-01 00:00:00.000013210",
+            "1970-01-01 00:00:00.000010890"
+          ],
+          "Date": [
+            "2014-01-01 00:00:00",
+            "2014-01-01 00:00:00",
+            "2014-06-01 00:00:00"
+          ],
+          "Month Number": [
+            "1970-01-01 00:00:00.000000001",
+            "1970-01-01 00:00:00.000000001",
+            "1970-01-01 00:00:00.000000006"
+          ],
+          "Month Name": [],
+          "Year": [
+            "1970-01-01 00:00:00.000002014",
+            "1970-01-01 00:00:00.000002014",
+            "1970-01-01 00:00:00.000002014"
+          ]
+        }
+      },
+      "analysis_suggestions": [
+        "Revenue analysis: totals, trends, and breakdowns",
+        "Geographic performance analysis"
+      ]
+    }
+  },
+  "column_to_sheet_map": {
+    "orderdate": [
+      {
+        "sheet": "Sheet1",
+        "original_name": "OrderDate",
+        "dtype": "datetime64[ns]"
+      }
+    ],
+    "region": [
+      {
+        "sheet": "Sheet1",
+        "original_name": "Region",
+        "dtype": "object"
+      }
+    ],
+    "rep": [
+      {
+        "sheet": "Sheet1",
+        "original_name": "Rep",
+        "dtype": "object"
+      }
+    ],
+    "item": [
+      {
+        "sheet": "Sheet1",
+        "original_name": "Item",
+        "dtype": "object"
+      }
+    ],
+    "units": [
+      {
+        "sheet": "Sheet1",
+        "original_name": "Units",
+        "dtype": "datetime64[ns]"
+      }
+    ],
+    "unitcost": [
+      {
+        "sheet": "Sheet1",
+        "original_name": "UnitCost",
+        "dtype": "datetime64[ns]"
+      }
+    ],
+    "total": [
+      {
+        "sheet": "Sheet1",
+        "original_name": "Total",
+        "dtype": "datetime64[ns]"
+      }
+    ],
+    "segment": [
+      {
+        "sheet": "Sheet2",
+        "original_name": "Segment",
+        "dtype": "object"
+      }
+    ],
+    "country": [
+      {
+        "sheet": "Sheet2",
+        "original_name": "Country",
+        "dtype": "object"
+      }
+    ],
+    "product": [
+      {
+        "sheet": "Sheet2",
+        "original_name": "Product",
+        "dtype": "object"
+      }
+    ],
+    "discount band": [
+      {
+        "sheet": "Sheet2",
+        "original_name": "Discount Band",
+        "dtype": "object"
+      }
+    ],
+    "units sold": [
+      {
+        "sheet": "Sheet2",
+        "original_name": "Units Sold",
+        "dtype": "datetime64[ns]"
+      }
+    ],
+    "manufacturing price": [
+      {
+        "sheet": "Sheet2",
+        "original_name": "Manufacturing Price",
+        "dtype": "datetime64[ns]"
+      }
+    ],
+    "sale price": [
+      {
+        "sheet": "Sheet2",
+        "original_name": "Sale Price",
+        "dtype": "datetime64[ns]"
+      }
+    ],
+    "gross sales": [
+      {
+        "sheet": "Sheet2",
+        "original_name": "Gross Sales",
+        "dtype": "datetime64[ns]"
+      }
+    ],
+    "discounts": [
+      {
+        "sheet": "Sheet2",
+        "original_name": "Discounts",
+        "dtype": "datetime64[ns]"
+      }
+    ],
+    " sales": [
+      {
+        "sheet": "Sheet2",
+        "original_name": " Sales",
+        "dtype": "datetime64[ns]"
+      }
+    ],
+    "cogs": [
+      {
+        "sheet": "Sheet2",
+        "original_name": "COGS",
+        "dtype": "datetime64[ns]"
+      }
+    ],
+    "profit": [
+      {
+        "sheet": "Sheet2",
+        "original_name": "Profit",
+        "dtype": "datetime64[ns]"
+      }
+    ],
+    "date": [
+      {
+        "sheet": "Sheet2",
+        "original_name": "Date",
+        "dtype": "datetime64[ns]"
+      }
+    ],
+    "month number": [
+      {
+        "sheet": "Sheet2",
+        "original_name": "Month Number",
+        "dtype": "datetime64[ns]"
+      }
+    ],
+    "month name": [
+      {
+        "sheet": "Sheet2",
+        "original_name": "Month Name",
+        "dtype": "datetime64[ns]"
+      }
+    ],
+    "year": [
+      {
+        "sheet": "Sheet2",
+        "original_name": "Year",
+        "dtype": "datetime64[ns]"
+      }
+    ]
+  },
+  "all_columns": [
+    "OrderDate",
+    "Region",
+    "Rep",
+    "Item",
+    "Units",
+    "UnitCost",
+    "Total",
+    "Segment",
+    "Country",
+    "Product",
+    "Discount Band",
+    "Units Sold",
+    "Manufacturing Price",
+    "Sale Price",
+    "Gross Sales",
+    "Discounts",
+    " Sales",
+    "COGS",
+    "Profit",
+    "Date",
+    "Month Number",
+    "Month Name",
+    "Year"
+  ],
+  "cross_sheet_analysis": {
+    "common_columns": [],
+    "potential_join_keys": []
+  }
+}
