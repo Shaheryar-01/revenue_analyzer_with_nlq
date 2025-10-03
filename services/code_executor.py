@@ -73,6 +73,7 @@ class SafeCodeExecutor:
             "str": str, "int": int, "float": float,
             "len": len, "range": range, "min": min,
             "max": max, "sum": sum, "abs": abs, "round": round,
+            "__import__": __import__,   # <-- add this
         }
 
         safe_globals = {

@@ -1,4 +1,3 @@
-# app/services/ai_code_agent.py
 from openai import OpenAI
 from config.settings import get_settings
 from typing import Dict, Any
@@ -70,6 +69,7 @@ class AICodeAgent:
                 'datetime_cols': sheet_schema['data_types'].get('datetime', [])
             }
         
+        # --- FIXED PROMPT (escaped braces for JSON example) ---
         prompt = f"""
 You are a pandas expert analyzing NORMALIZED multi-sheet Excel data.
 
@@ -115,12 +115,12 @@ TASK:
 
 Return ONLY valid JSON:
 {{
-"can_answer": true/false,
-"target_sheet": "SheetName" or null,
-"requires_multiple_sheets": true/false,
-"code": "pandas code" or null,
-"explanation": "if cannot answer",
-"missing_columns": []
+  "can_answer": true/false,
+  "target_sheet": "SheetName" or null,
+  "requires_multiple_sheets": true/false,
+  "code": "pandas code" or null,
+  "explanation": "if cannot answer",
+  "missing_columns": []
 }}
 
 EXAMPLES WITH DEFENSIVE CODING:
@@ -129,7 +129,7 @@ Example 1 - Date filtering (DEFENSIVE):
 Query: "pencils sold on 1/6/2024 by Jones"
 Code:
 df = sheets['Sheet1']
-target_date = pd.to_datetime('1/6/2024').date()
+target_date = pd.to_datetime('1/6/2024', dayfirst=True).date()
 filtered = df[(df['OrderDate'].dt.date == target_date) & 
               (df['Rep'].str.lower() == 'jones') & 
               (df['Item'].str.lower().str.strip() == 'pencil')]
@@ -181,7 +181,8 @@ if len(filtered) == 0:
 else:
     query_result = float(filtered[' Profit '].sum())
 """
-        
+        # --- END FIX ---
+
         response = self.client.chat.completions.create(
             model="gpt-4o",
             messages=[{"role": "user", "content": prompt}],
@@ -246,7 +247,7 @@ EXAMPLES:
 
 Query: "pencils sold on 1/6/2024 by Jones"
 Code:
-target_date = pd.to_datetime('1/6/2024').date()
+target_date = pd.to_datetime('1/6/2024', dayfirst=True).date()
 filtered = df[(df['OrderDate'].dt.date == target_date) & 
               (df['Rep'].str.lower() == 'jones') & 
               (df['Item'].str.lower().str.strip() == 'pencil')]
@@ -270,6 +271,8 @@ if len(filtered) == 0:
     query_result = []
 else:
     query_result = filtered['OrderDate'].dt.strftime('%Y-%m-%d').unique().tolist()
+
+
 
 Generate code that stores result in 'query_result'. Assume df is the dataframe.
 Return ONLY the code, no explanations.
