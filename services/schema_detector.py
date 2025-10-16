@@ -34,6 +34,7 @@ class PythonSchemaDetector:
                 'basic_info': self._get_basic_info(df),
                 'columns': self._analyze_all_columns(df),
                 'data_types': self._categorize_columns(df),
+                'column_patterns': self.detect_column_patterns(df),  # ✅ ADD THIS LINE
                 'business_entities': self._detect_business_entities(df),
                 'data_quality': self._assess_data_quality(df),
                 'relationships': self._detect_relationships(df),
@@ -47,7 +48,10 @@ class PythonSchemaDetector:
         except Exception as e:
             logger.error(f"Failed to detect complete schema: {str(e)}", exc_info=True)
             raise
-    
+
+
+
+
     def _get_basic_info(self, df: pd.DataFrame) -> Dict[str, Any]:
         """Basic dataframe information"""
         logger.info("Getting basic dataframe information")
@@ -169,6 +173,113 @@ class PythonSchemaDetector:
             logger.error(f"Failed to detect business entities: {str(e)}")
             return {}
     
+
+    def detect_column_patterns(self, df: pd.DataFrame) -> Dict[str, Any]:
+        """Detect repeating patterns in column names - works with ANY structure"""
+        logger.info("Detecting column patterns")
+        
+        patterns = {
+            'has_patterns': False,
+            'sequential_groups': [],
+            'explicit_periods': {},
+            'inferred_year': None,  # ✅ ADD THIS - will be populated from filename
+            'summary': ""
+        }
+        
+        try:
+            # 1. Detect numbered suffix patterns (Budget, Budget.1, Budget.2, ...)
+            base_groups = {}
+            for col in df.columns:
+                if '.' in str(col):
+                    base = str(col).split('.')[0]
+                    if base not in base_groups:
+                        base_groups[base] = []
+                    base_groups[base].append(col)
+                else:
+                    # This might be a base column
+                    col_str = str(col)
+                    if col_str not in base_groups:
+                        base_groups[col_str] = [col]
+            
+            # 2. Find groups with multiple columns (potential sequential pattern)
+            for base, columns in base_groups.items():
+                if len(columns) > 1:
+                    sorted_cols = sorted(columns, key=lambda x: (
+                        0 if '.' not in str(x) else int(str(x).split('.')[1])
+                    ))
+                    
+                    likely_meaning = self._infer_period_meaning(len(sorted_cols))
+                    
+                    patterns['sequential_groups'].append({
+                        'base_name': base,
+                        'columns': [str(c) for c in sorted_cols],
+                        'count': len(sorted_cols),
+                        'likely_meaning': likely_meaning,
+                        'first_column': str(sorted_cols[0]),
+                        'last_column': str(sorted_cols[-1])
+                    })
+                    patterns['has_patterns'] = True
+            
+            # 3. Detect explicit period names
+            period_keywords = {
+                'months': ['JAN', 'JANUARY', 'FEB', 'FEBRUARY', 'MAR', 'MARCH', 
+                        'APR', 'APRIL', 'MAY', 'JUN', 'JUNE', 'JUL', 'JULY',
+                        'AUG', 'AUGUST', 'SEP', 'SEPTEMBER', 'OCT', 'OCTOBER',
+                        'NOV', 'NOVEMBER', 'DEC', 'DECEMBER'],
+                'quarters': ['Q1', 'Q2', 'Q3', 'Q4'],
+                'weeks': [f'W{i}' for i in range(1, 54)] + [f'WEEK{i}' for i in range(1, 54)]
+            }
+            
+            for period_type, keywords in period_keywords.items():
+                found = [col for col in df.columns if str(col).upper() in keywords]
+                if found:
+                    patterns['explicit_periods'][period_type] = [str(c) for c in found]
+                    patterns['has_patterns'] = True
+            
+            # 4. Build human-readable summary
+            if patterns['has_patterns']:
+                summary_parts = []
+                
+                for group in patterns['sequential_groups']:
+                    summary_parts.append(
+                        f"- {group['base_name']}: {group['count']} columns ({group['likely_meaning']})"
+                    )
+                
+                for period_type, cols in patterns['explicit_periods'].items():
+                    summary_parts.append(
+                        f"- Explicit {period_type}: {', '.join(cols[:5])}"
+                    )
+                
+                patterns['summary'] = "\n".join(summary_parts)
+            
+            logger.info(f"Pattern detection complete: {len(patterns['sequential_groups'])} groups found")
+            return patterns
+            
+        except Exception as e:
+            logger.error(f"Failed to detect patterns: {str(e)}", exc_info=True)
+            return patterns
+        
+
+
+    def _infer_period_meaning(self, count: int) -> str:
+        """Infer what a sequential group likely represents"""
+        if count == 12:
+            return "likely monthly (12 periods)"
+        elif count == 4:
+            return "likely quarterly (4 periods)"
+        elif count == 52 or count == 53:
+            return "likely weekly (52-53 periods)"
+        elif count == 24:
+            return "possibly bi-weekly or hourly (24 periods)"
+        elif count == 7:
+            return "likely days of week (7 periods)"
+        elif count == 6:
+            return "possibly bi-monthly (6 periods)"
+        else:
+            return f"sequential pattern ({count} periods)"
+        
+
+
     def _calculate_business_confidence(self, series: pd.Series, entity_type: str) -> float:
         """Calculate confidence that a column represents a business entity"""
         logger.debug(f"Calculating business confidence for entity type: {entity_type}")
@@ -294,14 +405,69 @@ class PythonSchemaDetector:
             logger.error(f"Failed to suggest analyses: {str(e)}")
             return ["Basic data exploration and summary statistics"]
     
-    def _get_safe_sample_values(self, series: pd.Series, n: int = 3) -> List:
-        """Get sample values safely handling different data types"""
+    def _get_safe_sample_values(self, series: pd.Series, n: int = 30) -> List:  # ✅ Changed from 25 to 30
+        """
+        Get diverse sample values from throughout the column
+        
+        Strategy:
+        1. Get unique values
+        2. Sample from beginning, middle, and end to ensure diversity
+        3. Return up to n values
+        """
         try:
-            sample = series.dropna().head(n)
-            return [str(val) for val in sample.tolist()]
+            # Remove null values
+            non_null = series.dropna()
+            
+            if len(non_null) == 0:
+                return []
+            
+            # Get all unique values
+            unique_values = non_null.unique()
+            
+            # DEBUG: Log all unique values for the column if it's named 'Unit'
+            if series.name == 'Unit':
+                logger.info(f"DEBUG: Found {len(unique_values)} unique values in Unit column")
+                logger.info(f"DEBUG: First 30 unique Unit values: {unique_values[:30].tolist()}")
+            
+            # If we have fewer unique values than requested, return all
+            if len(unique_values) <= n:
+                return [str(val) for val in unique_values.tolist()]
+            
+            # Sample strategically across the entire range
+            sample_indices = []
+            total_unique = len(unique_values)
+            
+            # Beginning (30%)
+            beginning_count = max(3, int(n * 0.3))
+            sample_indices.extend(range(min(beginning_count, total_unique)))
+            
+            # Middle (30%)
+            middle_start = int(total_unique * 0.35)
+            middle_end = int(total_unique * 0.65)
+            middle_count = max(3, int(n * 0.3))
+            middle_step = max(1, (middle_end - middle_start) // middle_count)
+            sample_indices.extend(range(middle_start, min(middle_end, total_unique), middle_step))
+            
+            # End (40%) - more from end to catch rare values
+            end_count = n - len(sample_indices)
+            end_start = max(int(total_unique * 0.6), len(sample_indices))
+            end_step = max(1, (total_unique - end_start) // end_count) if end_count > 0 else 1
+            sample_indices.extend(range(end_start, total_unique, end_step))
+            
+            # Remove duplicates and limit to n
+            sample_indices = sorted(set(sample_indices))[:n]
+            
+            sampled_values = [unique_values[i] for i in sample_indices]
+            
+            return [str(val) for val in sampled_values]
+            
         except Exception as e:
             logger.warning(f"Error getting sample values: {str(e)}")
             return []
+        
+
+
+
     
     def _analyze_column_characteristics(self, series: pd.Series) -> Dict[str, Any]:
         """Analyze specific characteristics - recognizes normalized types"""

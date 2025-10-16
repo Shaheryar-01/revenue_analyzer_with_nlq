@@ -70,11 +70,16 @@ class SafeCodeExecutor:
         
         # Create safe execution environment
         safe_builtins = {
-            "str": str, "int": int, "float": float,
-            "len": len, "range": range, "min": min,
-            "max": max, "sum": sum, "abs": abs, "round": round,
-            "__import__": __import__,   # <-- add this
-        }
+    "str": str, "int": int, "float": float,
+    "len": len, "range": range, "min": min,
+    "max": max, "sum": sum, "abs": abs, "round": round,
+    "__import__": __import__,
+    "any": any,      
+    "all": all,      
+    "zip": zip,      
+    "enumerate": enumerate,  
+    "sorted": sorted,   
+        }    
 
         safe_globals = {
             "__builtins__": safe_builtins,

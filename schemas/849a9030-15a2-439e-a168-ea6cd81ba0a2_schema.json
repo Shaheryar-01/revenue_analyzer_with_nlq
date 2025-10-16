@@ -1,0 +1,8414 @@
+{
+  "basic_info": {
+    "shape": [
+      444,
+      56
+    ],
+    "total_rows": 444,
+    "total_columns": 56,
+    "memory_usage_mb": 0.35,
+    "column_names": [
+      "Unit",
+      "Product",
+      "Region",
+      "Country",
+      "Customer",
+      "Category",
+      "Project Code",
+      "Budget",
+      "Projected",
+      "Actual",
+      "Budget.1",
+      "Projected.1",
+      "Actual.1",
+      "Budget.2",
+      "Projected.2",
+      "Actual.2",
+      "Budget.3",
+      "Projected.3",
+      "Actual.3",
+      "Budget.4",
+      "Projected.4",
+      "Actual.4",
+      "Budget.5",
+      "Projected.5",
+      "Actual.5",
+      "Budget.6",
+      "Projected.6",
+      "Actual.6",
+      "Budget.7",
+      "Projected.7",
+      "Actual.7",
+      "Budget.8",
+      "Projected.8",
+      "Actual.8",
+      "Budget.9",
+      "Projected.9",
+      "Actual.9",
+      "Budget.10",
+      "Projected.10",
+      "Actual.10",
+      "Budget.11",
+      "Projected.11",
+      "Actual.11",
+      "YTD Actual",
+      "Remaining Projection",
+      "Total",
+      "WIH 2024",
+      "Advance 2025",
+      "WIH 2025",
+      "on hold",
+      "WIH 2026",
+      "Shelved",
+      "JAN",
+      "FEB",
+      "MAR",
+      "Unnamed: 55"
+    ]
+  },
+  "columns": {
+    "Unit": {
+      "dtype": "object",
+      "non_null_count": 435,
+      "null_count": 9,
+      "null_percentage": 2.03,
+      "unique_values": 86,
+      "unique_percentage": 19.37,
+      "sample_values": [
+        "AMS",
+        "AMS ME Region",
+        "AMS ME Total",
+        "AMS AFR Region",
+        "AMS AFR Total",
+        "AMS PK Region",
+        "AMS PK Total",
+        "AMS Total",
+        "SBP",
+        "BSD ME Region",
+        "BSD AFR Region",
+        "BSD PK Region",
+        "BSD Total",
+        "CRM ME Region",
+        "CRM AFR Region",
+        "CRM PK Region",
+        "CRM Total",
+        "EFT ME Region",
+        "EFT AFR Region",
+        "EFT PK Region",
+        "EFT PK Total",
+        "EFT Total",
+        "MDU ME Region",
+        "MDU ME Total",
+        "MDU PK Total",
+        "ISUITE ME Total",
+        "ISUITE PK Total",
+        "APA Support ME Total",
+        "APA Support PK Total",
+        "ME Support ME Total"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 6.0
+      },
+      "normalized_type": "string"
+    },
+    "Product": {
+      "dtype": "object",
+      "non_null_count": 382,
+      "null_count": 62,
+      "null_percentage": 13.96,
+      "unique_values": 13,
+      "unique_percentage": 2.93,
+      "sample_values": [
+        "=",
+        "AMS - Resource Placement",
+        "AMS - Professional Services",
+        "Oracle",
+        "Resident Engineer",
+        "Customized Development",
+        "Enterprise Wide CRM",
+        "Rendezvous \u2013 Financial Middleware",
+        "Novus \u2013 ATM/POS Controller",
+        "Ambit Retail",
+        "Ambit Mobile",
+        "Ambit Corporate",
+        "APA - SLA"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 17.5
+      },
+      "normalized_type": "string"
+    },
+    "Region": {
+      "dtype": "object",
+      "non_null_count": 442,
+      "null_count": 2,
+      "null_percentage": 0.45,
+      "unique_values": 4,
+      "unique_percentage": 0.9,
+      "sample_values": [
+        "=",
+        "ME",
+        "AFR",
+        "PK"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 1.9
+      },
+      "normalized_type": "string"
+    },
+    "Country": {
+      "dtype": "object",
+      "non_null_count": 412,
+      "null_count": 32,
+      "null_percentage": 7.21,
+      "unique_values": 15,
+      "unique_percentage": 3.38,
+      "sample_values": [
+        "=",
+        "UAE",
+        "Somalia",
+        "Pakistan",
+        "Bahrain",
+        "KSA",
+        "Uganda",
+        "Ethiopia",
+        "Kyrgyzstan",
+        "Oman",
+        "Zambia",
+        "Kenya",
+        "Afghanistan",
+        "Bangladesh",
+        "Qatar"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 5.7
+      },
+      "normalized_type": "string"
+    },
+    "Customer": {
+      "dtype": "object",
+      "non_null_count": 408,
+      "null_count": 36,
+      "null_percentage": 8.11,
+      "unique_values": 67,
+      "unique_percentage": 15.09,
+      "sample_values": [
+        "=",
+        "ADIB - Abu Dhabi Islamic Bank",
+        "New Customer",
+        "Premier Bank, Somalia",
+        "MBL-Meezan Bank Limited, Pakistan",
+        "Summit Bank Limited, Pakistan",
+        "JSBL-JS Bank Limited, Pakistan",
+        "BIPL-BankIslami Pakistan Limited, Pakistan",
+        "State Bank of Pakistan",
+        "Fujerah e Gov",
+        "DIB-Dubai Islamic Bank, Pakitan",
+        "ZTBL-Zarai Taraqiati Bank, Pakistan",
+        "Mobilink Microfinance Bank",
+        "CrediMax",
+        "KHCB - KHaleeji Commercial Bank, Bahrain",
+        "Bank Dhofar, Oman",
+        "Post Bank, Uganda",
+        "TBL-Tropical Bank Limited, Uganda",
+        "HMB-Habib Metropolitan Bank, Pakistan",
+        "1Link - 1Link (Guarantee) Limited, Pakistan",
+        "UMBL-UMicrofinance Bank Limited, Pakistan",
+        "SBL-Sindh Bank Limited, Pakistan",
+        "Finca Micrifinance Bank Limited, Pakistan",
+        "KE - Karachi Electric, Pakistan",
+        "Credimax",
+        "new",
+        "PMBL-Pride Microfinance Bank Limited, Uganda",
+        "ABL-Allied Bank Limited, Pakistan",
+        "ABBL-AB Bank Limited, Bangladesh",
+        "QIB - Qatar Islamic Bank, Qatar"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 22.4
+      },
+      "normalized_type": "string"
+    },
+    "Category": {
+      "dtype": "object",
+      "non_null_count": 442,
+      "null_count": 2,
+      "null_percentage": 0.45,
+      "unique_values": 5,
+      "unique_percentage": 1.13,
+      "sample_values": [
+        "=",
+        "Funnel",
+        "New Sales",
+        "WIH",
+        "wih"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 4.8
+      },
+      "normalized_type": "string"
+    },
+    "Project Code": {
+      "dtype": "object",
+      "non_null_count": 269,
+      "null_count": 175,
+      "null_percentage": 39.41,
+      "unique_values": 125,
+      "unique_percentage": 28.15,
+      "sample_values": [
+        "=",
+        "4531-1909(EM-51600)",
+        "22-123-15-07",
+        "22-123-15-03",
+        "22-13-15-20",
+        "252611",
+        "70-23-16-15",
+        "70-78-06-02",
+        "70-72-13-06",
+        "22-100-04-06",
+        "70-75-02-01",
+        "70-26-02-32",
+        "22-88-02-03",
+        "22-19-02-76",
+        "22-103-26-07",
+        "22-15-02-55",
+        "22-47-02-08",
+        "22-15-02-38",
+        "22-19-02-99",
+        "22-73-01-01",
+        "22-06-02-28",
+        "22-116-27-01",
+        "22-93-26-01",
+        "22-12-03  110",
+        "22-106-02-02",
+        "22-73-02-33",
+        "22-11-26-06",
+        "70-59-26-12",
+        "22-100-26-25",
+        "22-95-26-02"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 6.2
+      },
+      "normalized_type": "string"
+    },
+    "Budget": {
+      "dtype": "float64",
+      "non_null_count": 265,
+      "null_count": 179,
+      "null_percentage": 40.32,
+      "unique_values": 60,
+      "unique_percentage": 13.51,
+      "sample_values": [
+        "25.0",
+        "225.0",
+        "0.0",
+        "12.0",
+        "24.0",
+        "132.0",
+        "357.0",
+        "1.98",
+        "6.2",
+        "38.5",
+        "78.0",
+        "10.7",
+        "8.06",
+        "10.08",
+        "32.160000000000004",
+        "2078.300000000001",
+        "19.112499999999997",
+        "103.89999999999999",
+        "5.25",
+        "3.5",
+        "35.989999999999995",
+        "10.5",
+        "9.29",
+        "6.31",
+        "1.25",
+        "16.58",
+        "8.0",
+        "14.0",
+        "3.0",
+        "65.0"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 0.0,
+        "max_value": 3084.5940000000005,
+        "mean_value": 46.56,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "Projected": {
+      "dtype": "float64",
+      "non_null_count": 267,
+      "null_count": 177,
+      "null_percentage": 39.86,
+      "unique_values": 47,
+      "unique_percentage": 10.59,
+      "sample_values": [
+        "25.0",
+        "225.0",
+        "0.0",
+        "12.0",
+        "24.0",
+        "132.0",
+        "357.0",
+        "4.68",
+        "9.36",
+        "3.73",
+        "175.30999999999992",
+        "313.29399999999987",
+        "8.25",
+        "16.5",
+        "39.0",
+        "78.0",
+        "663.0",
+        "7.2",
+        "14.4",
+        "1339.2000000000007",
+        "2018.7000000000007",
+        "12.112499999999999",
+        "96.89999999999999",
+        "10.5",
+        "9.29",
+        "6.31",
+        "1.25",
+        "16.58",
+        "8.0",
+        "14.0"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 0.0,
+        "max_value": 2983.2140000000004,
+        "mean_value": 44.69,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "Actual": {
+      "dtype": "float64",
+      "non_null_count": 274,
+      "null_count": 170,
+      "null_percentage": 38.29,
+      "unique_values": 58,
+      "unique_percentage": 13.06,
+      "sample_values": [
+        "25.0",
+        "225.0",
+        "0.0",
+        "12.0",
+        "24.0",
+        "132.0",
+        "357.0",
+        "4.68",
+        "9.36",
+        "313.29399999999987",
+        "8.25",
+        "16.5",
+        "39.0",
+        "78.0",
+        "663.0",
+        "7.2",
+        "14.4",
+        "23.65",
+        "1348.450000000001",
+        "2027.950000000001",
+        "12.112499999999999",
+        "96.89999999999999",
+        "25.08",
+        "10.5",
+        "29.9",
+        "2.25",
+        "4.378",
+        "3.2",
+        "1.4970108695652173"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 0.0,
+        "max_value": 3085.26336430918,
+        "mean_value": 45.04,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "Budget.1": {
+      "dtype": "float64",
+      "non_null_count": 267,
+      "null_count": 177,
+      "null_percentage": 39.86,
+      "unique_values": 65,
+      "unique_percentage": 14.64,
+      "sample_values": [
+        "25.0",
+        "225.0",
+        "0.0",
+        "12.0",
+        "24.0",
+        "132.0",
+        "357.0",
+        "6.869999999999999",
+        "9.36",
+        "8.23",
+        "26.0",
+        "412.83399999999995",
+        "8.0",
+        "7.0",
+        "39.0",
+        "78.0",
+        "7.2",
+        "9.09",
+        "9.0",
+        "16.8",
+        "14.4",
+        "20.21",
+        "19.58",
+        "25.9",
+        "2196.2800000000016",
+        "42.1125",
+        "133.89999999999998",
+        "5.73",
+        "1.85",
+        "157.71999999999997"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 0.0,
+        "max_value": 3283.2040000000015,
+        "mean_value": 49.19,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "Projected.1": {
+      "dtype": "float64",
+      "non_null_count": 255,
+      "null_count": 189,
+      "null_percentage": 42.57,
+      "unique_values": 38,
+      "unique_percentage": 8.56,
+      "sample_values": [
+        "25.0",
+        "225.0",
+        "0.0",
+        "12.0",
+        "24.0",
+        "132.0",
+        "357.0",
+        "4.68",
+        "9.36",
+        "6.272",
+        "12.544",
+        "137.98399999999998",
+        "3.73",
+        "7.46",
+        "179.0399999999999",
+        "317.0239999999999",
+        "8.25",
+        "16.5",
+        "39.0",
+        "78.0",
+        "663.0",
+        "7.2",
+        "10.780000000000001",
+        "9.0",
+        "14.4",
+        "20.21",
+        "25.9",
+        "1361.890000000001",
+        "2041.390000000001",
+        "12.112499999999999"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 0.0,
+        "max_value": 2914.814000000001,
+        "mean_value": 45.72,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "Actual.1": {
+      "dtype": "float64",
+      "non_null_count": 257,
+      "null_count": 187,
+      "null_percentage": 42.12,
+      "unique_values": 47,
+      "unique_percentage": 10.59,
+      "sample_values": [
+        "25.0",
+        "225.0",
+        "0.0",
+        "12.0",
+        "24.0",
+        "132.0",
+        "357.0",
+        "4.68",
+        "9.36",
+        "137.98399999999998",
+        "3.73",
+        "11.19",
+        "6.2875",
+        "185.32749999999987",
+        "323.31149999999985",
+        "8.25",
+        "16.5",
+        "39.0",
+        "78.0",
+        "663.0",
+        "7.2",
+        "17.98",
+        "14.4",
+        "20.492592593",
+        "22.257",
+        "19.5925",
+        "1397.3320925930013",
+        "12.112499999999999",
+        "26.0",
+        "33.5"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 0.0,
+        "max_value": 3086.158792593001,
+        "mean_value": 48.03,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "Budget.2": {
+      "dtype": "float64",
+      "non_null_count": 282,
+      "null_count": 162,
+      "null_percentage": 36.49,
+      "unique_values": 79,
+      "unique_percentage": 17.79,
+      "sample_values": [
+        "25.0",
+        "225.0",
+        "0.0",
+        "12.0",
+        "40.5",
+        "19.2",
+        "24.0",
+        "167.7",
+        "392.7",
+        "5.6",
+        "28.78",
+        "8.73",
+        "405.3439999999998",
+        "3.44",
+        "7.0",
+        "39.0",
+        "78.0",
+        "7.2",
+        "7.83",
+        "8.2",
+        "14.4",
+        "18.2",
+        "19.02",
+        "17.3",
+        "19.4",
+        "12.112499999999999",
+        "39.6",
+        "28.6",
+        "7.5",
+        "3.0"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 0.0,
+        "max_value": 3505.530000000001,
+        "mean_value": 49.72,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "Projected.2": {
+      "dtype": "float64",
+      "non_null_count": 270,
+      "null_count": 174,
+      "null_percentage": 39.19,
+      "unique_values": 52,
+      "unique_percentage": 11.71,
+      "sample_values": [
+        "25.0",
+        "225.0",
+        "0.0",
+        "12.0",
+        "40.5",
+        "24.0",
+        "160.5",
+        "385.5",
+        "6.869999999999999",
+        "6.272",
+        "12.544",
+        "137.98399999999998",
+        "3.73",
+        "5.6",
+        "8.23",
+        "181.6799999999999",
+        "319.6639999999999",
+        "8.25",
+        "16.5",
+        "39.0",
+        "78.0",
+        "663.0",
+        "7.2",
+        "8.99",
+        "17.3",
+        "2041.590000000001",
+        "38.388",
+        "28.6",
+        "7.5",
+        "3.0"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 0.0,
+        "max_value": 3225.032000000001,
+        "mean_value": 47.78,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "Actual.2": {
+      "dtype": "float64",
+      "non_null_count": 271,
+      "null_count": 173,
+      "null_percentage": 38.96,
+      "unique_values": 67,
+      "unique_percentage": 15.09,
+      "sample_values": [
+        "25.0",
+        "225.0",
+        "0.0",
+        "12.0",
+        "34.53",
+        "24.0",
+        "154.53",
+        "379.53",
+        "7.909090909090908",
+        "12.544",
+        "3.73",
+        "8.73",
+        "8.98",
+        "196.97231999999985",
+        "8.25",
+        "39.0",
+        "663.0",
+        "16.2",
+        "14.4",
+        "19.21232",
+        "31.799999999999997",
+        "21.9",
+        "29.4",
+        "22.512",
+        "1434.1444800000015",
+        "12.112499999999999",
+        "109.01249999999999",
+        "4.95",
+        "44.17901818181818",
+        "50.16"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 0.0,
+        "max_value": 3333.74144909091,
+        "mean_value": 49.21,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "Budget.3": {
+      "dtype": "float64",
+      "non_null_count": 274,
+      "null_count": 170,
+      "null_percentage": 38.29,
+      "unique_values": 68,
+      "unique_percentage": 15.32,
+      "sample_values": [
+        "25.0",
+        "225.0",
+        "0.0",
+        "12.0",
+        "24.0",
+        "132.0",
+        "357.0",
+        "4.68",
+        "11.7",
+        "30.0",
+        "4.36",
+        "8.73",
+        "265.93999999999977",
+        "8.25",
+        "13.0",
+        "15.0",
+        "39.0",
+        "78.0",
+        "702.0",
+        "7.2",
+        "7.83",
+        "32.2",
+        "8.2",
+        "16.35",
+        "20.4",
+        "26.87",
+        "24.4",
+        "2174.6300000000015",
+        "19.112499999999997",
+        "39.6"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 0.0,
+        "max_value": 3579.4940000000015,
+        "mean_value": 52.26,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "Projected.3": {
+      "dtype": "float64",
+      "non_null_count": 270,
+      "null_count": 174,
+      "null_percentage": 39.19,
+      "unique_values": 54,
+      "unique_percentage": 12.16,
+      "sample_values": [
+        "25.0",
+        "225.0",
+        "0.0",
+        "12.0",
+        "34.8",
+        "19.2",
+        "24.0",
+        "162.0",
+        "387.0",
+        "6.272",
+        "12.544",
+        "21.544",
+        "146.984",
+        "3.73",
+        "143.73",
+        "315.3100000000002",
+        "462.2940000000002",
+        "8.25",
+        "114.6",
+        "15.0",
+        "137.85",
+        "39.0",
+        "42.576",
+        "117.0",
+        "78.0",
+        "705.576",
+        "21.4",
+        "12.112499999999999",
+        "9.600000000000001",
+        "7.0"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 0.0,
+        "max_value": 3476.0625000000014,
+        "mean_value": 51.5,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "Actual.3": {
+      "dtype": "float64",
+      "non_null_count": 273,
+      "null_count": 171,
+      "null_percentage": 38.51,
+      "unique_values": 64,
+      "unique_percentage": 14.41,
+      "sample_values": [
+        "25.0",
+        "225.0",
+        "0.0",
+        "12.0",
+        "24.0",
+        "144.0",
+        "369.0",
+        "4.68",
+        "9.36",
+        "6.609999999999999",
+        "415.0359999999999",
+        "100.4625",
+        "39.0",
+        "117.0",
+        "705.576",
+        "13.15",
+        "26.3",
+        "19.200000000000003",
+        "16.8",
+        "60.628800000000005",
+        "1458.7088000000012",
+        "12.112499999999999",
+        "29.012499999999996",
+        "18.25",
+        "9.6",
+        "70.49199999999999",
+        "25.08",
+        "28.349999999999998",
+        "11.5",
+        "31.7"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 0.0,
+        "max_value": 3587.9053000000013,
+        "mean_value": 52.57,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "Budget.4": {
+      "dtype": "float64",
+      "non_null_count": 273,
+      "null_count": 171,
+      "null_percentage": 38.51,
+      "unique_values": 59,
+      "unique_percentage": 13.29,
+      "sample_values": [
+        "25.0",
+        "225.0",
+        "0.0",
+        "12.0",
+        "22.0",
+        "24.0",
+        "154.0",
+        "379.0",
+        "4.68",
+        "8.362",
+        "32.544",
+        "10.0",
+        "35.089999999999996",
+        "8.73",
+        "400.7739999999998",
+        "15.0",
+        "53.25",
+        "39.0",
+        "78.0",
+        "663.0",
+        "14.4",
+        "29.439999999999998",
+        "16.72",
+        "29.4",
+        "1409.2600000000014",
+        "12.112499999999999",
+        "19.112499999999997",
+        "14.88",
+        "3.0",
+        "7.0"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 0.0,
+        "max_value": 3386.794000000001,
+        "mean_value": 49.62,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "Projected.4": {
+      "dtype": "float64",
+      "non_null_count": 273,
+      "null_count": 171,
+      "null_percentage": 38.51,
+      "unique_values": 57,
+      "unique_percentage": 12.84,
+      "sample_values": [
+        "25.0",
+        "225.0",
+        "0.0",
+        "12.0",
+        "34.8",
+        "24.0",
+        "65.58",
+        "208.38",
+        "433.38",
+        "6.272",
+        "12.544",
+        "3.73",
+        "180.30999999999992",
+        "8.25",
+        "9.0",
+        "14.25",
+        "39.0",
+        "78.0",
+        "663.0",
+        "7.2",
+        "10.130400000000002",
+        "14.4",
+        "18.71",
+        "20.260800000000003",
+        "16.15",
+        "19.4",
+        "1366.251200000001",
+        "2085.751200000001",
+        "12.112499999999999",
+        "24.224999999999998"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 0.0,
+        "max_value": 3243.7769000000008,
+        "mean_value": 47.53,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "Actual.4": {
+      "dtype": "float64",
+      "non_null_count": 276,
+      "null_count": 168,
+      "null_percentage": 37.84,
+      "unique_values": 58,
+      "unique_percentage": 13.06,
+      "sample_values": [
+        "25.0",
+        "225.0",
+        "0.0",
+        "12.0",
+        "34.53",
+        "24.0",
+        "166.53",
+        "391.53",
+        "4.68",
+        "3.73",
+        "6.1",
+        "6.537",
+        "28.445",
+        "205.2019999999998",
+        "343.1859999999998",
+        "8.25",
+        "5.9",
+        "4.65",
+        "18.8",
+        "39.0",
+        "78.0",
+        "80.5",
+        "665.5",
+        "7.2",
+        "10.08",
+        "14.4",
+        "23.4",
+        "96.89999999999999",
+        "25.08"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 0.0,
+        "max_value": 3264.5098333333344,
+        "mean_value": 47.31,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "Budget.5": {
+      "dtype": "float64",
+      "non_null_count": 280,
+      "null_count": 164,
+      "null_percentage": 36.94,
+      "unique_values": 68,
+      "unique_percentage": 15.32,
+      "sample_values": [
+        "25.0",
+        "225.0",
+        "0.0",
+        "12.0",
+        "40.5",
+        "31.2",
+        "24.0",
+        "179.7",
+        "404.7",
+        "12.544",
+        "243.87400000000002",
+        "18.73",
+        "220.3099999999999",
+        "8.25",
+        "7.0",
+        "57.25",
+        "78.0",
+        "7.2",
+        "14.4",
+        "20.2",
+        "31.9",
+        "23.700000000000003",
+        "31.799999999999997",
+        "15.35",
+        "24.4",
+        "2200.750000000002",
+        "27.112499999999997",
+        "19.112499999999997",
+        "5.0",
+        "13.32"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 0.0,
+        "max_value": 3605.234000000002,
+        "mean_value": 51.5,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "Projected.5": {
+      "dtype": "float64",
+      "non_null_count": 283,
+      "null_count": 161,
+      "null_percentage": 36.26,
+      "unique_values": 78,
+      "unique_percentage": 17.57,
+      "sample_values": [
+        "25.0",
+        "225.0",
+        "0.0",
+        "12.0",
+        "24.0",
+        "31.2",
+        "65.58",
+        "192.78",
+        "417.78",
+        "3.73",
+        "13.73",
+        "202.81999999999985",
+        "8.25",
+        "19.0",
+        "28.5",
+        "39.0",
+        "663.0",
+        "9.09",
+        "11.2",
+        "14.4",
+        "22.2",
+        "18.71",
+        "16.15",
+        "16.2",
+        "1480.518800000002",
+        "24.224999999999998",
+        "159.96249999999998",
+        "1.2615272727272728",
+        "192.40482727272723",
+        "17.0"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 0.0,
+        "max_value": 3576.7068272727292,
+        "mean_value": 50.55,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "Actual.5": {
+      "dtype": "float64",
+      "non_null_count": 276,
+      "null_count": 168,
+      "null_percentage": 37.84,
+      "unique_values": 56,
+      "unique_percentage": 12.61,
+      "sample_values": [
+        "25.0",
+        "225.0",
+        "0.0",
+        "12.0",
+        "24.0",
+        "38.4",
+        "65.58",
+        "199.98000000000002",
+        "424.98",
+        "6.272",
+        "12.544",
+        "144.256",
+        "3.73",
+        "9.23",
+        "13.73",
+        "8.624227667984181",
+        "195.70422766798401",
+        "339.960227667984",
+        "8.25",
+        "11.933425",
+        "8.65326",
+        "14.0",
+        "42.836685",
+        "39.0",
+        "78.0",
+        "83.0",
+        "14.4",
+        "2123.3866850000013",
+        "2.1025454545454547",
+        "7.462"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 0.0,
+        "max_value": 3523.462063577076,
+        "mean_value": 51.06,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "Budget.6": {
+      "dtype": "float64",
+      "non_null_count": 273,
+      "null_count": 171,
+      "null_percentage": 38.51,
+      "unique_values": 49,
+      "unique_percentage": 11.04,
+      "sample_values": [
+        "25.0",
+        "225.0",
+        "0.0",
+        "12.0",
+        "24.0",
+        "144.0",
+        "369.0",
+        "4.68",
+        "9.36",
+        "239.0",
+        "13.372",
+        "12.544",
+        "151.356",
+        "3.73",
+        "35.089999999999996",
+        "206.66999999999985",
+        "358.02599999999984",
+        "39.0",
+        "117.0",
+        "78.0",
+        "702.0",
+        "7.2",
+        "14.4",
+        "26.87",
+        "1436.4700000000014",
+        "41.2785",
+        "337.228",
+        "12.47",
+        "26.130000000000003",
+        "4.0"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 0.0,
+        "max_value": 3557.714000000001,
+        "mean_value": 52.13,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "Projected.6": {
+      "dtype": "float64",
+      "non_null_count": 277,
+      "null_count": 167,
+      "null_percentage": 37.61,
+      "unique_values": 57,
+      "unique_percentage": 12.84,
+      "sample_values": [
+        "25.0",
+        "225.0",
+        "0.0",
+        "12.0",
+        "24.0",
+        "144.0",
+        "369.0",
+        "4.68",
+        "9.36",
+        "12.544",
+        "153.25600000000003",
+        "28.44",
+        "205.0199999999998",
+        "10.865",
+        "39.365",
+        "117.0",
+        "702.0",
+        "7.2",
+        "14.4",
+        "18.75",
+        "16.15",
+        "25.950000000000003",
+        "24.4",
+        "1431.6500000000015",
+        "2173.0150000000012",
+        "41.2785",
+        "330.228",
+        "26.0",
+        "356.228",
+        "10.5"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 0.0,
+        "max_value": 3598.587250000001,
+        "mean_value": 51.97,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "Actual.6": {
+      "dtype": "float64",
+      "non_null_count": 278,
+      "null_count": 166,
+      "null_percentage": 37.39,
+      "unique_values": 59,
+      "unique_percentage": 13.29,
+      "sample_values": [
+        "25.0",
+        "225.0",
+        "0.0",
+        "12.0",
+        "27.020000000000003",
+        "24.0",
+        "159.02",
+        "384.02",
+        "6.795",
+        "3.73",
+        "7.63",
+        "348.1759999999998",
+        "4.65",
+        "44.015",
+        "117.0",
+        "702.0",
+        "11.2",
+        "14.4",
+        "18.75",
+        "16.15",
+        "1425.6500000000015",
+        "41.2785",
+        "0.8410181818181818",
+        "27.24101818181818",
+        "25.08",
+        "7.762499999999999",
+        "12.47",
+        "29.938000000000002",
+        "8.67975",
+        "24.98375"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 0.0,
+        "max_value": 3607.269268181819,
+        "mean_value": 51.9,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "Budget.7": {
+      "dtype": "float64",
+      "non_null_count": 277,
+      "null_count": 167,
+      "null_percentage": 37.61,
+      "unique_values": 57,
+      "unique_percentage": 12.84,
+      "sample_values": [
+        "25.0",
+        "225.0",
+        "0.0",
+        "12.0",
+        "22.0",
+        "24.0",
+        "154.0",
+        "379.0",
+        "4.68",
+        "219.0",
+        "12.544",
+        "160.256",
+        "33.73",
+        "8.73",
+        "270.30999999999995",
+        "39.0",
+        "663.0",
+        "7.2",
+        "14.4",
+        "29.439999999999998",
+        "24.4",
+        "1439.0400000000013",
+        "2112.0400000000013",
+        "29.166",
+        "69.096",
+        "36.166",
+        "280.258",
+        "14.88",
+        "295.138",
+        "28.5"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 0.0,
+        "max_value": 3579.0240000000013,
+        "mean_value": 51.68,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "Projected.7": {
+      "dtype": "float64",
+      "non_null_count": 275,
+      "null_count": 169,
+      "null_percentage": 38.06,
+      "unique_values": 56,
+      "unique_percentage": 12.61,
+      "sample_values": [
+        "25.0",
+        "225.0",
+        "0.0",
+        "12.0",
+        "40.5",
+        "24.0",
+        "172.5",
+        "397.5",
+        "4.68",
+        "6.272",
+        "12.544",
+        "144.256",
+        "3.73",
+        "6.24",
+        "6.609999999999999",
+        "180.69999999999987",
+        "324.9559999999999",
+        "3.44",
+        "14.0",
+        "17.44",
+        "39.0",
+        "78.0",
+        "663.0",
+        "7.2",
+        "9.09",
+        "14.4",
+        "26.6",
+        "2118.3600000000015",
+        "13.32",
+        "65.94"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 0.0,
+        "max_value": 3418.0400181818195,
+        "mean_value": 49.72,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "Actual.7": {
+      "dtype": "float64",
+      "non_null_count": 273,
+      "null_count": 171,
+      "null_percentage": 38.51,
+      "unique_values": 60,
+      "unique_percentage": 13.51,
+      "sample_values": [
+        "25.0",
+        "225.0",
+        "0.0",
+        "12.0",
+        "34.53",
+        "24.0",
+        "-41.58",
+        "100.95",
+        "325.95",
+        "151.647",
+        "6.869999999999999",
+        "6.609999999999999",
+        "346.83561399999985",
+        "78.0",
+        "7.2",
+        "14.4",
+        "16.15",
+        "44.4",
+        "42.121386",
+        "26.6",
+        "20.8",
+        "97.175",
+        "16.905276",
+        "2251.5916620000016",
+        "233.328",
+        "13.973600000000001",
+        "25.08",
+        "4.5",
+        "4.12556",
+        "21.764690434782608"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": -41.58,
+        "max_value": 3468.155566434784,
+        "mean_value": 50.82,
+        "has_negative_values": true,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "Budget.8": {
+      "dtype": "float64",
+      "non_null_count": 265,
+      "null_count": 179,
+      "null_percentage": 40.32,
+      "unique_values": 50,
+      "unique_percentage": 11.26,
+      "sample_values": [
+        "25.0",
+        "225.0",
+        "0.0",
+        "28.5",
+        "7.2",
+        "35.7",
+        "260.7",
+        "3.96",
+        "14.2",
+        "6.272",
+        "12.544",
+        "32.544",
+        "27.544",
+        "179.25600000000003",
+        "10.0",
+        "3.73",
+        "13.73",
+        "8.73",
+        "210.30999999999986",
+        "399.5659999999999",
+        "20.0",
+        "15.0",
+        "35.0",
+        "39.0",
+        "663.0",
+        "24.4",
+        "2143.6600000000017",
+        "36.166",
+        "10.2",
+        "4.0"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 0.0,
+        "max_value": 3377.414000000001,
+        "mean_value": 50.98,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "Projected.8": {
+      "dtype": "float64",
+      "non_null_count": 262,
+      "null_count": 182,
+      "null_percentage": 40.99,
+      "unique_values": 42,
+      "unique_percentage": 9.46,
+      "sample_values": [
+        "25.0",
+        "225.0",
+        "0.0",
+        "3.96",
+        "14.2",
+        "142.0",
+        "6.2",
+        "12.4",
+        "68.20000000000002",
+        "175.30999999999992",
+        "319.5659999999999",
+        "39.0",
+        "78.0",
+        "663.0",
+        "10.7",
+        "7.2",
+        "8.2",
+        "14.4",
+        "16.35",
+        "16.15",
+        "29.25",
+        "1427.0500000000015",
+        "2090.0500000000015",
+        "39.166",
+        "54.449999999999996",
+        "22.9725",
+        "358.3405",
+        "52.32",
+        "57.32",
+        "3292.836500000002"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 0.0,
+        "max_value": 3292.836500000002,
+        "mean_value": 50.27,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "Actual.8": {
+      "dtype": "float64",
+      "non_null_count": 247,
+      "null_count": 197,
+      "null_percentage": 44.37,
+      "unique_values": 56,
+      "unique_percentage": 12.61,
+      "sample_values": [
+        "25.0",
+        "225.0",
+        "0.0",
+        "3.96",
+        "7.1",
+        "14.2",
+        "149.1",
+        "6.2",
+        "155.29999999999998",
+        "7.2",
+        "8.9955",
+        "12.825",
+        "8.2",
+        "14.4",
+        "16.35",
+        "20.025",
+        "16.15",
+        "43.65",
+        "42.12",
+        "20.51",
+        "22.512",
+        "30.4",
+        "21.9",
+        "27.4",
+        "1532.937500000002",
+        "2195.937500000002",
+        "238.328",
+        "9.0",
+        "45.56",
+        "3.425"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 0.0,
+        "max_value": 3272.9931085652192,
+        "mean_value": 53.0,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "Budget.9": {
+      "dtype": "float64",
+      "non_null_count": 241,
+      "null_count": 203,
+      "null_percentage": 45.72,
+      "unique_values": 36,
+      "unique_percentage": 8.11,
+      "sample_values": [
+        "25.0",
+        "225.0",
+        "0.0",
+        "20.0",
+        "3.96",
+        "14.2",
+        "142.0",
+        "3.73",
+        "13.73",
+        "39.0",
+        "78.0",
+        "88.0",
+        "673.0",
+        "7.2",
+        "14.4",
+        "19.4",
+        "24.4",
+        "1429.0000000000014",
+        "2102.0000000000014",
+        "38.766",
+        "29.166",
+        "64.166",
+        "49.166",
+        "36.166",
+        "304.928",
+        "5.0",
+        "30.0",
+        "35.0",
+        "339.928",
+        "4.0"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 0.0,
+        "max_value": 3093.1980000000012,
+        "mean_value": 51.34,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "Projected.9": {
+      "dtype": "float64",
+      "non_null_count": 256,
+      "null_count": 188,
+      "null_percentage": 42.34,
+      "unique_values": 76,
+      "unique_percentage": 17.12,
+      "sample_values": [
+        "25.0",
+        "225.0",
+        "0.0",
+        "5.6",
+        "2.9280000000000004",
+        "8.528",
+        "12.5",
+        "3.96",
+        "22.2",
+        "10.865",
+        "15.0",
+        "174.37663",
+        "41.5",
+        "78.0",
+        "7.2",
+        "29.37",
+        "15.55",
+        "19.6",
+        "15.4",
+        "16.905276",
+        "24.025",
+        "29.4",
+        "15.65",
+        "1557.6302760000017",
+        "41.2785",
+        "283.8905",
+        "6.773600000000001",
+        "1.25",
+        "1.5",
+        "3.0"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 0.0,
+        "max_value": 3485.5937336679854,
+        "mean_value": 54.46,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "Actual.9": {
+      "dtype": "float64",
+      "non_null_count": 235,
+      "null_count": 209,
+      "null_percentage": 47.07,
+      "unique_values": 25,
+      "unique_percentage": 5.63,
+      "sample_values": [
+        "25.0",
+        "225.0",
+        "0.0",
+        "15.019",
+        "240.019",
+        "10.210909090909091",
+        "3.96",
+        "14.2",
+        "142.0",
+        "10.75",
+        "3.73",
+        "175.30999999999992",
+        "186.05999999999992",
+        "39.0",
+        "78.0",
+        "83.0",
+        "668.0",
+        "7.2",
+        "32.2",
+        "14.4",
+        "1429.0000000000016",
+        "2097.000000000002",
+        "29.166",
+        "233.328",
+        "2912.577909090911"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 0.0,
+        "max_value": 2912.577909090911,
+        "mean_value": 49.58,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "Budget.10": {
+      "dtype": "float64",
+      "non_null_count": 187,
+      "null_count": 257,
+      "null_percentage": 57.88,
+      "unique_values": 28,
+      "unique_percentage": 6.31,
+      "sample_values": [
+        "25.0",
+        "225.0",
+        "0.0",
+        "3.96",
+        "29.2",
+        "14.2",
+        "156.99999999999997",
+        "15.0",
+        "171.99999999999997",
+        "20.0",
+        "10.0",
+        "5.0",
+        "45.0",
+        "7.2",
+        "14.4",
+        "19.4",
+        "1409.0000000000014",
+        "1429.0000000000014",
+        "29.166",
+        "36.166",
+        "240.328",
+        "6.75",
+        "8.0",
+        "9.0",
+        "3.0",
+        "4.0",
+        "29.0",
+        "2176.0380000000014"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 0.0,
+        "max_value": 2176.0380000000014,
+        "mean_value": 46.55,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "Projected.10": {
+      "dtype": "float64",
+      "non_null_count": 189,
+      "null_count": 255,
+      "null_percentage": 57.43,
+      "unique_values": 44,
+      "unique_percentage": 9.91,
+      "sample_values": [
+        "25.0",
+        "225.0",
+        "0.0",
+        "5.6",
+        "3.96",
+        "22.2",
+        "14.2",
+        "150.0",
+        "3.0",
+        "7.75",
+        "2.5",
+        "49.425000000000004",
+        "82.75833333333334",
+        "7.2",
+        "7.575",
+        "19.8",
+        "32.2",
+        "14.4",
+        "14.775",
+        "22.62",
+        "29.37",
+        "16.15",
+        "17.0",
+        "19.2",
+        "21.9",
+        "1520.4500000000019",
+        "41.2785",
+        "50.0",
+        "295.8155",
+        "5.0"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 0.0,
+        "max_value": 2323.3338333333354,
+        "mean_value": 49.17,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "Actual.10": {
+      "dtype": "float64",
+      "non_null_count": 175,
+      "null_count": 269,
+      "null_percentage": 60.59,
+      "unique_values": 12,
+      "unique_percentage": 2.7,
+      "sample_values": [
+        "25.0",
+        "225.0",
+        "0.0",
+        "3.96",
+        "14.2",
+        "142.0",
+        "7.2",
+        "14.4",
+        "1404.0000000000014",
+        "29.166",
+        "233.328",
+        "2008.2880000000014"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 0.0,
+        "max_value": 2008.2880000000014,
+        "mean_value": 45.9,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "Budget.11": {
+      "dtype": "float64",
+      "non_null_count": 184,
+      "null_count": 260,
+      "null_percentage": 58.56,
+      "unique_values": 29,
+      "unique_percentage": 6.53,
+      "sample_values": [
+        "25.0",
+        "225.0",
+        "0.0",
+        "28.5",
+        "253.5",
+        "3.96",
+        "14.2",
+        "39.2",
+        "167.0",
+        "25.89",
+        "30.0",
+        "55.89",
+        "5.0",
+        "60.89",
+        "15.0",
+        "7.2",
+        "14.4",
+        "19.4",
+        "29.4",
+        "1424.0000000000014",
+        "1439.0000000000014",
+        "29.166",
+        "36.166",
+        "240.328",
+        "4.0",
+        "8.0",
+        "3.0",
+        "19.0",
+        "2208.6780000000012"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 0.0,
+        "max_value": 2208.6780000000012,
+        "mean_value": 48.01,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "Projected.11": {
+      "dtype": "float64",
+      "non_null_count": 105,
+      "null_count": 339,
+      "null_percentage": 76.35,
+      "unique_values": 43,
+      "unique_percentage": 9.68,
+      "sample_values": [
+        "25.0",
+        "225.0",
+        "0.0",
+        "14.2",
+        "39.2",
+        "166.99999999999997",
+        "0.75",
+        "167.74999999999997",
+        "3.6955",
+        "10.0",
+        "7.5",
+        "3.75",
+        "67.5351",
+        "83.50709456521739",
+        "65.0",
+        "75.0",
+        "2.4",
+        "18.0724",
+        "1.75",
+        "5.1925",
+        "3.0",
+        "1.2",
+        "2.3085",
+        "14.4",
+        "177.02603800000003",
+        "233.328",
+        "6.24",
+        "48.7648",
+        "3.4"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 0.0,
+        "max_value": 963.7759325652173,
+        "mean_value": 36.72,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "Actual.11": {
+      "dtype": "float64",
+      "non_null_count": 74,
+      "null_count": 370,
+      "null_percentage": 83.33,
+      "unique_values": 10,
+      "unique_percentage": 2.25,
+      "sample_values": [
+        "25.0",
+        "225.0",
+        "0.0",
+        "14.2",
+        "142.0",
+        "14.4",
+        "57.6",
+        "29.166",
+        "233.328",
+        "657.928"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 0.0,
+        "max_value": 657.928,
+        "mean_value": 35.56,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "YTD Actual": {
+      "dtype": "float64",
+      "non_null_count": 397,
+      "null_count": 47,
+      "null_percentage": 10.59,
+      "unique_values": 184,
+      "unique_percentage": 41.44,
+      "sample_values": [
+        "300.0",
+        "2700.0",
+        "0.0",
+        "96.0",
+        "171.09900000000002",
+        "118.53",
+        "156.0",
+        "206.4",
+        "168.0",
+        "9.3",
+        "782.5",
+        "91.77550000000002",
+        "153.00000000000003",
+        "163.40000000000003",
+        "174.15000000000003",
+        "166.25700000000003",
+        "169.40000000000003",
+        "160.64000000000001",
+        "241.17500000000004",
+        "171.40000000000003",
+        "115.20000000000002",
+        "313.1745",
+        "3.5",
+        "4.95",
+        "10.104",
+        "31.5",
+        "26.0",
+        "12.47",
+        "4.5",
+        "9.262228260869565"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 0.0,
+        "max_value": 35808.25265517623,
+        "mean_value": 359.09,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "Remaining Projection": {
+      "dtype": "float64",
+      "non_null_count": 397,
+      "null_count": 47,
+      "null_percentage": 10.59,
+      "unique_values": 157,
+      "unique_percentage": 35.36,
+      "sample_values": [
+        "150.0",
+        "1350.0",
+        "0.0",
+        "24.0",
+        "52.5",
+        "48.0",
+        "316.5",
+        "1666.5",
+        "9.36",
+        "18.67",
+        "4.32663",
+        "42.5",
+        "312.0",
+        "36.0",
+        "37.0",
+        "80.22",
+        "90.0724",
+        "77.1925",
+        "76.0",
+        "75.75791400000001",
+        "73.25",
+        "7395.101313999999",
+        "197.1085",
+        "54.449999999999996",
+        "10.160400000000001",
+        "1834.2999181818182",
+        "129.6525",
+        "5.0",
+        "6.0",
+        "3.49"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 0.0,
+        "max_value": 17082.167267748362,
+        "mean_value": 170.24,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "Total": {
+      "dtype": "float64",
+      "non_null_count": 397,
+      "null_count": 47,
+      "null_percentage": 10.59,
+      "unique_values": 234,
+      "unique_percentage": 52.7,
+      "sample_values": [
+        "450.0",
+        "4050.0",
+        "0.0",
+        "120.0",
+        "223.59900000000002",
+        "142.53",
+        "204.0",
+        "254.4",
+        "216.0",
+        "14.0",
+        "454.86081500000006",
+        "1157.0",
+        "119.61000000000001",
+        "225.00000000000003",
+        "256.5",
+        "231.55000000000004",
+        "274.50000000000006",
+        "240.78500000000003",
+        "253.93400000000003",
+        "240.40000000000003",
+        "238.40000000000003",
+        "246.40000000000003",
+        "201.60000000000002",
+        "491.058",
+        "1.85",
+        "16.934",
+        "123.56",
+        "4.378",
+        "6.0",
+        "7.497010869565218"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 0.0,
+        "max_value": 52890.41992292459,
+        "mean_value": 529.32,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "WIH 2024": {
+      "dtype": "float64",
+      "non_null_count": 77,
+      "null_count": 367,
+      "null_percentage": 82.66,
+      "unique_values": 65,
+      "unique_percentage": 14.64,
+      "sample_values": [
+        "0.0",
+        "22.53",
+        "24.0",
+        "46.53",
+        "3.229090909090909",
+        "10.210909090909091",
+        "13.44",
+        "21.299999999999997",
+        "4.81232",
+        "312.0",
+        "26.9755",
+        "2.88",
+        "30.6",
+        "38.55",
+        "6.092592593",
+        "5.81",
+        "3.9",
+        "34.800000000000004",
+        "416.82041259299996",
+        "5.25",
+        "23.875",
+        "44.229",
+        "2.25",
+        "43.04",
+        "4.378",
+        "8.865242592592592",
+        "8.747554347826087",
+        "3.2",
+        "5.434782608695652",
+        "1.4970108695652173"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 0.0,
+        "max_value": 1203.138870235512,
+        "mean_value": 46.88,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "Advance 2025": {
+      "dtype": "float64",
+      "non_null_count": 137,
+      "null_count": 307,
+      "null_percentage": 69.14,
+      "unique_values": 109,
+      "unique_percentage": 24.55,
+      "sample_values": [
+        "25.0",
+        "3.943",
+        "5.446",
+        "4.0835",
+        "3.2",
+        "2.006",
+        "28.59",
+        "72.2685",
+        "22.53",
+        "100.4625",
+        "8.65326",
+        "4.65",
+        "2.5",
+        "30.0",
+        "7.857",
+        "5.1925",
+        "8.112",
+        "25.6",
+        "1.12",
+        "8.0",
+        "2.5052760000000003",
+        "24.224999999999998",
+        "38.388",
+        "10.4025",
+        "25.08",
+        "28.349999999999998",
+        "12.47",
+        "17.358",
+        "99.656",
+        "3.4"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 0.0,
+        "max_value": 1899.9630058498024,
+        "mean_value": 41.61,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "WIH 2025": {
+      "dtype": "float64",
+      "non_null_count": 60,
+      "null_count": 384,
+      "null_percentage": 86.49,
+      "unique_values": 47,
+      "unique_percentage": 10.59,
+      "sample_values": [
+        "150.0",
+        "79.08",
+        "80.45",
+        "78.94",
+        "58.56",
+        "447.03",
+        "49.549",
+        "14.704090909090908",
+        "0.0",
+        "3.5",
+        "25.0",
+        "5.8",
+        "16.66",
+        "32.71",
+        "29.822",
+        "32.4",
+        "6.4",
+        "51.907000000000004",
+        "15.52",
+        "3.75",
+        "223.46900000000002",
+        "24.224999999999998",
+        "5.163655454545455",
+        "75.97800000000001",
+        "2.9435636363636366",
+        "110.9852190909091",
+        "7.5",
+        "6.0",
+        "17.36",
+        "16.8"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 0.0,
+        "max_value": 1349.77787,
+        "mean_value": 67.49,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "on hold": {
+      "dtype": "float64",
+      "non_null_count": 173,
+      "null_count": 271,
+      "null_percentage": 61.04,
+      "unique_values": 56,
+      "unique_percentage": 12.61,
+      "sample_values": [
+        "125.0",
+        "216.97700000000003",
+        "214.10399999999998",
+        "216.9765",
+        "296.8",
+        "212.85000000000002",
+        "300.0",
+        "2180.7015",
+        "96.0",
+        "127.8",
+        "141.99999999999997",
+        "127.79999999999998",
+        "1178.6",
+        "43.903999999999996",
+        "56.449999999999996",
+        "87.80799999999999",
+        "100.35199999999999",
+        "37.3",
+        "29.839999999999996",
+        "37.29999999999999",
+        "26.109999999999943",
+        "33.569999999999986",
+        "37.29999999999998",
+        "1283.119999999999",
+        "1141.3799999999992",
+        "1104.0799999999992",
+        "447.6000000000001",
+        "261.1",
+        "74.6",
+        "0.003999999999997783"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": -0.0004999999999988347,
+        "max_value": 5961.075909090909,
+        "mean_value": 142.32,
+        "has_negative_values": true,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "WIH 2026": {
+      "dtype": "float64",
+      "non_null_count": 44,
+      "null_count": 400,
+      "null_percentage": 90.09,
+      "unique_values": 43,
+      "unique_percentage": 9.68,
+      "sample_values": [
+        "3.7",
+        "4.39",
+        "16.14",
+        "6.0",
+        "51.78",
+        "10.75",
+        "25.05",
+        "10.481900000000001",
+        "31.36",
+        "4.32663",
+        "14.0",
+        "2.5",
+        "3.8",
+        "17.5",
+        "13.48",
+        "30.08",
+        "8.22",
+        "7.25",
+        "2.9",
+        "4.75",
+        "5.5",
+        "12.47",
+        "29.61",
+        "2.76",
+        "35.48",
+        "10.0",
+        "39.93",
+        "5.0",
+        "29.76"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 1.0,
+        "max_value": 51.78,
+        "mean_value": 12.52,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "Shelved": {
+      "dtype": "float64",
+      "non_null_count": 18,
+      "null_count": 426,
+      "null_percentage": 95.95,
+      "unique_values": 18,
+      "unique_percentage": 4.05,
+      "sample_values": [
+        "7.1",
+        "10.21",
+        "1.45",
+        "3.6",
+        "4.0",
+        "6.74",
+        "3.62",
+        "5.6",
+        "14.63",
+        "10.0",
+        "4.18",
+        "6.65",
+        "1.95",
+        "7.11",
+        "2.5",
+        "5.46",
+        "2.12",
+        "6.76"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 1.45,
+        "max_value": 14.63,
+        "mean_value": 5.76,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "JAN": {
+      "dtype": "float64",
+      "non_null_count": 5,
+      "null_count": 439,
+      "null_percentage": 98.87,
+      "unique_values": 3,
+      "unique_percentage": 0.68,
+      "sample_values": [
+        "12.5",
+        "9.625",
+        "3.75"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 3.75,
+        "max_value": 12.5,
+        "mean_value": 8.43,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "FEB": {
+      "dtype": "float64",
+      "non_null_count": 5,
+      "null_count": 439,
+      "null_percentage": 98.87,
+      "unique_values": 5,
+      "unique_percentage": 1.13,
+      "sample_values": [
+        "25.0",
+        "5.655",
+        "10.0",
+        "2.5",
+        "40.185"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 2.5,
+        "max_value": 40.185,
+        "mean_value": 16.67,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "MAR": {
+      "dtype": "float64",
+      "non_null_count": 18,
+      "null_count": 426,
+      "null_percentage": 95.95,
+      "unique_values": 12,
+      "unique_percentage": 2.7,
+      "sample_values": [
+        "2.8275",
+        "7.5",
+        "9.0",
+        "12.5",
+        "3.75",
+        "20.092",
+        "6.0",
+        "10.0",
+        "90.0",
+        "1.25",
+        "2.5",
+        "25.0"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 1.25,
+        "max_value": 90.0,
+        "mean_value": 11.55,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "Unnamed: 55": {
+      "dtype": "float64",
+      "non_null_count": 6,
+      "null_count": 438,
+      "null_percentage": 98.65,
+      "unique_values": 6,
+      "unique_percentage": 1.35,
+      "sample_values": [
+        "3.0",
+        "65.0",
+        "15.0",
+        "24.9",
+        "7.5",
+        "50.0"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 3.0,
+        "max_value": 65.0,
+        "mean_value": 27.57,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    }
+  },
+  "data_types": {
+    "numerical": [
+      "Budget",
+      "Projected",
+      "Actual",
+      "Budget.1",
+      "Projected.1",
+      "Actual.1",
+      "Budget.2",
+      "Projected.2",
+      "Actual.2",
+      "Budget.3",
+      "Projected.3",
+      "Actual.3",
+      "Budget.4",
+      "Projected.4",
+      "Actual.4",
+      "Budget.5",
+      "Projected.5",
+      "Actual.5",
+      "Budget.6",
+      "Projected.6",
+      "Actual.6",
+      "Budget.7",
+      "Projected.7",
+      "Actual.7",
+      "Budget.8",
+      "Projected.8",
+      "Actual.8",
+      "Budget.9",
+      "Projected.9",
+      "Actual.9",
+      "Budget.10",
+      "Projected.10",
+      "Actual.10",
+      "Budget.11",
+      "Projected.11",
+      "Actual.11",
+      "YTD Actual",
+      "Remaining Projection",
+      "Total",
+      "WIH 2024",
+      "Advance 2025",
+      "WIH 2025",
+      "on hold",
+      "WIH 2026",
+      "Shelved",
+      "JAN",
+      "FEB",
+      "MAR",
+      "Unnamed: 55"
+    ],
+    "categorical": [
+      "Unit",
+      "Product",
+      "Region",
+      "Country",
+      "Customer",
+      "Category",
+      "Project Code"
+    ],
+    "datetime": [],
+    "boolean": [],
+    "high_cardinality": [],
+    "low_cardinality": [
+      "Product",
+      "Region",
+      "Country",
+      "Category",
+      "Actual.10",
+      "Actual.11",
+      "Shelved",
+      "JAN",
+      "FEB",
+      "MAR",
+      "Unnamed: 55"
+    ]
+  },
+  "column_patterns": {
+    "has_patterns": true,
+    "sequential_groups": [
+      {
+        "base_name": "Budget",
+        "columns": [
+          "Budget",
+          "Budget.1",
+          "Budget.2",
+          "Budget.3",
+          "Budget.4",
+          "Budget.5",
+          "Budget.6",
+          "Budget.7",
+          "Budget.8",
+          "Budget.9",
+          "Budget.10",
+          "Budget.11"
+        ],
+        "count": 12,
+        "likely_meaning": "likely monthly (12 periods)",
+        "first_column": "Budget",
+        "last_column": "Budget.11"
+      },
+      {
+        "base_name": "Projected",
+        "columns": [
+          "Projected",
+          "Projected.1",
+          "Projected.2",
+          "Projected.3",
+          "Projected.4",
+          "Projected.5",
+          "Projected.6",
+          "Projected.7",
+          "Projected.8",
+          "Projected.9",
+          "Projected.10",
+          "Projected.11"
+        ],
+        "count": 12,
+        "likely_meaning": "likely monthly (12 periods)",
+        "first_column": "Projected",
+        "last_column": "Projected.11"
+      },
+      {
+        "base_name": "Actual",
+        "columns": [
+          "Actual",
+          "Actual.1",
+          "Actual.2",
+          "Actual.3",
+          "Actual.4",
+          "Actual.5",
+          "Actual.6",
+          "Actual.7",
+          "Actual.8",
+          "Actual.9",
+          "Actual.10",
+          "Actual.11"
+        ],
+        "count": 12,
+        "likely_meaning": "likely monthly (12 periods)",
+        "first_column": "Actual",
+        "last_column": "Actual.11"
+      }
+    ],
+    "explicit_periods": {
+      "months": [
+        "JAN",
+        "FEB",
+        "MAR"
+      ]
+    },
+    "summary": "- Budget: 12 columns (likely monthly (12 periods))\n- Projected: 12 columns (likely monthly (12 periods))\n- Actual: 12 columns (likely monthly (12 periods))\n- Explicit months: JAN, FEB, MAR"
+  },
+  "business_entities": {
+    "revenue": [
+      {
+        "column": "Total",
+        "confidence": 0.5,
+        "reasoning": "Column name contains 'revenue' keywords"
+      }
+    ],
+    "geography": [
+      {
+        "column": "Region",
+        "confidence": 0.7,
+        "reasoning": "Column name contains 'geography' keywords"
+      },
+      {
+        "column": "Country",
+        "confidence": 0.7,
+        "reasoning": "Column name contains 'geography' keywords"
+      }
+    ],
+    "product": [
+      {
+        "column": "Product",
+        "confidence": 0.5,
+        "reasoning": "Column name contains 'product' keywords"
+      },
+      {
+        "column": "Category",
+        "confidence": 0.5,
+        "reasoning": "Column name contains 'product' keywords"
+      }
+    ],
+    "customer": [
+      {
+        "column": "Customer",
+        "confidence": 0.5,
+        "reasoning": "Column name contains 'customer' keywords"
+      }
+    ],
+    "quantity": [
+      {
+        "column": "Country",
+        "confidence": 0.5,
+        "reasoning": "Column name contains 'quantity' keywords"
+      }
+    ]
+  },
+  "data_quality": {
+    "overall_completeness": 54.23,
+    "columns_with_nulls": 56,
+    "fully_complete_columns": 0,
+    "duplicate_rows": 1,
+    "constant_columns": [],
+    "potential_issues": [
+      "High missing values in: Budget.10, Projected.10, Actual.10",
+      "1 duplicate rows found"
+    ]
+  },
+  "relationships": {
+    "potential_hierarchies": [
+      {
+        "parent": "Unit",
+        "child": "Product",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Region",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Country",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Category",
+        "strength": 0.8
+      },
+      {
+        "parent": "Product",
+        "child": "Region",
+        "strength": 0.8
+      },
+      {
+        "parent": "Customer",
+        "child": "Category",
+        "strength": 0.8
+      }
+    ],
+    "high_correlations": [
+      {
+        "column1": "Budget",
+        "column2": "Projected",
+        "correlation": 1.0
+      },
+      {
+        "column1": "Budget",
+        "column2": "Actual",
+        "correlation": 1.0
+      },
+      {
+        "column1": "Budget",
+        "column2": "Budget.1",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Budget",
+        "column2": "Projected.1",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Budget",
+        "column2": "Actual.1",
+        "correlation": 1.0
+      },
+      {
+        "column1": "Budget",
+        "column2": "Budget.2",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Budget",
+        "column2": "Projected.2",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Budget",
+        "column2": "Actual.2",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Budget",
+        "column2": "Budget.3",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Budget",
+        "column2": "Projected.3",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Budget",
+        "column2": "Actual.3",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Budget",
+        "column2": "Budget.4",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Budget",
+        "column2": "Projected.4",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Budget",
+        "column2": "Actual.4",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Budget",
+        "column2": "Budget.5",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Budget",
+        "column2": "Projected.5",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Budget",
+        "column2": "Actual.5",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Budget",
+        "column2": "Budget.6",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Budget",
+        "column2": "Projected.6",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Budget",
+        "column2": "Actual.6",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Budget",
+        "column2": "Budget.7",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Budget",
+        "column2": "Projected.7",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Budget",
+        "column2": "Actual.7",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Budget",
+        "column2": "Budget.8",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Budget",
+        "column2": "Projected.8",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Budget",
+        "column2": "Actual.8",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Budget",
+        "column2": "Budget.9",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Budget",
+        "column2": "Projected.9",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Budget",
+        "column2": "Actual.9",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Budget",
+        "column2": "Budget.10",
+        "correlation": 0.967
+      },
+      {
+        "column1": "Budget",
+        "column2": "Projected.10",
+        "correlation": 0.967
+      },
+      {
+        "column1": "Budget",
+        "column2": "Actual.10",
+        "correlation": 0.961
+      },
+      {
+        "column1": "Budget",
+        "column2": "Budget.11",
+        "correlation": 0.967
+      },
+      {
+        "column1": "Budget",
+        "column2": "Projected.11",
+        "correlation": 0.8
+      },
+      {
+        "column1": "Budget",
+        "column2": "YTD Actual",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Budget",
+        "column2": "Remaining Projection",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Budget",
+        "column2": "Total",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Budget",
+        "column2": "WIH 2024",
+        "correlation": 0.96
+      },
+      {
+        "column1": "Budget",
+        "column2": "Advance 2025",
+        "correlation": 0.939
+      },
+      {
+        "column1": "Budget",
+        "column2": "WIH 2025",
+        "correlation": 0.906
+      },
+      {
+        "column1": "Budget",
+        "column2": "on hold",
+        "correlation": 0.81
+      },
+      {
+        "column1": "Budget",
+        "column2": "JAN",
+        "correlation": -1.0
+      },
+      {
+        "column1": "Budget",
+        "column2": "FEB",
+        "correlation": 0.945
+      },
+      {
+        "column1": "Budget",
+        "column2": "Unnamed: 55",
+        "correlation": 0.966
+      },
+      {
+        "column1": "Projected",
+        "column2": "Actual",
+        "correlation": 1.0
+      },
+      {
+        "column1": "Projected",
+        "column2": "Budget.1",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Projected",
+        "column2": "Projected.1",
+        "correlation": 1.0
+      },
+      {
+        "column1": "Projected",
+        "column2": "Actual.1",
+        "correlation": 1.0
+      },
+      {
+        "column1": "Projected",
+        "column2": "Budget.2",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Projected",
+        "column2": "Projected.2",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Projected",
+        "column2": "Actual.2",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Projected",
+        "column2": "Budget.3",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Projected",
+        "column2": "Projected.3",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Projected",
+        "column2": "Actual.3",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Projected",
+        "column2": "Budget.4",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Projected",
+        "column2": "Projected.4",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Projected",
+        "column2": "Actual.4",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Projected",
+        "column2": "Budget.5",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Projected",
+        "column2": "Projected.5",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Projected",
+        "column2": "Actual.5",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Projected",
+        "column2": "Budget.6",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Projected",
+        "column2": "Projected.6",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Projected",
+        "column2": "Actual.6",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Projected",
+        "column2": "Budget.7",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Projected",
+        "column2": "Projected.7",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Projected",
+        "column2": "Actual.7",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Projected",
+        "column2": "Budget.8",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Projected",
+        "column2": "Projected.8",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Projected",
+        "column2": "Actual.8",
+        "correlation": 0.993
+      },
+      {
+        "column1": "Projected",
+        "column2": "Budget.9",
+        "correlation": 0.993
+      },
+      {
+        "column1": "Projected",
+        "column2": "Projected.9",
+        "correlation": 0.993
+      },
+      {
+        "column1": "Projected",
+        "column2": "Actual.9",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Projected",
+        "column2": "Budget.10",
+        "correlation": 0.965
+      },
+      {
+        "column1": "Projected",
+        "column2": "Projected.10",
+        "correlation": 0.965
+      },
+      {
+        "column1": "Projected",
+        "column2": "Actual.10",
+        "correlation": 0.96
+      },
+      {
+        "column1": "Projected",
+        "column2": "Budget.11",
+        "correlation": 0.966
+      },
+      {
+        "column1": "Projected",
+        "column2": "Projected.11",
+        "correlation": 0.798
+      },
+      {
+        "column1": "Projected",
+        "column2": "YTD Actual",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Projected",
+        "column2": "Remaining Projection",
+        "correlation": 0.993
+      },
+      {
+        "column1": "Projected",
+        "column2": "Total",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Projected",
+        "column2": "WIH 2024",
+        "correlation": 0.96
+      },
+      {
+        "column1": "Projected",
+        "column2": "Advance 2025",
+        "correlation": 0.935
+      },
+      {
+        "column1": "Projected",
+        "column2": "WIH 2025",
+        "correlation": 0.905
+      },
+      {
+        "column1": "Projected",
+        "column2": "on hold",
+        "correlation": 0.809
+      },
+      {
+        "column1": "Projected",
+        "column2": "JAN",
+        "correlation": -1.0
+      },
+      {
+        "column1": "Projected",
+        "column2": "FEB",
+        "correlation": 0.945
+      },
+      {
+        "column1": "Projected",
+        "column2": "Unnamed: 55",
+        "correlation": 0.966
+      },
+      {
+        "column1": "Actual",
+        "column2": "Budget.1",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Actual",
+        "column2": "Projected.1",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Actual",
+        "column2": "Actual.1",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Actual",
+        "column2": "Budget.2",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Actual",
+        "column2": "Projected.2",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Actual",
+        "column2": "Actual.2",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Actual",
+        "column2": "Budget.3",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Actual",
+        "column2": "Projected.3",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Actual",
+        "column2": "Actual.3",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Actual",
+        "column2": "Budget.4",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Actual",
+        "column2": "Projected.4",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Actual",
+        "column2": "Actual.4",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Actual",
+        "column2": "Budget.5",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Actual",
+        "column2": "Projected.5",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Actual",
+        "column2": "Actual.5",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Actual",
+        "column2": "Budget.6",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Actual",
+        "column2": "Projected.6",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Actual",
+        "column2": "Actual.6",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Actual",
+        "column2": "Budget.7",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Actual",
+        "column2": "Projected.7",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Actual",
+        "column2": "Actual.7",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Actual",
+        "column2": "Budget.8",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Actual",
+        "column2": "Projected.8",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Actual",
+        "column2": "Actual.8",
+        "correlation": 0.993
+      },
+      {
+        "column1": "Actual",
+        "column2": "Budget.9",
+        "correlation": 0.993
+      },
+      {
+        "column1": "Actual",
+        "column2": "Projected.9",
+        "correlation": 0.993
+      },
+      {
+        "column1": "Actual",
+        "column2": "Actual.9",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Actual",
+        "column2": "Budget.10",
+        "correlation": 0.965
+      },
+      {
+        "column1": "Actual",
+        "column2": "Projected.10",
+        "correlation": 0.965
+      },
+      {
+        "column1": "Actual",
+        "column2": "Actual.10",
+        "correlation": 0.959
+      },
+      {
+        "column1": "Actual",
+        "column2": "Budget.11",
+        "correlation": 0.966
+      },
+      {
+        "column1": "Actual",
+        "column2": "Projected.11",
+        "correlation": 0.803
+      },
+      {
+        "column1": "Actual",
+        "column2": "YTD Actual",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Actual",
+        "column2": "Remaining Projection",
+        "correlation": 0.993
+      },
+      {
+        "column1": "Actual",
+        "column2": "Total",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Actual",
+        "column2": "WIH 2024",
+        "correlation": 0.961
+      },
+      {
+        "column1": "Actual",
+        "column2": "Advance 2025",
+        "correlation": 0.94
+      },
+      {
+        "column1": "Actual",
+        "column2": "WIH 2025",
+        "correlation": 0.907
+      },
+      {
+        "column1": "Actual",
+        "column2": "on hold",
+        "correlation": 0.813
+      },
+      {
+        "column1": "Actual",
+        "column2": "JAN",
+        "correlation": -1.0
+      },
+      {
+        "column1": "Actual",
+        "column2": "FEB",
+        "correlation": 0.945
+      },
+      {
+        "column1": "Actual",
+        "column2": "Unnamed: 55",
+        "correlation": 0.966
+      },
+      {
+        "column1": "Budget.1",
+        "column2": "Projected.1",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Budget.1",
+        "column2": "Actual.1",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Budget.1",
+        "column2": "Budget.2",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Budget.1",
+        "column2": "Projected.2",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Budget.1",
+        "column2": "Actual.2",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Budget.1",
+        "column2": "Budget.3",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Budget.1",
+        "column2": "Projected.3",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Budget.1",
+        "column2": "Actual.3",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Budget.1",
+        "column2": "Budget.4",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Budget.1",
+        "column2": "Projected.4",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Budget.1",
+        "column2": "Actual.4",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Budget.1",
+        "column2": "Budget.5",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Budget.1",
+        "column2": "Projected.5",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Budget.1",
+        "column2": "Actual.5",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Budget.1",
+        "column2": "Budget.6",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Budget.1",
+        "column2": "Projected.6",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Budget.1",
+        "column2": "Actual.6",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Budget.1",
+        "column2": "Budget.7",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Budget.1",
+        "column2": "Projected.7",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Budget.1",
+        "column2": "Actual.7",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Budget.1",
+        "column2": "Budget.8",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Budget.1",
+        "column2": "Projected.8",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Budget.1",
+        "column2": "Actual.8",
+        "correlation": 0.993
+      },
+      {
+        "column1": "Budget.1",
+        "column2": "Budget.9",
+        "correlation": 0.993
+      },
+      {
+        "column1": "Budget.1",
+        "column2": "Projected.9",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Budget.1",
+        "column2": "Actual.9",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Budget.1",
+        "column2": "Budget.10",
+        "correlation": 0.964
+      },
+      {
+        "column1": "Budget.1",
+        "column2": "Projected.10",
+        "correlation": 0.965
+      },
+      {
+        "column1": "Budget.1",
+        "column2": "Actual.10",
+        "correlation": 0.958
+      },
+      {
+        "column1": "Budget.1",
+        "column2": "Budget.11",
+        "correlation": 0.965
+      },
+      {
+        "column1": "Budget.1",
+        "column2": "Projected.11",
+        "correlation": 0.806
+      },
+      {
+        "column1": "Budget.1",
+        "column2": "YTD Actual",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Budget.1",
+        "column2": "Remaining Projection",
+        "correlation": 0.993
+      },
+      {
+        "column1": "Budget.1",
+        "column2": "Total",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Budget.1",
+        "column2": "WIH 2024",
+        "correlation": 0.96
+      },
+      {
+        "column1": "Budget.1",
+        "column2": "Advance 2025",
+        "correlation": 0.944
+      },
+      {
+        "column1": "Budget.1",
+        "column2": "WIH 2025",
+        "correlation": 0.908
+      },
+      {
+        "column1": "Budget.1",
+        "column2": "on hold",
+        "correlation": 0.816
+      },
+      {
+        "column1": "Budget.1",
+        "column2": "JAN",
+        "correlation": -1.0
+      },
+      {
+        "column1": "Budget.1",
+        "column2": "FEB",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Budget.1",
+        "column2": "Unnamed: 55",
+        "correlation": 0.958
+      },
+      {
+        "column1": "Projected.1",
+        "column2": "Actual.1",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Projected.1",
+        "column2": "Budget.2",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Projected.1",
+        "column2": "Projected.2",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Projected.1",
+        "column2": "Actual.2",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Projected.1",
+        "column2": "Budget.3",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Projected.1",
+        "column2": "Projected.3",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Projected.1",
+        "column2": "Actual.3",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Projected.1",
+        "column2": "Budget.4",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Projected.1",
+        "column2": "Projected.4",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Projected.1",
+        "column2": "Actual.4",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Projected.1",
+        "column2": "Budget.5",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Projected.1",
+        "column2": "Projected.5",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Projected.1",
+        "column2": "Actual.5",
+        "correlation": 0.993
+      },
+      {
+        "column1": "Projected.1",
+        "column2": "Budget.6",
+        "correlation": 0.993
+      },
+      {
+        "column1": "Projected.1",
+        "column2": "Projected.6",
+        "correlation": 0.993
+      },
+      {
+        "column1": "Projected.1",
+        "column2": "Actual.6",
+        "correlation": 0.993
+      },
+      {
+        "column1": "Projected.1",
+        "column2": "Budget.7",
+        "correlation": 0.993
+      },
+      {
+        "column1": "Projected.1",
+        "column2": "Projected.7",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Projected.1",
+        "column2": "Actual.7",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Projected.1",
+        "column2": "Budget.8",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Projected.1",
+        "column2": "Projected.8",
+        "correlation": 0.993
+      },
+      {
+        "column1": "Projected.1",
+        "column2": "Actual.8",
+        "correlation": 0.993
+      },
+      {
+        "column1": "Projected.1",
+        "column2": "Budget.9",
+        "correlation": 0.993
+      },
+      {
+        "column1": "Projected.1",
+        "column2": "Projected.9",
+        "correlation": 0.993
+      },
+      {
+        "column1": "Projected.1",
+        "column2": "Actual.9",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Projected.1",
+        "column2": "Budget.10",
+        "correlation": 0.966
+      },
+      {
+        "column1": "Projected.1",
+        "column2": "Projected.10",
+        "correlation": 0.966
+      },
+      {
+        "column1": "Projected.1",
+        "column2": "Actual.10",
+        "correlation": 0.961
+      },
+      {
+        "column1": "Projected.1",
+        "column2": "Budget.11",
+        "correlation": 0.967
+      },
+      {
+        "column1": "Projected.1",
+        "column2": "Projected.11",
+        "correlation": 0.791
+      },
+      {
+        "column1": "Projected.1",
+        "column2": "YTD Actual",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Projected.1",
+        "column2": "Remaining Projection",
+        "correlation": 0.992
+      },
+      {
+        "column1": "Projected.1",
+        "column2": "Total",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Projected.1",
+        "column2": "WIH 2024",
+        "correlation": 0.958
+      },
+      {
+        "column1": "Projected.1",
+        "column2": "Advance 2025",
+        "correlation": 0.929
+      },
+      {
+        "column1": "Projected.1",
+        "column2": "WIH 2025",
+        "correlation": 0.905
+      },
+      {
+        "column1": "Projected.1",
+        "column2": "on hold",
+        "correlation": 0.803
+      },
+      {
+        "column1": "Projected.1",
+        "column2": "JAN",
+        "correlation": -1.0
+      },
+      {
+        "column1": "Projected.1",
+        "column2": "FEB",
+        "correlation": 0.945
+      },
+      {
+        "column1": "Projected.1",
+        "column2": "Unnamed: 55",
+        "correlation": 0.966
+      },
+      {
+        "column1": "Actual.1",
+        "column2": "Budget.2",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Actual.1",
+        "column2": "Projected.2",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Actual.1",
+        "column2": "Actual.2",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Actual.1",
+        "column2": "Budget.3",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Actual.1",
+        "column2": "Projected.3",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Actual.1",
+        "column2": "Actual.3",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Actual.1",
+        "column2": "Budget.4",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Actual.1",
+        "column2": "Projected.4",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Actual.1",
+        "column2": "Actual.4",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Actual.1",
+        "column2": "Budget.5",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Actual.1",
+        "column2": "Projected.5",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Actual.1",
+        "column2": "Actual.5",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Actual.1",
+        "column2": "Budget.6",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Actual.1",
+        "column2": "Projected.6",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Actual.1",
+        "column2": "Actual.6",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Actual.1",
+        "column2": "Budget.7",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Actual.1",
+        "column2": "Projected.7",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Actual.1",
+        "column2": "Actual.7",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Actual.1",
+        "column2": "Budget.8",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Actual.1",
+        "column2": "Projected.8",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Actual.1",
+        "column2": "Actual.8",
+        "correlation": 0.993
+      },
+      {
+        "column1": "Actual.1",
+        "column2": "Budget.9",
+        "correlation": 0.993
+      },
+      {
+        "column1": "Actual.1",
+        "column2": "Projected.9",
+        "correlation": 0.993
+      },
+      {
+        "column1": "Actual.1",
+        "column2": "Actual.9",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Actual.1",
+        "column2": "Budget.10",
+        "correlation": 0.966
+      },
+      {
+        "column1": "Actual.1",
+        "column2": "Projected.10",
+        "correlation": 0.966
+      },
+      {
+        "column1": "Actual.1",
+        "column2": "Actual.10",
+        "correlation": 0.961
+      },
+      {
+        "column1": "Actual.1",
+        "column2": "Budget.11",
+        "correlation": 0.967
+      },
+      {
+        "column1": "Actual.1",
+        "column2": "Projected.11",
+        "correlation": 0.797
+      },
+      {
+        "column1": "Actual.1",
+        "column2": "YTD Actual",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Actual.1",
+        "column2": "Remaining Projection",
+        "correlation": 0.992
+      },
+      {
+        "column1": "Actual.1",
+        "column2": "Total",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Actual.1",
+        "column2": "WIH 2024",
+        "correlation": 0.959
+      },
+      {
+        "column1": "Actual.1",
+        "column2": "Advance 2025",
+        "correlation": 0.937
+      },
+      {
+        "column1": "Actual.1",
+        "column2": "WIH 2025",
+        "correlation": 0.908
+      },
+      {
+        "column1": "Actual.1",
+        "column2": "on hold",
+        "correlation": 0.807
+      },
+      {
+        "column1": "Actual.1",
+        "column2": "JAN",
+        "correlation": -1.0
+      },
+      {
+        "column1": "Actual.1",
+        "column2": "FEB",
+        "correlation": 0.945
+      },
+      {
+        "column1": "Actual.1",
+        "column2": "Unnamed: 55",
+        "correlation": 0.966
+      },
+      {
+        "column1": "Budget.2",
+        "column2": "Projected.2",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Budget.2",
+        "column2": "Actual.2",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Budget.2",
+        "column2": "Budget.3",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Budget.2",
+        "column2": "Projected.3",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Budget.2",
+        "column2": "Actual.3",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Budget.2",
+        "column2": "Budget.4",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Budget.2",
+        "column2": "Projected.4",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Budget.2",
+        "column2": "Actual.4",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Budget.2",
+        "column2": "Budget.5",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Budget.2",
+        "column2": "Projected.5",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Budget.2",
+        "column2": "Actual.5",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Budget.2",
+        "column2": "Budget.6",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Budget.2",
+        "column2": "Projected.6",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Budget.2",
+        "column2": "Actual.6",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Budget.2",
+        "column2": "Budget.7",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Budget.2",
+        "column2": "Projected.7",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Budget.2",
+        "column2": "Actual.7",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Budget.2",
+        "column2": "Budget.8",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Budget.2",
+        "column2": "Projected.8",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Budget.2",
+        "column2": "Actual.8",
+        "correlation": 0.992
+      },
+      {
+        "column1": "Budget.2",
+        "column2": "Budget.9",
+        "correlation": 0.992
+      },
+      {
+        "column1": "Budget.2",
+        "column2": "Projected.9",
+        "correlation": 0.993
+      },
+      {
+        "column1": "Budget.2",
+        "column2": "Actual.9",
+        "correlation": 0.991
+      },
+      {
+        "column1": "Budget.2",
+        "column2": "Budget.10",
+        "correlation": 0.966
+      },
+      {
+        "column1": "Budget.2",
+        "column2": "Projected.10",
+        "correlation": 0.965
+      },
+      {
+        "column1": "Budget.2",
+        "column2": "Actual.10",
+        "correlation": 0.958
+      },
+      {
+        "column1": "Budget.2",
+        "column2": "Budget.11",
+        "correlation": 0.966
+      },
+      {
+        "column1": "Budget.2",
+        "column2": "Projected.11",
+        "correlation": 0.831
+      },
+      {
+        "column1": "Budget.2",
+        "column2": "Actual.11",
+        "correlation": 0.714
+      },
+      {
+        "column1": "Budget.2",
+        "column2": "YTD Actual",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Budget.2",
+        "column2": "Remaining Projection",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Budget.2",
+        "column2": "Total",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Budget.2",
+        "column2": "WIH 2024",
+        "correlation": 0.96
+      },
+      {
+        "column1": "Budget.2",
+        "column2": "Advance 2025",
+        "correlation": 0.952
+      },
+      {
+        "column1": "Budget.2",
+        "column2": "WIH 2025",
+        "correlation": 0.911
+      },
+      {
+        "column1": "Budget.2",
+        "column2": "on hold",
+        "correlation": 0.822
+      },
+      {
+        "column1": "Budget.2",
+        "column2": "JAN",
+        "correlation": -1.0
+      },
+      {
+        "column1": "Budget.2",
+        "column2": "FEB",
+        "correlation": 0.818
+      },
+      {
+        "column1": "Budget.2",
+        "column2": "Unnamed: 55",
+        "correlation": 0.966
+      },
+      {
+        "column1": "Projected.2",
+        "column2": "Actual.2",
+        "correlation": 1.0
+      },
+      {
+        "column1": "Projected.2",
+        "column2": "Budget.3",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Projected.2",
+        "column2": "Projected.3",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Projected.2",
+        "column2": "Actual.3",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Projected.2",
+        "column2": "Budget.4",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Projected.2",
+        "column2": "Projected.4",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Projected.2",
+        "column2": "Actual.4",
+        "correlation": 1.0
+      },
+      {
+        "column1": "Projected.2",
+        "column2": "Budget.5",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Projected.2",
+        "column2": "Projected.5",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Projected.2",
+        "column2": "Actual.5",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Projected.2",
+        "column2": "Budget.6",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Projected.2",
+        "column2": "Projected.6",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Projected.2",
+        "column2": "Actual.6",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Projected.2",
+        "column2": "Budget.7",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Projected.2",
+        "column2": "Projected.7",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Projected.2",
+        "column2": "Actual.7",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Projected.2",
+        "column2": "Budget.8",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Projected.2",
+        "column2": "Projected.8",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Projected.2",
+        "column2": "Actual.8",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Projected.2",
+        "column2": "Budget.9",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Projected.2",
+        "column2": "Projected.9",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Projected.2",
+        "column2": "Actual.9",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Projected.2",
+        "column2": "Budget.10",
+        "correlation": 0.967
+      },
+      {
+        "column1": "Projected.2",
+        "column2": "Projected.10",
+        "correlation": 0.967
+      },
+      {
+        "column1": "Projected.2",
+        "column2": "Actual.10",
+        "correlation": 0.96
+      },
+      {
+        "column1": "Projected.2",
+        "column2": "Budget.11",
+        "correlation": 0.968
+      },
+      {
+        "column1": "Projected.2",
+        "column2": "Projected.11",
+        "correlation": 0.822
+      },
+      {
+        "column1": "Projected.2",
+        "column2": "Actual.11",
+        "correlation": 0.706
+      },
+      {
+        "column1": "Projected.2",
+        "column2": "YTD Actual",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Projected.2",
+        "column2": "Remaining Projection",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Projected.2",
+        "column2": "Total",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Projected.2",
+        "column2": "WIH 2024",
+        "correlation": 0.96
+      },
+      {
+        "column1": "Projected.2",
+        "column2": "Advance 2025",
+        "correlation": 0.944
+      },
+      {
+        "column1": "Projected.2",
+        "column2": "WIH 2025",
+        "correlation": 0.911
+      },
+      {
+        "column1": "Projected.2",
+        "column2": "on hold",
+        "correlation": 0.824
+      },
+      {
+        "column1": "Projected.2",
+        "column2": "JAN",
+        "correlation": -1.0
+      },
+      {
+        "column1": "Projected.2",
+        "column2": "FEB",
+        "correlation": 0.818
+      },
+      {
+        "column1": "Projected.2",
+        "column2": "Unnamed: 55",
+        "correlation": 0.966
+      },
+      {
+        "column1": "Actual.2",
+        "column2": "Budget.3",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Actual.2",
+        "column2": "Projected.3",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Actual.2",
+        "column2": "Actual.3",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Actual.2",
+        "column2": "Budget.4",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Actual.2",
+        "column2": "Projected.4",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Actual.2",
+        "column2": "Actual.4",
+        "correlation": 1.0
+      },
+      {
+        "column1": "Actual.2",
+        "column2": "Budget.5",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Actual.2",
+        "column2": "Projected.5",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Actual.2",
+        "column2": "Actual.5",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Actual.2",
+        "column2": "Budget.6",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Actual.2",
+        "column2": "Projected.6",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Actual.2",
+        "column2": "Actual.6",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Actual.2",
+        "column2": "Budget.7",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Actual.2",
+        "column2": "Projected.7",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Actual.2",
+        "column2": "Actual.7",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Actual.2",
+        "column2": "Budget.8",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Actual.2",
+        "column2": "Projected.8",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Actual.2",
+        "column2": "Actual.8",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Actual.2",
+        "column2": "Budget.9",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Actual.2",
+        "column2": "Projected.9",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Actual.2",
+        "column2": "Actual.9",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Actual.2",
+        "column2": "Budget.10",
+        "correlation": 0.969
+      },
+      {
+        "column1": "Actual.2",
+        "column2": "Projected.10",
+        "correlation": 0.969
+      },
+      {
+        "column1": "Actual.2",
+        "column2": "Actual.10",
+        "correlation": 0.962
+      },
+      {
+        "column1": "Actual.2",
+        "column2": "Budget.11",
+        "correlation": 0.97
+      },
+      {
+        "column1": "Actual.2",
+        "column2": "Projected.11",
+        "correlation": 0.823
+      },
+      {
+        "column1": "Actual.2",
+        "column2": "Actual.11",
+        "correlation": 0.706
+      },
+      {
+        "column1": "Actual.2",
+        "column2": "YTD Actual",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Actual.2",
+        "column2": "Remaining Projection",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Actual.2",
+        "column2": "Total",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Actual.2",
+        "column2": "WIH 2024",
+        "correlation": 0.959
+      },
+      {
+        "column1": "Actual.2",
+        "column2": "Advance 2025",
+        "correlation": 0.944
+      },
+      {
+        "column1": "Actual.2",
+        "column2": "WIH 2025",
+        "correlation": 0.909
+      },
+      {
+        "column1": "Actual.2",
+        "column2": "on hold",
+        "correlation": 0.823
+      },
+      {
+        "column1": "Actual.2",
+        "column2": "JAN",
+        "correlation": -1.0
+      },
+      {
+        "column1": "Actual.2",
+        "column2": "FEB",
+        "correlation": 0.818
+      },
+      {
+        "column1": "Actual.2",
+        "column2": "Unnamed: 55",
+        "correlation": 0.966
+      },
+      {
+        "column1": "Budget.3",
+        "column2": "Projected.3",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Budget.3",
+        "column2": "Actual.3",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Budget.3",
+        "column2": "Budget.4",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Budget.3",
+        "column2": "Projected.4",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Budget.3",
+        "column2": "Actual.4",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Budget.3",
+        "column2": "Budget.5",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Budget.3",
+        "column2": "Projected.5",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Budget.3",
+        "column2": "Actual.5",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Budget.3",
+        "column2": "Budget.6",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Budget.3",
+        "column2": "Projected.6",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Budget.3",
+        "column2": "Actual.6",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Budget.3",
+        "column2": "Budget.7",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Budget.3",
+        "column2": "Projected.7",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Budget.3",
+        "column2": "Actual.7",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Budget.3",
+        "column2": "Budget.8",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Budget.3",
+        "column2": "Projected.8",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Budget.3",
+        "column2": "Actual.8",
+        "correlation": 0.992
+      },
+      {
+        "column1": "Budget.3",
+        "column2": "Budget.9",
+        "correlation": 0.992
+      },
+      {
+        "column1": "Budget.3",
+        "column2": "Projected.9",
+        "correlation": 0.993
+      },
+      {
+        "column1": "Budget.3",
+        "column2": "Actual.9",
+        "correlation": 0.991
+      },
+      {
+        "column1": "Budget.3",
+        "column2": "Budget.10",
+        "correlation": 0.963
+      },
+      {
+        "column1": "Budget.3",
+        "column2": "Projected.10",
+        "correlation": 0.963
+      },
+      {
+        "column1": "Budget.3",
+        "column2": "Actual.10",
+        "correlation": 0.955
+      },
+      {
+        "column1": "Budget.3",
+        "column2": "Budget.11",
+        "correlation": 0.964
+      },
+      {
+        "column1": "Budget.3",
+        "column2": "Projected.11",
+        "correlation": 0.831
+      },
+      {
+        "column1": "Budget.3",
+        "column2": "Actual.11",
+        "correlation": 0.712
+      },
+      {
+        "column1": "Budget.3",
+        "column2": "YTD Actual",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Budget.3",
+        "column2": "Remaining Projection",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Budget.3",
+        "column2": "Total",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Budget.3",
+        "column2": "WIH 2024",
+        "correlation": 0.963
+      },
+      {
+        "column1": "Budget.3",
+        "column2": "Advance 2025",
+        "correlation": 0.952
+      },
+      {
+        "column1": "Budget.3",
+        "column2": "WIH 2025",
+        "correlation": 0.912
+      },
+      {
+        "column1": "Budget.3",
+        "column2": "on hold",
+        "correlation": 0.833
+      },
+      {
+        "column1": "Budget.3",
+        "column2": "JAN",
+        "correlation": -1.0
+      },
+      {
+        "column1": "Budget.3",
+        "column2": "FEB",
+        "correlation": 0.818
+      },
+      {
+        "column1": "Budget.3",
+        "column2": "Unnamed: 55",
+        "correlation": 0.966
+      },
+      {
+        "column1": "Projected.3",
+        "column2": "Actual.3",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Projected.3",
+        "column2": "Budget.4",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Projected.3",
+        "column2": "Projected.4",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Projected.3",
+        "column2": "Actual.4",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Projected.3",
+        "column2": "Budget.5",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Projected.3",
+        "column2": "Projected.5",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Projected.3",
+        "column2": "Actual.5",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Projected.3",
+        "column2": "Budget.6",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Projected.3",
+        "column2": "Projected.6",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Projected.3",
+        "column2": "Actual.6",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Projected.3",
+        "column2": "Budget.7",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Projected.3",
+        "column2": "Projected.7",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Projected.3",
+        "column2": "Actual.7",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Projected.3",
+        "column2": "Budget.8",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Projected.3",
+        "column2": "Projected.8",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Projected.3",
+        "column2": "Actual.8",
+        "correlation": 0.991
+      },
+      {
+        "column1": "Projected.3",
+        "column2": "Budget.9",
+        "correlation": 0.991
+      },
+      {
+        "column1": "Projected.3",
+        "column2": "Projected.9",
+        "correlation": 0.993
+      },
+      {
+        "column1": "Projected.3",
+        "column2": "Actual.9",
+        "correlation": 0.991
+      },
+      {
+        "column1": "Projected.3",
+        "column2": "Budget.10",
+        "correlation": 0.96
+      },
+      {
+        "column1": "Projected.3",
+        "column2": "Projected.10",
+        "correlation": 0.96
+      },
+      {
+        "column1": "Projected.3",
+        "column2": "Actual.10",
+        "correlation": 0.952
+      },
+      {
+        "column1": "Projected.3",
+        "column2": "Budget.11",
+        "correlation": 0.961
+      },
+      {
+        "column1": "Projected.3",
+        "column2": "Projected.11",
+        "correlation": 0.825
+      },
+      {
+        "column1": "Projected.3",
+        "column2": "Actual.11",
+        "correlation": 0.704
+      },
+      {
+        "column1": "Projected.3",
+        "column2": "YTD Actual",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Projected.3",
+        "column2": "Remaining Projection",
+        "correlation": 0.993
+      },
+      {
+        "column1": "Projected.3",
+        "column2": "Total",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Projected.3",
+        "column2": "WIH 2024",
+        "correlation": 0.963
+      },
+      {
+        "column1": "Projected.3",
+        "column2": "Advance 2025",
+        "correlation": 0.952
+      },
+      {
+        "column1": "Projected.3",
+        "column2": "WIH 2025",
+        "correlation": 0.913
+      },
+      {
+        "column1": "Projected.3",
+        "column2": "on hold",
+        "correlation": 0.844
+      },
+      {
+        "column1": "Projected.3",
+        "column2": "JAN",
+        "correlation": -1.0
+      },
+      {
+        "column1": "Projected.3",
+        "column2": "FEB",
+        "correlation": 0.906
+      },
+      {
+        "column1": "Projected.3",
+        "column2": "Unnamed: 55",
+        "correlation": 0.966
+      },
+      {
+        "column1": "Actual.3",
+        "column2": "Budget.4",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Actual.3",
+        "column2": "Projected.4",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Actual.3",
+        "column2": "Actual.4",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Actual.3",
+        "column2": "Budget.5",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Actual.3",
+        "column2": "Projected.5",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Actual.3",
+        "column2": "Actual.5",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Actual.3",
+        "column2": "Budget.6",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Actual.3",
+        "column2": "Projected.6",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Actual.3",
+        "column2": "Actual.6",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Actual.3",
+        "column2": "Budget.7",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Actual.3",
+        "column2": "Projected.7",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Actual.3",
+        "column2": "Actual.7",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Actual.3",
+        "column2": "Budget.8",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Actual.3",
+        "column2": "Projected.8",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Actual.3",
+        "column2": "Actual.8",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Actual.3",
+        "column2": "Budget.9",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Actual.3",
+        "column2": "Projected.9",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Actual.3",
+        "column2": "Actual.9",
+        "correlation": 0.993
+      },
+      {
+        "column1": "Actual.3",
+        "column2": "Budget.10",
+        "correlation": 0.965
+      },
+      {
+        "column1": "Actual.3",
+        "column2": "Projected.10",
+        "correlation": 0.965
+      },
+      {
+        "column1": "Actual.3",
+        "column2": "Actual.10",
+        "correlation": 0.958
+      },
+      {
+        "column1": "Actual.3",
+        "column2": "Budget.11",
+        "correlation": 0.966
+      },
+      {
+        "column1": "Actual.3",
+        "column2": "Projected.11",
+        "correlation": 0.826
+      },
+      {
+        "column1": "Actual.3",
+        "column2": "Actual.11",
+        "correlation": 0.706
+      },
+      {
+        "column1": "Actual.3",
+        "column2": "YTD Actual",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Actual.3",
+        "column2": "Remaining Projection",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Actual.3",
+        "column2": "Total",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Actual.3",
+        "column2": "WIH 2024",
+        "correlation": 0.963
+      },
+      {
+        "column1": "Actual.3",
+        "column2": "Advance 2025",
+        "correlation": 0.952
+      },
+      {
+        "column1": "Actual.3",
+        "column2": "WIH 2025",
+        "correlation": 0.911
+      },
+      {
+        "column1": "Actual.3",
+        "column2": "on hold",
+        "correlation": 0.839
+      },
+      {
+        "column1": "Actual.3",
+        "column2": "JAN",
+        "correlation": -1.0
+      },
+      {
+        "column1": "Actual.3",
+        "column2": "FEB",
+        "correlation": 0.871
+      },
+      {
+        "column1": "Actual.3",
+        "column2": "Unnamed: 55",
+        "correlation": 0.966
+      },
+      {
+        "column1": "Budget.4",
+        "column2": "Projected.4",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Budget.4",
+        "column2": "Actual.4",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Budget.4",
+        "column2": "Budget.5",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Budget.4",
+        "column2": "Projected.5",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Budget.4",
+        "column2": "Actual.5",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Budget.4",
+        "column2": "Budget.6",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Budget.4",
+        "column2": "Projected.6",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Budget.4",
+        "column2": "Actual.6",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Budget.4",
+        "column2": "Budget.7",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Budget.4",
+        "column2": "Projected.7",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Budget.4",
+        "column2": "Actual.7",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Budget.4",
+        "column2": "Budget.8",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Budget.4",
+        "column2": "Projected.8",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Budget.4",
+        "column2": "Actual.8",
+        "correlation": 0.993
+      },
+      {
+        "column1": "Budget.4",
+        "column2": "Budget.9",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Budget.4",
+        "column2": "Projected.9",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Budget.4",
+        "column2": "Actual.9",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Budget.4",
+        "column2": "Budget.10",
+        "correlation": 0.967
+      },
+      {
+        "column1": "Budget.4",
+        "column2": "Projected.10",
+        "correlation": 0.967
+      },
+      {
+        "column1": "Budget.4",
+        "column2": "Actual.10",
+        "correlation": 0.96
+      },
+      {
+        "column1": "Budget.4",
+        "column2": "Budget.11",
+        "correlation": 0.968
+      },
+      {
+        "column1": "Budget.4",
+        "column2": "Projected.11",
+        "correlation": 0.826
+      },
+      {
+        "column1": "Budget.4",
+        "column2": "Actual.11",
+        "correlation": 0.709
+      },
+      {
+        "column1": "Budget.4",
+        "column2": "YTD Actual",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Budget.4",
+        "column2": "Remaining Projection",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Budget.4",
+        "column2": "Total",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Budget.4",
+        "column2": "WIH 2024",
+        "correlation": 0.959
+      },
+      {
+        "column1": "Budget.4",
+        "column2": "Advance 2025",
+        "correlation": 0.947
+      },
+      {
+        "column1": "Budget.4",
+        "column2": "WIH 2025",
+        "correlation": 0.909
+      },
+      {
+        "column1": "Budget.4",
+        "column2": "on hold",
+        "correlation": 0.839
+      },
+      {
+        "column1": "Budget.4",
+        "column2": "JAN",
+        "correlation": -1.0
+      },
+      {
+        "column1": "Budget.4",
+        "column2": "FEB",
+        "correlation": 0.818
+      },
+      {
+        "column1": "Budget.4",
+        "column2": "Unnamed: 55",
+        "correlation": 0.966
+      },
+      {
+        "column1": "Projected.4",
+        "column2": "Actual.4",
+        "correlation": 1.0
+      },
+      {
+        "column1": "Projected.4",
+        "column2": "Budget.5",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Projected.4",
+        "column2": "Projected.5",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Projected.4",
+        "column2": "Actual.5",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Projected.4",
+        "column2": "Budget.6",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Projected.4",
+        "column2": "Projected.6",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Projected.4",
+        "column2": "Actual.6",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Projected.4",
+        "column2": "Budget.7",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Projected.4",
+        "column2": "Projected.7",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Projected.4",
+        "column2": "Actual.7",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Projected.4",
+        "column2": "Budget.8",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Projected.4",
+        "column2": "Projected.8",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Projected.4",
+        "column2": "Actual.8",
+        "correlation": 0.992
+      },
+      {
+        "column1": "Projected.4",
+        "column2": "Budget.9",
+        "correlation": 0.993
+      },
+      {
+        "column1": "Projected.4",
+        "column2": "Projected.9",
+        "correlation": 0.993
+      },
+      {
+        "column1": "Projected.4",
+        "column2": "Actual.9",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Projected.4",
+        "column2": "Budget.10",
+        "correlation": 0.966
+      },
+      {
+        "column1": "Projected.4",
+        "column2": "Projected.10",
+        "correlation": 0.966
+      },
+      {
+        "column1": "Projected.4",
+        "column2": "Actual.10",
+        "correlation": 0.96
+      },
+      {
+        "column1": "Projected.4",
+        "column2": "Budget.11",
+        "correlation": 0.967
+      },
+      {
+        "column1": "Projected.4",
+        "column2": "Projected.11",
+        "correlation": 0.821
+      },
+      {
+        "column1": "Projected.4",
+        "column2": "Actual.11",
+        "correlation": 0.706
+      },
+      {
+        "column1": "Projected.4",
+        "column2": "YTD Actual",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Projected.4",
+        "column2": "Remaining Projection",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Projected.4",
+        "column2": "Total",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Projected.4",
+        "column2": "WIH 2024",
+        "correlation": 0.96
+      },
+      {
+        "column1": "Projected.4",
+        "column2": "Advance 2025",
+        "correlation": 0.944
+      },
+      {
+        "column1": "Projected.4",
+        "column2": "WIH 2025",
+        "correlation": 0.909
+      },
+      {
+        "column1": "Projected.4",
+        "column2": "on hold",
+        "correlation": 0.837
+      },
+      {
+        "column1": "Projected.4",
+        "column2": "JAN",
+        "correlation": -1.0
+      },
+      {
+        "column1": "Projected.4",
+        "column2": "FEB",
+        "correlation": 0.818
+      },
+      {
+        "column1": "Projected.4",
+        "column2": "Unnamed: 55",
+        "correlation": 0.966
+      },
+      {
+        "column1": "Actual.4",
+        "column2": "Budget.5",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Actual.4",
+        "column2": "Projected.5",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Actual.4",
+        "column2": "Actual.5",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Actual.4",
+        "column2": "Budget.6",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Actual.4",
+        "column2": "Projected.6",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Actual.4",
+        "column2": "Actual.6",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Actual.4",
+        "column2": "Budget.7",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Actual.4",
+        "column2": "Projected.7",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Actual.4",
+        "column2": "Actual.7",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Actual.4",
+        "column2": "Budget.8",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Actual.4",
+        "column2": "Projected.8",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Actual.4",
+        "column2": "Actual.8",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Actual.4",
+        "column2": "Budget.9",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Actual.4",
+        "column2": "Projected.9",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Actual.4",
+        "column2": "Actual.9",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Actual.4",
+        "column2": "Budget.10",
+        "correlation": 0.969
+      },
+      {
+        "column1": "Actual.4",
+        "column2": "Projected.10",
+        "correlation": 0.969
+      },
+      {
+        "column1": "Actual.4",
+        "column2": "Actual.10",
+        "correlation": 0.963
+      },
+      {
+        "column1": "Actual.4",
+        "column2": "Budget.11",
+        "correlation": 0.97
+      },
+      {
+        "column1": "Actual.4",
+        "column2": "Projected.11",
+        "correlation": 0.815
+      },
+      {
+        "column1": "Actual.4",
+        "column2": "YTD Actual",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Actual.4",
+        "column2": "Remaining Projection",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Actual.4",
+        "column2": "Total",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Actual.4",
+        "column2": "WIH 2024",
+        "correlation": 0.959
+      },
+      {
+        "column1": "Actual.4",
+        "column2": "Advance 2025",
+        "correlation": 0.941
+      },
+      {
+        "column1": "Actual.4",
+        "column2": "WIH 2025",
+        "correlation": 0.905
+      },
+      {
+        "column1": "Actual.4",
+        "column2": "on hold",
+        "correlation": 0.83
+      },
+      {
+        "column1": "Actual.4",
+        "column2": "JAN",
+        "correlation": -0.752
+      },
+      {
+        "column1": "Actual.4",
+        "column2": "FEB",
+        "correlation": 0.818
+      },
+      {
+        "column1": "Actual.4",
+        "column2": "Unnamed: 55",
+        "correlation": 0.966
+      },
+      {
+        "column1": "Budget.5",
+        "column2": "Projected.5",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Budget.5",
+        "column2": "Actual.5",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Budget.5",
+        "column2": "Budget.6",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Budget.5",
+        "column2": "Projected.6",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Budget.5",
+        "column2": "Actual.6",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Budget.5",
+        "column2": "Budget.7",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Budget.5",
+        "column2": "Projected.7",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Budget.5",
+        "column2": "Actual.7",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Budget.5",
+        "column2": "Budget.8",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Budget.5",
+        "column2": "Projected.8",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Budget.5",
+        "column2": "Actual.8",
+        "correlation": 0.991
+      },
+      {
+        "column1": "Budget.5",
+        "column2": "Budget.9",
+        "correlation": 0.991
+      },
+      {
+        "column1": "Budget.5",
+        "column2": "Projected.9",
+        "correlation": 0.992
+      },
+      {
+        "column1": "Budget.5",
+        "column2": "Actual.9",
+        "correlation": 0.991
+      },
+      {
+        "column1": "Budget.5",
+        "column2": "Budget.10",
+        "correlation": 0.966
+      },
+      {
+        "column1": "Budget.5",
+        "column2": "Projected.10",
+        "correlation": 0.966
+      },
+      {
+        "column1": "Budget.5",
+        "column2": "Actual.10",
+        "correlation": 0.958
+      },
+      {
+        "column1": "Budget.5",
+        "column2": "Budget.11",
+        "correlation": 0.967
+      },
+      {
+        "column1": "Budget.5",
+        "column2": "Projected.11",
+        "correlation": 0.83
+      },
+      {
+        "column1": "Budget.5",
+        "column2": "Actual.11",
+        "correlation": 0.713
+      },
+      {
+        "column1": "Budget.5",
+        "column2": "YTD Actual",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Budget.5",
+        "column2": "Remaining Projection",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Budget.5",
+        "column2": "Total",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Budget.5",
+        "column2": "WIH 2024",
+        "correlation": 0.958
+      },
+      {
+        "column1": "Budget.5",
+        "column2": "Advance 2025",
+        "correlation": 0.951
+      },
+      {
+        "column1": "Budget.5",
+        "column2": "WIH 2025",
+        "correlation": 0.909
+      },
+      {
+        "column1": "Budget.5",
+        "column2": "on hold",
+        "correlation": 0.841
+      },
+      {
+        "column1": "Budget.5",
+        "column2": "JAN",
+        "correlation": -0.752
+      },
+      {
+        "column1": "Budget.5",
+        "column2": "FEB",
+        "correlation": 0.818
+      },
+      {
+        "column1": "Budget.5",
+        "column2": "Unnamed: 55",
+        "correlation": 0.966
+      },
+      {
+        "column1": "Projected.5",
+        "column2": "Actual.5",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Projected.5",
+        "column2": "Budget.6",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Projected.5",
+        "column2": "Projected.6",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Projected.5",
+        "column2": "Actual.6",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Projected.5",
+        "column2": "Budget.7",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Projected.5",
+        "column2": "Projected.7",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Projected.5",
+        "column2": "Actual.7",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Projected.5",
+        "column2": "Budget.8",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Projected.5",
+        "column2": "Projected.8",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Projected.5",
+        "column2": "Actual.8",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Projected.5",
+        "column2": "Budget.9",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Projected.5",
+        "column2": "Projected.9",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Projected.5",
+        "column2": "Actual.9",
+        "correlation": 0.993
+      },
+      {
+        "column1": "Projected.5",
+        "column2": "Budget.10",
+        "correlation": 0.969
+      },
+      {
+        "column1": "Projected.5",
+        "column2": "Projected.10",
+        "correlation": 0.969
+      },
+      {
+        "column1": "Projected.5",
+        "column2": "Actual.10",
+        "correlation": 0.962
+      },
+      {
+        "column1": "Projected.5",
+        "column2": "Budget.11",
+        "correlation": 0.97
+      },
+      {
+        "column1": "Projected.5",
+        "column2": "Projected.11",
+        "correlation": 0.832
+      },
+      {
+        "column1": "Projected.5",
+        "column2": "Actual.11",
+        "correlation": 0.718
+      },
+      {
+        "column1": "Projected.5",
+        "column2": "YTD Actual",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Projected.5",
+        "column2": "Remaining Projection",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Projected.5",
+        "column2": "Total",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Projected.5",
+        "column2": "WIH 2024",
+        "correlation": 0.96
+      },
+      {
+        "column1": "Projected.5",
+        "column2": "Advance 2025",
+        "correlation": 0.95
+      },
+      {
+        "column1": "Projected.5",
+        "column2": "WIH 2025",
+        "correlation": 0.91
+      },
+      {
+        "column1": "Projected.5",
+        "column2": "on hold",
+        "correlation": 0.838
+      },
+      {
+        "column1": "Projected.5",
+        "column2": "JAN",
+        "correlation": -0.752
+      },
+      {
+        "column1": "Projected.5",
+        "column2": "FEB",
+        "correlation": 0.818
+      },
+      {
+        "column1": "Projected.5",
+        "column2": "Unnamed: 55",
+        "correlation": 0.966
+      },
+      {
+        "column1": "Actual.5",
+        "column2": "Budget.6",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Actual.5",
+        "column2": "Projected.6",
+        "correlation": 1.0
+      },
+      {
+        "column1": "Actual.5",
+        "column2": "Actual.6",
+        "correlation": 1.0
+      },
+      {
+        "column1": "Actual.5",
+        "column2": "Budget.7",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Actual.5",
+        "column2": "Projected.7",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Actual.5",
+        "column2": "Actual.7",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Actual.5",
+        "column2": "Budget.8",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Actual.5",
+        "column2": "Projected.8",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Actual.5",
+        "column2": "Actual.8",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Actual.5",
+        "column2": "Budget.9",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Actual.5",
+        "column2": "Projected.9",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Actual.5",
+        "column2": "Actual.9",
+        "correlation": 0.993
+      },
+      {
+        "column1": "Actual.5",
+        "column2": "Budget.10",
+        "correlation": 0.969
+      },
+      {
+        "column1": "Actual.5",
+        "column2": "Projected.10",
+        "correlation": 0.969
+      },
+      {
+        "column1": "Actual.5",
+        "column2": "Actual.10",
+        "correlation": 0.962
+      },
+      {
+        "column1": "Actual.5",
+        "column2": "Budget.11",
+        "correlation": 0.97
+      },
+      {
+        "column1": "Actual.5",
+        "column2": "Projected.11",
+        "correlation": 0.851
+      },
+      {
+        "column1": "Actual.5",
+        "column2": "Actual.11",
+        "correlation": 0.743
+      },
+      {
+        "column1": "Actual.5",
+        "column2": "YTD Actual",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Actual.5",
+        "column2": "Remaining Projection",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Actual.5",
+        "column2": "Total",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Actual.5",
+        "column2": "WIH 2024",
+        "correlation": 0.957
+      },
+      {
+        "column1": "Actual.5",
+        "column2": "Advance 2025",
+        "correlation": 0.947
+      },
+      {
+        "column1": "Actual.5",
+        "column2": "WIH 2025",
+        "correlation": 0.91
+      },
+      {
+        "column1": "Actual.5",
+        "column2": "on hold",
+        "correlation": 0.837
+      },
+      {
+        "column1": "Actual.5",
+        "column2": "JAN",
+        "correlation": -0.752
+      },
+      {
+        "column1": "Actual.5",
+        "column2": "FEB",
+        "correlation": 0.818
+      },
+      {
+        "column1": "Actual.5",
+        "column2": "Unnamed: 55",
+        "correlation": 0.966
+      },
+      {
+        "column1": "Budget.6",
+        "column2": "Projected.6",
+        "correlation": 1.0
+      },
+      {
+        "column1": "Budget.6",
+        "column2": "Actual.6",
+        "correlation": 1.0
+      },
+      {
+        "column1": "Budget.6",
+        "column2": "Budget.7",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Budget.6",
+        "column2": "Projected.7",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Budget.6",
+        "column2": "Actual.7",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Budget.6",
+        "column2": "Budget.8",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Budget.6",
+        "column2": "Projected.8",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Budget.6",
+        "column2": "Actual.8",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Budget.6",
+        "column2": "Budget.9",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Budget.6",
+        "column2": "Projected.9",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Budget.6",
+        "column2": "Actual.9",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Budget.6",
+        "column2": "Budget.10",
+        "correlation": 0.969
+      },
+      {
+        "column1": "Budget.6",
+        "column2": "Projected.10",
+        "correlation": 0.969
+      },
+      {
+        "column1": "Budget.6",
+        "column2": "Actual.10",
+        "correlation": 0.962
+      },
+      {
+        "column1": "Budget.6",
+        "column2": "Budget.11",
+        "correlation": 0.97
+      },
+      {
+        "column1": "Budget.6",
+        "column2": "Projected.11",
+        "correlation": 0.849
+      },
+      {
+        "column1": "Budget.6",
+        "column2": "Actual.11",
+        "correlation": 0.74
+      },
+      {
+        "column1": "Budget.6",
+        "column2": "YTD Actual",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Budget.6",
+        "column2": "Remaining Projection",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Budget.6",
+        "column2": "Total",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Budget.6",
+        "column2": "WIH 2024",
+        "correlation": 0.959
+      },
+      {
+        "column1": "Budget.6",
+        "column2": "Advance 2025",
+        "correlation": 0.945
+      },
+      {
+        "column1": "Budget.6",
+        "column2": "WIH 2025",
+        "correlation": 0.908
+      },
+      {
+        "column1": "Budget.6",
+        "column2": "on hold",
+        "correlation": 0.848
+      },
+      {
+        "column1": "Budget.6",
+        "column2": "JAN",
+        "correlation": -0.752
+      },
+      {
+        "column1": "Budget.6",
+        "column2": "FEB",
+        "correlation": 0.818
+      },
+      {
+        "column1": "Budget.6",
+        "column2": "Unnamed: 55",
+        "correlation": 0.966
+      },
+      {
+        "column1": "Projected.6",
+        "column2": "Actual.6",
+        "correlation": 1.0
+      },
+      {
+        "column1": "Projected.6",
+        "column2": "Budget.7",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Projected.6",
+        "column2": "Projected.7",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Projected.6",
+        "column2": "Actual.7",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Projected.6",
+        "column2": "Budget.8",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Projected.6",
+        "column2": "Projected.8",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Projected.6",
+        "column2": "Actual.8",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Projected.6",
+        "column2": "Budget.9",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Projected.6",
+        "column2": "Projected.9",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Projected.6",
+        "column2": "Actual.9",
+        "correlation": 0.993
+      },
+      {
+        "column1": "Projected.6",
+        "column2": "Budget.10",
+        "correlation": 0.968
+      },
+      {
+        "column1": "Projected.6",
+        "column2": "Projected.10",
+        "correlation": 0.969
+      },
+      {
+        "column1": "Projected.6",
+        "column2": "Actual.10",
+        "correlation": 0.961
+      },
+      {
+        "column1": "Projected.6",
+        "column2": "Budget.11",
+        "correlation": 0.969
+      },
+      {
+        "column1": "Projected.6",
+        "column2": "Projected.11",
+        "correlation": 0.85
+      },
+      {
+        "column1": "Projected.6",
+        "column2": "Actual.11",
+        "correlation": 0.74
+      },
+      {
+        "column1": "Projected.6",
+        "column2": "YTD Actual",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Projected.6",
+        "column2": "Remaining Projection",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Projected.6",
+        "column2": "Total",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Projected.6",
+        "column2": "WIH 2024",
+        "correlation": 0.96
+      },
+      {
+        "column1": "Projected.6",
+        "column2": "Advance 2025",
+        "correlation": 0.948
+      },
+      {
+        "column1": "Projected.6",
+        "column2": "WIH 2025",
+        "correlation": 0.91
+      },
+      {
+        "column1": "Projected.6",
+        "column2": "on hold",
+        "correlation": 0.849
+      },
+      {
+        "column1": "Projected.6",
+        "column2": "JAN",
+        "correlation": -0.752
+      },
+      {
+        "column1": "Projected.6",
+        "column2": "FEB",
+        "correlation": 0.818
+      },
+      {
+        "column1": "Projected.6",
+        "column2": "Unnamed: 55",
+        "correlation": 0.966
+      },
+      {
+        "column1": "Actual.6",
+        "column2": "Budget.7",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Actual.6",
+        "column2": "Projected.7",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Actual.6",
+        "column2": "Actual.7",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Actual.6",
+        "column2": "Budget.8",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Actual.6",
+        "column2": "Projected.8",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Actual.6",
+        "column2": "Actual.8",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Actual.6",
+        "column2": "Budget.9",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Actual.6",
+        "column2": "Projected.9",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Actual.6",
+        "column2": "Actual.9",
+        "correlation": 0.993
+      },
+      {
+        "column1": "Actual.6",
+        "column2": "Budget.10",
+        "correlation": 0.968
+      },
+      {
+        "column1": "Actual.6",
+        "column2": "Projected.10",
+        "correlation": 0.968
+      },
+      {
+        "column1": "Actual.6",
+        "column2": "Actual.10",
+        "correlation": 0.961
+      },
+      {
+        "column1": "Actual.6",
+        "column2": "Budget.11",
+        "correlation": 0.969
+      },
+      {
+        "column1": "Actual.6",
+        "column2": "Projected.11",
+        "correlation": 0.85
+      },
+      {
+        "column1": "Actual.6",
+        "column2": "Actual.11",
+        "correlation": 0.741
+      },
+      {
+        "column1": "Actual.6",
+        "column2": "YTD Actual",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Actual.6",
+        "column2": "Remaining Projection",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Actual.6",
+        "column2": "Total",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Actual.6",
+        "column2": "WIH 2024",
+        "correlation": 0.96
+      },
+      {
+        "column1": "Actual.6",
+        "column2": "Advance 2025",
+        "correlation": 0.949
+      },
+      {
+        "column1": "Actual.6",
+        "column2": "WIH 2025",
+        "correlation": 0.911
+      },
+      {
+        "column1": "Actual.6",
+        "column2": "on hold",
+        "correlation": 0.85
+      },
+      {
+        "column1": "Actual.6",
+        "column2": "JAN",
+        "correlation": -0.752
+      },
+      {
+        "column1": "Actual.6",
+        "column2": "FEB",
+        "correlation": 0.818
+      },
+      {
+        "column1": "Actual.6",
+        "column2": "Unnamed: 55",
+        "correlation": 0.966
+      },
+      {
+        "column1": "Budget.7",
+        "column2": "Projected.7",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Budget.7",
+        "column2": "Actual.7",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Budget.7",
+        "column2": "Budget.8",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Budget.7",
+        "column2": "Projected.8",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Budget.7",
+        "column2": "Actual.8",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Budget.7",
+        "column2": "Budget.9",
+        "correlation": 0.994
+      },
+      {
+        "column1": "Budget.7",
+        "column2": "Projected.9",
+        "correlation": 0.993
+      },
+      {
+        "column1": "Budget.7",
+        "column2": "Actual.9",
+        "correlation": 0.992
+      },
+      {
+        "column1": "Budget.7",
+        "column2": "Budget.10",
+        "correlation": 0.967
+      },
+      {
+        "column1": "Budget.7",
+        "column2": "Projected.10",
+        "correlation": 0.968
+      },
+      {
+        "column1": "Budget.7",
+        "column2": "Actual.10",
+        "correlation": 0.959
+      },
+      {
+        "column1": "Budget.7",
+        "column2": "Budget.11",
+        "correlation": 0.968
+      },
+      {
+        "column1": "Budget.7",
+        "column2": "Projected.11",
+        "correlation": 0.847
+      },
+      {
+        "column1": "Budget.7",
+        "column2": "Actual.11",
+        "correlation": 0.734
+      },
+      {
+        "column1": "Budget.7",
+        "column2": "YTD Actual",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Budget.7",
+        "column2": "Remaining Projection",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Budget.7",
+        "column2": "Total",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Budget.7",
+        "column2": "WIH 2024",
+        "correlation": 0.957
+      },
+      {
+        "column1": "Budget.7",
+        "column2": "Advance 2025",
+        "correlation": 0.949
+      },
+      {
+        "column1": "Budget.7",
+        "column2": "WIH 2025",
+        "correlation": 0.91
+      },
+      {
+        "column1": "Budget.7",
+        "column2": "on hold",
+        "correlation": 0.853
+      },
+      {
+        "column1": "Budget.7",
+        "column2": "JAN",
+        "correlation": -0.752
+      },
+      {
+        "column1": "Budget.7",
+        "column2": "FEB",
+        "correlation": 0.818
+      },
+      {
+        "column1": "Budget.7",
+        "column2": "Unnamed: 55",
+        "correlation": 0.966
+      },
+      {
+        "column1": "Projected.7",
+        "column2": "Actual.7",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Projected.7",
+        "column2": "Budget.8",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Projected.7",
+        "column2": "Projected.8",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Projected.7",
+        "column2": "Actual.8",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Projected.7",
+        "column2": "Budget.9",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Projected.7",
+        "column2": "Projected.9",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Projected.7",
+        "column2": "Actual.9",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Projected.7",
+        "column2": "Budget.10",
+        "correlation": 0.971
+      },
+      {
+        "column1": "Projected.7",
+        "column2": "Projected.10",
+        "correlation": 0.971
+      },
+      {
+        "column1": "Projected.7",
+        "column2": "Actual.10",
+        "correlation": 0.964
+      },
+      {
+        "column1": "Projected.7",
+        "column2": "Budget.11",
+        "correlation": 0.972
+      },
+      {
+        "column1": "Projected.7",
+        "column2": "Projected.11",
+        "correlation": 0.836
+      },
+      {
+        "column1": "Projected.7",
+        "column2": "Actual.11",
+        "correlation": 0.725
+      },
+      {
+        "column1": "Projected.7",
+        "column2": "YTD Actual",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Projected.7",
+        "column2": "Remaining Projection",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Projected.7",
+        "column2": "Total",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Projected.7",
+        "column2": "WIH 2024",
+        "correlation": 0.958
+      },
+      {
+        "column1": "Projected.7",
+        "column2": "Advance 2025",
+        "correlation": 0.945
+      },
+      {
+        "column1": "Projected.7",
+        "column2": "WIH 2025",
+        "correlation": 0.908
+      },
+      {
+        "column1": "Projected.7",
+        "column2": "on hold",
+        "correlation": 0.836
+      },
+      {
+        "column1": "Projected.7",
+        "column2": "JAN",
+        "correlation": -0.752
+      },
+      {
+        "column1": "Projected.7",
+        "column2": "Unnamed: 55",
+        "correlation": 0.966
+      },
+      {
+        "column1": "Actual.7",
+        "column2": "Budget.8",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Actual.7",
+        "column2": "Projected.8",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Actual.7",
+        "column2": "Actual.8",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Actual.7",
+        "column2": "Budget.9",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Actual.7",
+        "column2": "Projected.9",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Actual.7",
+        "column2": "Actual.9",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Actual.7",
+        "column2": "Budget.10",
+        "correlation": 0.975
+      },
+      {
+        "column1": "Actual.7",
+        "column2": "Projected.10",
+        "correlation": 0.975
+      },
+      {
+        "column1": "Actual.7",
+        "column2": "Actual.10",
+        "correlation": 0.97
+      },
+      {
+        "column1": "Actual.7",
+        "column2": "Budget.11",
+        "correlation": 0.976
+      },
+      {
+        "column1": "Actual.7",
+        "column2": "Projected.11",
+        "correlation": 0.822
+      },
+      {
+        "column1": "Actual.7",
+        "column2": "Actual.11",
+        "correlation": 0.708
+      },
+      {
+        "column1": "Actual.7",
+        "column2": "YTD Actual",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Actual.7",
+        "column2": "Remaining Projection",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Actual.7",
+        "column2": "Total",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Actual.7",
+        "column2": "WIH 2024",
+        "correlation": 0.955
+      },
+      {
+        "column1": "Actual.7",
+        "column2": "Advance 2025",
+        "correlation": 0.939
+      },
+      {
+        "column1": "Actual.7",
+        "column2": "WIH 2025",
+        "correlation": 0.901
+      },
+      {
+        "column1": "Actual.7",
+        "column2": "on hold",
+        "correlation": 0.833
+      },
+      {
+        "column1": "Actual.7",
+        "column2": "JAN",
+        "correlation": -0.752
+      },
+      {
+        "column1": "Actual.7",
+        "column2": "FEB",
+        "correlation": 0.818
+      },
+      {
+        "column1": "Actual.7",
+        "column2": "Unnamed: 55",
+        "correlation": 0.966
+      },
+      {
+        "column1": "Budget.8",
+        "column2": "Projected.8",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Budget.8",
+        "column2": "Actual.8",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Budget.8",
+        "column2": "Budget.9",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Budget.8",
+        "column2": "Projected.9",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Budget.8",
+        "column2": "Actual.9",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Budget.8",
+        "column2": "Budget.10",
+        "correlation": 0.971
+      },
+      {
+        "column1": "Budget.8",
+        "column2": "Projected.10",
+        "correlation": 0.971
+      },
+      {
+        "column1": "Budget.8",
+        "column2": "Actual.10",
+        "correlation": 0.964
+      },
+      {
+        "column1": "Budget.8",
+        "column2": "Budget.11",
+        "correlation": 0.971
+      },
+      {
+        "column1": "Budget.8",
+        "column2": "Projected.11",
+        "correlation": 0.832
+      },
+      {
+        "column1": "Budget.8",
+        "column2": "Actual.11",
+        "correlation": 0.717
+      },
+      {
+        "column1": "Budget.8",
+        "column2": "YTD Actual",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Budget.8",
+        "column2": "Remaining Projection",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Budget.8",
+        "column2": "Total",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Budget.8",
+        "column2": "WIH 2024",
+        "correlation": 0.956
+      },
+      {
+        "column1": "Budget.8",
+        "column2": "Advance 2025",
+        "correlation": 0.943
+      },
+      {
+        "column1": "Budget.8",
+        "column2": "WIH 2025",
+        "correlation": 0.904
+      },
+      {
+        "column1": "Budget.8",
+        "column2": "on hold",
+        "correlation": 0.842
+      },
+      {
+        "column1": "Budget.8",
+        "column2": "JAN",
+        "correlation": -0.752
+      },
+      {
+        "column1": "Budget.8",
+        "column2": "FEB",
+        "correlation": 0.927
+      },
+      {
+        "column1": "Budget.8",
+        "column2": "Unnamed: 55",
+        "correlation": 0.966
+      },
+      {
+        "column1": "Projected.8",
+        "column2": "Actual.8",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Projected.8",
+        "column2": "Budget.9",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Projected.8",
+        "column2": "Projected.9",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Projected.8",
+        "column2": "Actual.9",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Projected.8",
+        "column2": "Budget.10",
+        "correlation": 0.972
+      },
+      {
+        "column1": "Projected.8",
+        "column2": "Projected.10",
+        "correlation": 0.973
+      },
+      {
+        "column1": "Projected.8",
+        "column2": "Actual.10",
+        "correlation": 0.966
+      },
+      {
+        "column1": "Projected.8",
+        "column2": "Budget.11",
+        "correlation": 0.972
+      },
+      {
+        "column1": "Projected.8",
+        "column2": "Projected.11",
+        "correlation": 0.834
+      },
+      {
+        "column1": "Projected.8",
+        "column2": "Actual.11",
+        "correlation": 0.719
+      },
+      {
+        "column1": "Projected.8",
+        "column2": "YTD Actual",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Projected.8",
+        "column2": "Remaining Projection",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Projected.8",
+        "column2": "Total",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Projected.8",
+        "column2": "WIH 2024",
+        "correlation": 0.957
+      },
+      {
+        "column1": "Projected.8",
+        "column2": "Advance 2025",
+        "correlation": 0.942
+      },
+      {
+        "column1": "Projected.8",
+        "column2": "WIH 2025",
+        "correlation": 0.906
+      },
+      {
+        "column1": "Projected.8",
+        "column2": "on hold",
+        "correlation": 0.835
+      },
+      {
+        "column1": "Projected.8",
+        "column2": "JAN",
+        "correlation": -0.752
+      },
+      {
+        "column1": "Projected.8",
+        "column2": "FEB",
+        "correlation": 0.818
+      },
+      {
+        "column1": "Projected.8",
+        "column2": "Unnamed: 55",
+        "correlation": 0.966
+      },
+      {
+        "column1": "Actual.8",
+        "column2": "Budget.9",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Actual.8",
+        "column2": "Projected.9",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Actual.8",
+        "column2": "Actual.9",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Actual.8",
+        "column2": "Budget.10",
+        "correlation": 0.976
+      },
+      {
+        "column1": "Actual.8",
+        "column2": "Projected.10",
+        "correlation": 0.977
+      },
+      {
+        "column1": "Actual.8",
+        "column2": "Actual.10",
+        "correlation": 0.972
+      },
+      {
+        "column1": "Actual.8",
+        "column2": "Budget.11",
+        "correlation": 0.976
+      },
+      {
+        "column1": "Actual.8",
+        "column2": "Projected.11",
+        "correlation": 0.819
+      },
+      {
+        "column1": "Actual.8",
+        "column2": "Actual.11",
+        "correlation": 0.706
+      },
+      {
+        "column1": "Actual.8",
+        "column2": "YTD Actual",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Actual.8",
+        "column2": "Remaining Projection",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Actual.8",
+        "column2": "Total",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Actual.8",
+        "column2": "WIH 2024",
+        "correlation": 0.955
+      },
+      {
+        "column1": "Actual.8",
+        "column2": "Advance 2025",
+        "correlation": 0.936
+      },
+      {
+        "column1": "Actual.8",
+        "column2": "WIH 2025",
+        "correlation": 0.901
+      },
+      {
+        "column1": "Actual.8",
+        "column2": "on hold",
+        "correlation": 0.825
+      },
+      {
+        "column1": "Actual.8",
+        "column2": "JAN",
+        "correlation": -0.752
+      },
+      {
+        "column1": "Actual.8",
+        "column2": "FEB",
+        "correlation": 0.818
+      },
+      {
+        "column1": "Actual.8",
+        "column2": "Unnamed: 55",
+        "correlation": 0.966
+      },
+      {
+        "column1": "Budget.9",
+        "column2": "Projected.9",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Budget.9",
+        "column2": "Actual.9",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Budget.9",
+        "column2": "Budget.10",
+        "correlation": 0.975
+      },
+      {
+        "column1": "Budget.9",
+        "column2": "Projected.10",
+        "correlation": 0.975
+      },
+      {
+        "column1": "Budget.9",
+        "column2": "Actual.10",
+        "correlation": 0.97
+      },
+      {
+        "column1": "Budget.9",
+        "column2": "Budget.11",
+        "correlation": 0.974
+      },
+      {
+        "column1": "Budget.9",
+        "column2": "Projected.11",
+        "correlation": 0.821
+      },
+      {
+        "column1": "Budget.9",
+        "column2": "Actual.11",
+        "correlation": 0.71
+      },
+      {
+        "column1": "Budget.9",
+        "column2": "YTD Actual",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Budget.9",
+        "column2": "Remaining Projection",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Budget.9",
+        "column2": "Total",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Budget.9",
+        "column2": "WIH 2024",
+        "correlation": 0.954
+      },
+      {
+        "column1": "Budget.9",
+        "column2": "Advance 2025",
+        "correlation": 0.93
+      },
+      {
+        "column1": "Budget.9",
+        "column2": "WIH 2025",
+        "correlation": 0.899
+      },
+      {
+        "column1": "Budget.9",
+        "column2": "on hold",
+        "correlation": 0.825
+      },
+      {
+        "column1": "Budget.9",
+        "column2": "JAN",
+        "correlation": -0.752
+      },
+      {
+        "column1": "Budget.9",
+        "column2": "FEB",
+        "correlation": 0.818
+      },
+      {
+        "column1": "Budget.9",
+        "column2": "Unnamed: 55",
+        "correlation": 0.945
+      },
+      {
+        "column1": "Projected.9",
+        "column2": "Actual.9",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Projected.9",
+        "column2": "Budget.10",
+        "correlation": 0.973
+      },
+      {
+        "column1": "Projected.9",
+        "column2": "Projected.10",
+        "correlation": 0.973
+      },
+      {
+        "column1": "Projected.9",
+        "column2": "Actual.10",
+        "correlation": 0.968
+      },
+      {
+        "column1": "Projected.9",
+        "column2": "Budget.11",
+        "correlation": 0.973
+      },
+      {
+        "column1": "Projected.9",
+        "column2": "Projected.11",
+        "correlation": 0.814
+      },
+      {
+        "column1": "Projected.9",
+        "column2": "Actual.11",
+        "correlation": 0.7
+      },
+      {
+        "column1": "Projected.9",
+        "column2": "YTD Actual",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Projected.9",
+        "column2": "Remaining Projection",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Projected.9",
+        "column2": "Total",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Projected.9",
+        "column2": "WIH 2024",
+        "correlation": 0.958
+      },
+      {
+        "column1": "Projected.9",
+        "column2": "Advance 2025",
+        "correlation": 0.939
+      },
+      {
+        "column1": "Projected.9",
+        "column2": "WIH 2025",
+        "correlation": 0.9
+      },
+      {
+        "column1": "Projected.9",
+        "column2": "on hold",
+        "correlation": 0.829
+      },
+      {
+        "column1": "Projected.9",
+        "column2": "FEB",
+        "correlation": 0.884
+      },
+      {
+        "column1": "Projected.9",
+        "column2": "MAR",
+        "correlation": 0.875
+      },
+      {
+        "column1": "Projected.9",
+        "column2": "Unnamed: 55",
+        "correlation": 0.942
+      },
+      {
+        "column1": "Actual.9",
+        "column2": "Budget.10",
+        "correlation": 0.975
+      },
+      {
+        "column1": "Actual.9",
+        "column2": "Projected.10",
+        "correlation": 0.975
+      },
+      {
+        "column1": "Actual.9",
+        "column2": "Actual.10",
+        "correlation": 0.972
+      },
+      {
+        "column1": "Actual.9",
+        "column2": "Budget.11",
+        "correlation": 0.975
+      },
+      {
+        "column1": "Actual.9",
+        "column2": "Projected.11",
+        "correlation": 0.802
+      },
+      {
+        "column1": "Actual.9",
+        "column2": "YTD Actual",
+        "correlation": 0.997
+      },
+      {
+        "column1": "Actual.9",
+        "column2": "Remaining Projection",
+        "correlation": 0.995
+      },
+      {
+        "column1": "Actual.9",
+        "column2": "Total",
+        "correlation": 0.996
+      },
+      {
+        "column1": "Actual.9",
+        "column2": "WIH 2024",
+        "correlation": 0.953
+      },
+      {
+        "column1": "Actual.9",
+        "column2": "Advance 2025",
+        "correlation": 0.923
+      },
+      {
+        "column1": "Actual.9",
+        "column2": "WIH 2025",
+        "correlation": 0.897
+      },
+      {
+        "column1": "Actual.9",
+        "column2": "on hold",
+        "correlation": 0.818
+      },
+      {
+        "column1": "Actual.9",
+        "column2": "JAN",
+        "correlation": -0.752
+      },
+      {
+        "column1": "Actual.9",
+        "column2": "FEB",
+        "correlation": 0.818
+      },
+      {
+        "column1": "Actual.9",
+        "column2": "Unnamed: 55",
+        "correlation": 0.966
+      },
+      {
+        "column1": "Budget.10",
+        "column2": "Projected.10",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Budget.10",
+        "column2": "Actual.10",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Budget.10",
+        "column2": "Budget.11",
+        "correlation": 1.0
+      },
+      {
+        "column1": "Budget.10",
+        "column2": "Projected.11",
+        "correlation": 0.8
+      },
+      {
+        "column1": "Budget.10",
+        "column2": "Actual.11",
+        "correlation": 0.714
+      },
+      {
+        "column1": "Budget.10",
+        "column2": "YTD Actual",
+        "correlation": 0.975
+      },
+      {
+        "column1": "Budget.10",
+        "column2": "Remaining Projection",
+        "correlation": 0.978
+      },
+      {
+        "column1": "Budget.10",
+        "column2": "Total",
+        "correlation": 0.976
+      },
+      {
+        "column1": "Budget.10",
+        "column2": "WIH 2024",
+        "correlation": 0.919
+      },
+      {
+        "column1": "Budget.10",
+        "column2": "Advance 2025",
+        "correlation": 0.906
+      },
+      {
+        "column1": "Budget.10",
+        "column2": "WIH 2025",
+        "correlation": 0.853
+      },
+      {
+        "column1": "Budget.10",
+        "column2": "on hold",
+        "correlation": 0.778
+      },
+      {
+        "column1": "Budget.10",
+        "column2": "FEB",
+        "correlation": 1.0
+      },
+      {
+        "column1": "Projected.10",
+        "column2": "Actual.10",
+        "correlation": 0.998
+      },
+      {
+        "column1": "Projected.10",
+        "column2": "Budget.11",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Projected.10",
+        "column2": "Projected.11",
+        "correlation": 0.8
+      },
+      {
+        "column1": "Projected.10",
+        "column2": "Actual.11",
+        "correlation": 0.711
+      },
+      {
+        "column1": "Projected.10",
+        "column2": "YTD Actual",
+        "correlation": 0.975
+      },
+      {
+        "column1": "Projected.10",
+        "column2": "Remaining Projection",
+        "correlation": 0.978
+      },
+      {
+        "column1": "Projected.10",
+        "column2": "Total",
+        "correlation": 0.976
+      },
+      {
+        "column1": "Projected.10",
+        "column2": "WIH 2024",
+        "correlation": 0.919
+      },
+      {
+        "column1": "Projected.10",
+        "column2": "Advance 2025",
+        "correlation": 0.905
+      },
+      {
+        "column1": "Projected.10",
+        "column2": "WIH 2025",
+        "correlation": 0.851
+      },
+      {
+        "column1": "Projected.10",
+        "column2": "on hold",
+        "correlation": 0.773
+      },
+      {
+        "column1": "Projected.10",
+        "column2": "FEB",
+        "correlation": 0.914
+      },
+      {
+        "column1": "Projected.10",
+        "column2": "Unnamed: 55",
+        "correlation": 0.923
+      },
+      {
+        "column1": "Actual.10",
+        "column2": "Budget.11",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Actual.10",
+        "column2": "Projected.11",
+        "correlation": 0.782
+      },
+      {
+        "column1": "Actual.10",
+        "column2": "YTD Actual",
+        "correlation": 0.969
+      },
+      {
+        "column1": "Actual.10",
+        "column2": "Remaining Projection",
+        "correlation": 0.972
+      },
+      {
+        "column1": "Actual.10",
+        "column2": "Total",
+        "correlation": 0.97
+      },
+      {
+        "column1": "Actual.10",
+        "column2": "WIH 2024",
+        "correlation": 0.908
+      },
+      {
+        "column1": "Actual.10",
+        "column2": "Advance 2025",
+        "correlation": 0.888
+      },
+      {
+        "column1": "Actual.10",
+        "column2": "WIH 2025",
+        "correlation": 0.842
+      },
+      {
+        "column1": "Actual.10",
+        "column2": "on hold",
+        "correlation": 0.754
+      },
+      {
+        "column1": "Actual.10",
+        "column2": "FEB",
+        "correlation": 1.0
+      },
+      {
+        "column1": "Budget.11",
+        "column2": "Projected.11",
+        "correlation": 0.802
+      },
+      {
+        "column1": "Budget.11",
+        "column2": "Actual.11",
+        "correlation": 0.716
+      },
+      {
+        "column1": "Budget.11",
+        "column2": "YTD Actual",
+        "correlation": 0.975
+      },
+      {
+        "column1": "Budget.11",
+        "column2": "Remaining Projection",
+        "correlation": 0.979
+      },
+      {
+        "column1": "Budget.11",
+        "column2": "Total",
+        "correlation": 0.977
+      },
+      {
+        "column1": "Budget.11",
+        "column2": "WIH 2024",
+        "correlation": 0.919
+      },
+      {
+        "column1": "Budget.11",
+        "column2": "Advance 2025",
+        "correlation": 0.906
+      },
+      {
+        "column1": "Budget.11",
+        "column2": "WIH 2025",
+        "correlation": 0.853
+      },
+      {
+        "column1": "Budget.11",
+        "column2": "on hold",
+        "correlation": 0.779
+      },
+      {
+        "column1": "Budget.11",
+        "column2": "FEB",
+        "correlation": 0.769
+      },
+      {
+        "column1": "Budget.11",
+        "column2": "MAR",
+        "correlation": 0.968
+      },
+      {
+        "column1": "Projected.11",
+        "column2": "Actual.11",
+        "correlation": 0.973
+      },
+      {
+        "column1": "Projected.11",
+        "column2": "YTD Actual",
+        "correlation": 0.83
+      },
+      {
+        "column1": "Projected.11",
+        "column2": "Remaining Projection",
+        "correlation": 0.848
+      },
+      {
+        "column1": "Projected.11",
+        "column2": "Total",
+        "correlation": 0.836
+      },
+      {
+        "column1": "Projected.11",
+        "column2": "WIH 2024",
+        "correlation": 0.872
+      },
+      {
+        "column1": "Projected.11",
+        "column2": "Advance 2025",
+        "correlation": 0.926
+      },
+      {
+        "column1": "Projected.11",
+        "column2": "WIH 2025",
+        "correlation": 0.935
+      },
+      {
+        "column1": "Projected.11",
+        "column2": "on hold",
+        "correlation": 0.933
+      },
+      {
+        "column1": "Projected.11",
+        "column2": "FEB",
+        "correlation": 1.0
+      },
+      {
+        "column1": "Actual.11",
+        "column2": "YTD Actual",
+        "correlation": 0.718
+      },
+      {
+        "column1": "Actual.11",
+        "column2": "Remaining Projection",
+        "correlation": 0.741
+      },
+      {
+        "column1": "Actual.11",
+        "column2": "Total",
+        "correlation": 0.726
+      },
+      {
+        "column1": "Actual.11",
+        "column2": "WIH 2024",
+        "correlation": 0.792
+      },
+      {
+        "column1": "Actual.11",
+        "column2": "Advance 2025",
+        "correlation": 0.862
+      },
+      {
+        "column1": "Actual.11",
+        "column2": "WIH 2025",
+        "correlation": 0.898
+      },
+      {
+        "column1": "Actual.11",
+        "column2": "on hold",
+        "correlation": 0.908
+      },
+      {
+        "column1": "Actual.11",
+        "column2": "FEB",
+        "correlation": 1.0
+      },
+      {
+        "column1": "YTD Actual",
+        "column2": "Remaining Projection",
+        "correlation": 0.999
+      },
+      {
+        "column1": "YTD Actual",
+        "column2": "Total",
+        "correlation": 1.0
+      },
+      {
+        "column1": "YTD Actual",
+        "column2": "WIH 2024",
+        "correlation": 0.957
+      },
+      {
+        "column1": "YTD Actual",
+        "column2": "Advance 2025",
+        "correlation": 0.941
+      },
+      {
+        "column1": "YTD Actual",
+        "column2": "WIH 2025",
+        "correlation": 0.909
+      },
+      {
+        "column1": "YTD Actual",
+        "column2": "on hold",
+        "correlation": 0.804
+      },
+      {
+        "column1": "YTD Actual",
+        "column2": "Unnamed: 55",
+        "correlation": 0.967
+      },
+      {
+        "column1": "Remaining Projection",
+        "column2": "Total",
+        "correlation": 0.999
+      },
+      {
+        "column1": "Remaining Projection",
+        "column2": "WIH 2024",
+        "correlation": 0.954
+      },
+      {
+        "column1": "Remaining Projection",
+        "column2": "Advance 2025",
+        "correlation": 0.944
+      },
+      {
+        "column1": "Remaining Projection",
+        "column2": "WIH 2025",
+        "correlation": 0.911
+      },
+      {
+        "column1": "Remaining Projection",
+        "column2": "on hold",
+        "correlation": 0.808
+      },
+      {
+        "column1": "Remaining Projection",
+        "column2": "Unnamed: 55",
+        "correlation": 0.97
+      },
+      {
+        "column1": "Total",
+        "column2": "WIH 2024",
+        "correlation": 0.956
+      },
+      {
+        "column1": "Total",
+        "column2": "Advance 2025",
+        "correlation": 0.942
+      },
+      {
+        "column1": "Total",
+        "column2": "WIH 2025",
+        "correlation": 0.91
+      },
+      {
+        "column1": "Total",
+        "column2": "on hold",
+        "correlation": 0.805
+      },
+      {
+        "column1": "Total",
+        "column2": "Unnamed: 55",
+        "correlation": 0.968
+      },
+      {
+        "column1": "WIH 2024",
+        "column2": "Advance 2025",
+        "correlation": 0.945
+      },
+      {
+        "column1": "WIH 2024",
+        "column2": "WIH 2025",
+        "correlation": 0.903
+      },
+      {
+        "column1": "WIH 2024",
+        "column2": "on hold",
+        "correlation": 0.776
+      },
+      {
+        "column1": "Advance 2025",
+        "column2": "WIH 2025",
+        "correlation": 0.913
+      },
+      {
+        "column1": "Advance 2025",
+        "column2": "on hold",
+        "correlation": 0.887
+      },
+      {
+        "column1": "Advance 2025",
+        "column2": "MAR",
+        "correlation": 1.0
+      },
+      {
+        "column1": "WIH 2025",
+        "column2": "on hold",
+        "correlation": 0.934
+      },
+      {
+        "column1": "on hold",
+        "column2": "FEB",
+        "correlation": 0.953
+      },
+      {
+        "column1": "on hold",
+        "column2": "MAR",
+        "correlation": 1.0
+      },
+      {
+        "column1": "FEB",
+        "column2": "MAR",
+        "correlation": 1.0
+      }
+    ]
+  },
+  "sample_data": {
+    "first_rows": {
+      "Unit": {
+        "0": "AMS",
+        "1": "AMS ME Region",
+        "2": "AMS"
+      },
+      "Product": {
+        "0": "=",
+        "1": "=",
+        "2": "AMS - Resource Placement"
+      },
+      "Region": {
+        "0": "=",
+        "1": "=",
+        "2": "ME"
+      },
+      "Country": {
+        "0": "=",
+        "1": "=",
+        "2": "UAE"
+      },
+      "Customer": {
+        "0": "=",
+        "1": "=",
+        "2": "ADIB - Abu Dhabi Islamic Bank"
+      },
+      "Category": {
+        "0": "=",
+        "1": "=",
+        "2": "Funnel"
+      },
+      "Project Code": {
+        "0": "=",
+        "1": "=",
+        "2": "<NA>"
+      },
+      "Budget": {
+        "0": "nan",
+        "1": "nan",
+        "2": "25.0"
+      },
+      "Projected": {
+        "0": "nan",
+        "1": "nan",
+        "2": "25.0"
+      },
+      "Actual": {
+        "0": "nan",
+        "1": "nan",
+        "2": "25.0"
+      },
+      "Budget.1": {
+        "0": "nan",
+        "1": "nan",
+        "2": "25.0"
+      },
+      "Projected.1": {
+        "0": "nan",
+        "1": "nan",
+        "2": "25.0"
+      },
+      "Actual.1": {
+        "0": "nan",
+        "1": "nan",
+        "2": "25.0"
+      },
+      "Budget.2": {
+        "0": "nan",
+        "1": "nan",
+        "2": "25.0"
+      },
+      "Projected.2": {
+        "0": "nan",
+        "1": "nan",
+        "2": "25.0"
+      },
+      "Actual.2": {
+        "0": "nan",
+        "1": "nan",
+        "2": "25.0"
+      },
+      "Budget.3": {
+        "0": "nan",
+        "1": "nan",
+        "2": "25.0"
+      },
+      "Projected.3": {
+        "0": "nan",
+        "1": "nan",
+        "2": "25.0"
+      },
+      "Actual.3": {
+        "0": "nan",
+        "1": "nan",
+        "2": "25.0"
+      },
+      "Budget.4": {
+        "0": "nan",
+        "1": "nan",
+        "2": "25.0"
+      },
+      "Projected.4": {
+        "0": "nan",
+        "1": "nan",
+        "2": "25.0"
+      },
+      "Actual.4": {
+        "0": "nan",
+        "1": "nan",
+        "2": "25.0"
+      },
+      "Budget.5": {
+        "0": "nan",
+        "1": "nan",
+        "2": "25.0"
+      },
+      "Projected.5": {
+        "0": "nan",
+        "1": "nan",
+        "2": "25.0"
+      },
+      "Actual.5": {
+        "0": "nan",
+        "1": "nan",
+        "2": "25.0"
+      },
+      "Budget.6": {
+        "0": "nan",
+        "1": "nan",
+        "2": "25.0"
+      },
+      "Projected.6": {
+        "0": "nan",
+        "1": "nan",
+        "2": "25.0"
+      },
+      "Actual.6": {
+        "0": "nan",
+        "1": "nan",
+        "2": "25.0"
+      },
+      "Budget.7": {
+        "0": "nan",
+        "1": "nan",
+        "2": "25.0"
+      },
+      "Projected.7": {
+        "0": "nan",
+        "1": "nan",
+        "2": "25.0"
+      },
+      "Actual.7": {
+        "0": "nan",
+        "1": "nan",
+        "2": "25.0"
+      },
+      "Budget.8": {
+        "0": "nan",
+        "1": "nan",
+        "2": "25.0"
+      },
+      "Projected.8": {
+        "0": "nan",
+        "1": "nan",
+        "2": "25.0"
+      },
+      "Actual.8": {
+        "0": "nan",
+        "1": "nan",
+        "2": "25.0"
+      },
+      "Budget.9": {
+        "0": "nan",
+        "1": "nan",
+        "2": "25.0"
+      },
+      "Projected.9": {
+        "0": "nan",
+        "1": "nan",
+        "2": "25.0"
+      },
+      "Actual.9": {
+        "0": "nan",
+        "1": "nan",
+        "2": "25.0"
+      },
+      "Budget.10": {
+        "0": "nan",
+        "1": "nan",
+        "2": "25.0"
+      },
+      "Projected.10": {
+        "0": "nan",
+        "1": "nan",
+        "2": "25.0"
+      },
+      "Actual.10": {
+        "0": "nan",
+        "1": "nan",
+        "2": "25.0"
+      },
+      "Budget.11": {
+        "0": "nan",
+        "1": "nan",
+        "2": "25.0"
+      },
+      "Projected.11": {
+        "0": "nan",
+        "1": "nan",
+        "2": "25.0"
+      },
+      "Actual.11": {
+        "0": "nan",
+        "1": "nan",
+        "2": "25.0"
+      },
+      "YTD Actual": {
+        "0": "nan",
+        "1": "nan",
+        "2": "300.0"
+      },
+      "Remaining Projection": {
+        "0": "nan",
+        "1": "nan",
+        "2": "150.0"
+      },
+      "Total": {
+        "0": "nan",
+        "1": "nan",
+        "2": "450.0"
+      },
+      "WIH 2024": {
+        "0": "nan",
+        "1": "nan",
+        "2": "nan"
+      },
+      "Advance 2025": {
+        "0": "nan",
+        "1": "nan",
+        "2": "nan"
+      },
+      "WIH 2025": {
+        "0": "nan",
+        "1": "nan",
+        "2": "nan"
+      },
+      "on hold": {
+        "0": "nan",
+        "1": "nan",
+        "2": "nan"
+      },
+      "WIH 2026": {
+        "0": "nan",
+        "1": "nan",
+        "2": "nan"
+      },
+      "Shelved": {
+        "0": "nan",
+        "1": "nan",
+        "2": "nan"
+      },
+      "JAN": {
+        "0": "nan",
+        "1": "nan",
+        "2": "nan"
+      },
+      "FEB": {
+        "0": "nan",
+        "1": "nan",
+        "2": "nan"
+      },
+      "MAR": {
+        "0": "nan",
+        "1": "nan",
+        "2": "nan"
+      },
+      "Unnamed: 55": {
+        "0": "nan",
+        "1": "nan",
+        "2": "nan"
+      }
+    },
+    "data_preview": {
+      "Unit": [
+        "AMS",
+        "AMS ME Region",
+        "AMS"
+      ],
+      "Product": [
+        "=",
+        "=",
+        "AMS - Resource Placement"
+      ],
+      "Region": [
+        "=",
+        "=",
+        "ME"
+      ],
+      "Country": [
+        "=",
+        "=",
+        "UAE"
+      ],
+      "Customer": [
+        "=",
+        "=",
+        "ADIB - Abu Dhabi Islamic Bank"
+      ],
+      "Category": [
+        "=",
+        "=",
+        "Funnel"
+      ],
+      "Project Code": [
+        "=",
+        "=",
+        "="
+      ],
+      "Budget": [
+        "25.0",
+        "25.0",
+        "25.0"
+      ],
+      "Projected": [
+        "25.0",
+        "25.0",
+        "25.0"
+      ],
+      "Actual": [
+        "25.0",
+        "25.0",
+        "25.0"
+      ],
+      "Budget.1": [
+        "25.0",
+        "25.0",
+        "25.0"
+      ],
+      "Projected.1": [
+        "25.0",
+        "25.0",
+        "25.0"
+      ],
+      "Actual.1": [
+        "25.0",
+        "25.0",
+        "25.0"
+      ],
+      "Budget.2": [
+        "25.0",
+        "25.0",
+        "25.0"
+      ],
+      "Projected.2": [
+        "25.0",
+        "25.0",
+        "25.0"
+      ],
+      "Actual.2": [
+        "25.0",
+        "25.0",
+        "25.0"
+      ],
+      "Budget.3": [
+        "25.0",
+        "25.0",
+        "25.0"
+      ],
+      "Projected.3": [
+        "25.0",
+        "25.0",
+        "25.0"
+      ],
+      "Actual.3": [
+        "25.0",
+        "25.0",
+        "25.0"
+      ],
+      "Budget.4": [
+        "25.0",
+        "25.0",
+        "25.0"
+      ],
+      "Projected.4": [
+        "25.0",
+        "25.0",
+        "25.0"
+      ],
+      "Actual.4": [
+        "25.0",
+        "25.0",
+        "25.0"
+      ],
+      "Budget.5": [
+        "25.0",
+        "25.0",
+        "25.0"
+      ],
+      "Projected.5": [
+        "25.0",
+        "25.0",
+        "25.0"
+      ],
+      "Actual.5": [
+        "25.0",
+        "25.0",
+        "25.0"
+      ],
+      "Budget.6": [
+        "25.0",
+        "25.0",
+        "25.0"
+      ],
+      "Projected.6": [
+        "25.0",
+        "25.0",
+        "25.0"
+      ],
+      "Actual.6": [
+        "25.0",
+        "25.0",
+        "25.0"
+      ],
+      "Budget.7": [
+        "25.0",
+        "25.0",
+        "25.0"
+      ],
+      "Projected.7": [
+        "25.0",
+        "25.0",
+        "25.0"
+      ],
+      "Actual.7": [
+        "25.0",
+        "25.0",
+        "25.0"
+      ],
+      "Budget.8": [
+        "25.0",
+        "25.0",
+        "25.0"
+      ],
+      "Projected.8": [
+        "25.0",
+        "25.0",
+        "25.0"
+      ],
+      "Actual.8": [
+        "25.0",
+        "25.0",
+        "25.0"
+      ],
+      "Budget.9": [
+        "25.0",
+        "25.0",
+        "25.0"
+      ],
+      "Projected.9": [
+        "25.0",
+        "25.0",
+        "25.0"
+      ],
+      "Actual.9": [
+        "25.0",
+        "25.0",
+        "25.0"
+      ],
+      "Budget.10": [
+        "25.0",
+        "25.0",
+        "25.0"
+      ],
+      "Projected.10": [
+        "25.0",
+        "25.0",
+        "25.0"
+      ],
+      "Actual.10": [
+        "25.0",
+        "25.0",
+        "25.0"
+      ],
+      "Budget.11": [
+        "25.0",
+        "25.0",
+        "25.0"
+      ],
+      "Projected.11": [
+        "25.0",
+        "25.0",
+        "25.0"
+      ],
+      "Actual.11": [
+        "25.0",
+        "25.0",
+        "25.0"
+      ],
+      "YTD Actual": [
+        "300.0",
+        "300.0",
+        "300.0"
+      ],
+      "Remaining Projection": [
+        "150.0",
+        "150.0",
+        "150.0"
+      ],
+      "Total": [
+        "450.0",
+        "450.0",
+        "450.0"
+      ],
+      "WIH 2024": [
+        "0.0",
+        "22.53",
+        "24.0"
+      ],
+      "Advance 2025": [
+        "25.0",
+        "3.943",
+        "5.446"
+      ],
+      "WIH 2025": [
+        "150.0",
+        "79.08",
+        "80.45"
+      ],
+      "on hold": [
+        "125.0",
+        "216.97700000000003",
+        "214.10399999999998"
+      ],
+      "WIH 2026": [
+        "3.7",
+        "4.39",
+        "16.14"
+      ],
+      "Shelved": [
+        "7.1",
+        "10.21",
+        "1.45"
+      ],
+      "JAN": [
+        "12.5",
+        "12.5",
+        "9.625"
+      ],
+      "FEB": [
+        "25.0",
+        "5.655",
+        "10.0"
+      ],
+      "MAR": [
+        "2.8275",
+        "7.5",
+        "9.0"
+      ],
+      "Unnamed: 55": [
+        "3.0",
+        "65.0",
+        "15.0"
+      ]
+    }
+  },
+  "analysis_suggestions": [
+    "Calculate totals and averages for Budget, Projected, Actual",
+    "Analyze Budget by Unit",
+    "Revenue analysis: totals, trends, and breakdowns",
+    "Geographic performance analysis"
+  ]
+}

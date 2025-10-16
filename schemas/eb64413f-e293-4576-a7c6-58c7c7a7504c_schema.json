@@ -1,0 +1,6858 @@
+{
+  "basic_info": {
+    "shape": [
+      444,
+      56
+    ],
+    "total_rows": 444,
+    "total_columns": 56,
+    "memory_usage_mb": 1.2,
+    "column_names": [
+      "Unit",
+      "Product",
+      "Region",
+      "Country",
+      "Customer",
+      "Category",
+      "Project Code",
+      "Budget",
+      "Projected",
+      "Actual",
+      "Budget.1",
+      "Projected.1",
+      "Actual.1",
+      "Budget.2",
+      "Projected.2",
+      "Actual.2",
+      "Budget.3",
+      "Projected.3",
+      "Actual.3",
+      "Budget.4",
+      "Projected.4",
+      "Actual.4",
+      "Budget.5",
+      "Projected.5",
+      "Actual.5",
+      "Budget.6",
+      "Projected.6",
+      "Actual.6",
+      "Budget.7",
+      "Projected.7",
+      "Actual.7",
+      "Budget.8",
+      "Projected.8",
+      "Actual.8",
+      "Budget.9",
+      "Projected.9",
+      "Actual.9",
+      "Budget.10",
+      "Projected.10",
+      "Actual.10",
+      "Budget.11",
+      "Projected.11",
+      "Actual.11",
+      "YTD Actual",
+      "Remaining Projection",
+      "Total",
+      "WIH 2024",
+      "Advance 2025",
+      "WIH 2025",
+      "on hold",
+      "WIH 2026",
+      "Shelved",
+      "JAN",
+      "FEB",
+      "MAR",
+      "Unnamed: 55"
+    ]
+  },
+  "columns": {
+    "Unit": {
+      "dtype": "object",
+      "non_null_count": 435,
+      "null_count": 9,
+      "null_percentage": 2.03,
+      "unique_values": 86,
+      "unique_percentage": 19.37,
+      "sample_values": [
+        "AMS",
+        "AMS ME Region",
+        "AMS ME Total",
+        "AMS AFR Region",
+        "AMS AFR Total",
+        "AMS PK Region",
+        "AMS PK Total",
+        "AMS Total",
+        "SBP",
+        "SBP PK Region"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 6.0
+      },
+      "normalized_type": "string"
+    },
+    "Product": {
+      "dtype": "object",
+      "non_null_count": 382,
+      "null_count": 62,
+      "null_percentage": 13.96,
+      "unique_values": 13,
+      "unique_percentage": 2.93,
+      "sample_values": [
+        "=",
+        "AMS - Resource Placement",
+        "AMS - Professional Services",
+        "Oracle",
+        "Resident Engineer",
+        "Customized Development",
+        "Enterprise Wide CRM",
+        "Rendezvous \u2013 Financial Middleware",
+        "Novus \u2013 ATM/POS Controller",
+        "Ambit Retail"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 17.5
+      },
+      "normalized_type": "string"
+    },
+    "Region": {
+      "dtype": "object",
+      "non_null_count": 442,
+      "null_count": 2,
+      "null_percentage": 0.45,
+      "unique_values": 4,
+      "unique_percentage": 0.9,
+      "sample_values": [
+        "=",
+        "ME",
+        "AFR",
+        "PK"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 1.9
+      },
+      "normalized_type": "string"
+    },
+    "Country": {
+      "dtype": "object",
+      "non_null_count": 412,
+      "null_count": 32,
+      "null_percentage": 7.21,
+      "unique_values": 15,
+      "unique_percentage": 3.38,
+      "sample_values": [
+        "=",
+        "UAE",
+        "Somalia",
+        "Pakistan",
+        "Bahrain",
+        "KSA",
+        "Uganda",
+        "Ethiopia",
+        "Kyrgyzstan",
+        "Oman"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 5.7
+      },
+      "normalized_type": "string"
+    },
+    "Customer": {
+      "dtype": "object",
+      "non_null_count": 408,
+      "null_count": 36,
+      "null_percentage": 8.11,
+      "unique_values": 67,
+      "unique_percentage": 15.09,
+      "sample_values": [
+        "=",
+        "ADIB - Abu Dhabi Islamic Bank",
+        "New Customer",
+        "Premier Bank, Somalia",
+        "MBL-Meezan Bank Limited, Pakistan",
+        "Summit Bank Limited, Pakistan",
+        "JSBL-JS Bank Limited, Pakistan",
+        "BIPL-BankIslami Pakistan Limited, Pakistan",
+        "State Bank of Pakistan",
+        "FBL-Faysal Bank Limited, Pakistan"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 22.4
+      },
+      "normalized_type": "string"
+    },
+    "Category": {
+      "dtype": "object",
+      "non_null_count": 442,
+      "null_count": 2,
+      "null_percentage": 0.45,
+      "unique_values": 5,
+      "unique_percentage": 1.13,
+      "sample_values": [
+        "=",
+        "Funnel",
+        "New Sales",
+        "WIH",
+        "wih"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 4.8
+      },
+      "normalized_type": "string"
+    },
+    "Project Code": {
+      "dtype": "object",
+      "non_null_count": 269,
+      "null_count": 175,
+      "null_percentage": 39.41,
+      "unique_values": 125,
+      "unique_percentage": 28.15,
+      "sample_values": [
+        "=",
+        "4531-1909(EM-51600)",
+        "22-123-15-07",
+        "22-123-15-03",
+        "22-13-15-20",
+        "252611",
+        "70-23-16-15",
+        "70-78-06-02",
+        "70-72-13-06",
+        "22-19-04-15"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 6.2
+      },
+      "normalized_type": "string"
+    },
+    "Budget": {
+      "dtype": "object",
+      "non_null_count": 267,
+      "null_count": 177,
+      "null_percentage": 39.86,
+      "unique_values": 61,
+      "unique_percentage": 13.74,
+      "sample_values": [
+        "25",
+        "225",
+        "0",
+        "12",
+        "24",
+        "132",
+        "357",
+        "1.98",
+        "6.2",
+        "62.000000000000014"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 4.3
+      },
+      "normalized_type": "string"
+    },
+    "Projected": {
+      "dtype": "object",
+      "non_null_count": 309,
+      "null_count": 135,
+      "null_percentage": 30.41,
+      "unique_values": 48,
+      "unique_percentage": 10.81,
+      "sample_values": [
+        "=",
+        "25",
+        "225",
+        "0",
+        "12",
+        "24",
+        "132",
+        "357",
+        "4.68",
+        "9.36"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 4.0
+      },
+      "normalized_type": "string"
+    },
+    "Actual": {
+      "dtype": "object",
+      "non_null_count": 316,
+      "null_count": 128,
+      "null_percentage": 28.83,
+      "unique_values": 59,
+      "unique_percentage": 13.29,
+      "sample_values": [
+        "=",
+        "25",
+        "225",
+        "0",
+        "12",
+        "24",
+        "132",
+        "357",
+        "4.68",
+        "9.36"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 4.5
+      },
+      "normalized_type": "string"
+    },
+    "Budget.1": {
+      "dtype": "object",
+      "non_null_count": 269,
+      "null_count": 175,
+      "null_percentage": 39.41,
+      "unique_values": 66,
+      "unique_percentage": 14.86,
+      "sample_values": [
+        "25",
+        "225",
+        "0",
+        "12",
+        "24",
+        "132",
+        "357",
+        "6.869999999999999",
+        "9.36",
+        "25.589999999999996"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 4.4
+      },
+      "normalized_type": "string"
+    },
+    "Projected.1": {
+      "dtype": "object",
+      "non_null_count": 297,
+      "null_count": 147,
+      "null_percentage": 33.11,
+      "unique_values": 39,
+      "unique_percentage": 8.78,
+      "sample_values": [
+        "=",
+        "25",
+        "225",
+        "0",
+        "12",
+        "24",
+        "132",
+        "357",
+        "4.68",
+        "9.36"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 4.0
+      },
+      "normalized_type": "string"
+    },
+    "Actual.1": {
+      "dtype": "object",
+      "non_null_count": 299,
+      "null_count": 145,
+      "null_percentage": 32.66,
+      "unique_values": 48,
+      "unique_percentage": 10.81,
+      "sample_values": [
+        "=",
+        "25",
+        "225",
+        "0",
+        "12",
+        "24",
+        "132",
+        "357",
+        "4.68",
+        "9.36"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 4.1
+      },
+      "normalized_type": "string"
+    },
+    "Budget.2": {
+      "dtype": "object",
+      "non_null_count": 284,
+      "null_count": 160,
+      "null_percentage": 36.04,
+      "unique_values": 80,
+      "unique_percentage": 18.02,
+      "sample_values": [
+        "25",
+        "225",
+        "0",
+        "12",
+        "40.5",
+        "19.2",
+        "24",
+        "167.7",
+        "392.7",
+        "4.68"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 4.3
+      },
+      "normalized_type": "string"
+    },
+    "Projected.2": {
+      "dtype": "object",
+      "non_null_count": 312,
+      "null_count": 132,
+      "null_percentage": 29.73,
+      "unique_values": 53,
+      "unique_percentage": 11.94,
+      "sample_values": [
+        "=",
+        "25",
+        "225",
+        "0",
+        "12",
+        "40.5",
+        "24",
+        "160.5",
+        "385.5",
+        "6.869999999999999"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 4.1
+      },
+      "normalized_type": "string"
+    },
+    "Actual.2": {
+      "dtype": "object",
+      "non_null_count": 313,
+      "null_count": 131,
+      "null_percentage": 29.5,
+      "unique_values": 68,
+      "unique_percentage": 15.32,
+      "sample_values": [
+        "=",
+        "25",
+        "225",
+        "0",
+        "12",
+        "34.53",
+        "24",
+        "154.53",
+        "379.53",
+        "7.909090909090908"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 4.4
+      },
+      "normalized_type": "string"
+    },
+    "Budget.3": {
+      "dtype": "object",
+      "non_null_count": 276,
+      "null_count": 168,
+      "null_percentage": 37.84,
+      "unique_values": 69,
+      "unique_percentage": 15.54,
+      "sample_values": [
+        "25",
+        "225",
+        "0",
+        "12",
+        "24",
+        "132",
+        "357",
+        "4.68",
+        "11.7",
+        "9.36"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 4.3
+      },
+      "normalized_type": "string"
+    },
+    "Projected.3": {
+      "dtype": "object",
+      "non_null_count": 312,
+      "null_count": 132,
+      "null_percentage": 29.73,
+      "unique_values": 55,
+      "unique_percentage": 12.39,
+      "sample_values": [
+        "=",
+        "25",
+        "225",
+        "0",
+        "12",
+        "34.8",
+        "19.2",
+        "24",
+        "162",
+        "387"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 4.0
+      },
+      "normalized_type": "string"
+    },
+    "Actual.3": {
+      "dtype": "object",
+      "non_null_count": 315,
+      "null_count": 129,
+      "null_percentage": 29.05,
+      "unique_values": 65,
+      "unique_percentage": 14.64,
+      "sample_values": [
+        "=",
+        "25",
+        "225",
+        "0",
+        "12",
+        "24",
+        "144",
+        "369",
+        "4.68",
+        "9.36"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 4.3
+      },
+      "normalized_type": "string"
+    },
+    "Budget.4": {
+      "dtype": "object",
+      "non_null_count": 275,
+      "null_count": 169,
+      "null_percentage": 38.06,
+      "unique_values": 60,
+      "unique_percentage": 13.51,
+      "sample_values": [
+        "25",
+        "225",
+        "0",
+        "12",
+        "22",
+        "24",
+        "154",
+        "379",
+        "4.68",
+        "9.36"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 4.3
+      },
+      "normalized_type": "string"
+    },
+    "Projected.4": {
+      "dtype": "object",
+      "non_null_count": 315,
+      "null_count": 129,
+      "null_percentage": 29.05,
+      "unique_values": 58,
+      "unique_percentage": 13.06,
+      "sample_values": [
+        "=",
+        "25",
+        "225",
+        "0",
+        "12",
+        "34.8",
+        "24",
+        "65.58",
+        "208.38",
+        "433.38"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 4.1
+      },
+      "normalized_type": "string"
+    },
+    "Actual.4": {
+      "dtype": "object",
+      "non_null_count": 318,
+      "null_count": 126,
+      "null_percentage": 28.38,
+      "unique_values": 59,
+      "unique_percentage": 13.29,
+      "sample_values": [
+        "=",
+        "25",
+        "225",
+        "0",
+        "12",
+        "34.53",
+        "24",
+        "166.53",
+        "391.53",
+        "4.68"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 4.2
+      },
+      "normalized_type": "string"
+    },
+    "Budget.5": {
+      "dtype": "object",
+      "non_null_count": 282,
+      "null_count": 162,
+      "null_percentage": 36.49,
+      "unique_values": 69,
+      "unique_percentage": 15.54,
+      "sample_values": [
+        "25",
+        "225",
+        "0",
+        "12",
+        "40.5",
+        "31.2",
+        "24",
+        "179.7",
+        "404.7",
+        "4.68"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 4.3
+      },
+      "normalized_type": "string"
+    },
+    "Projected.5": {
+      "dtype": "object",
+      "non_null_count": 325,
+      "null_count": 119,
+      "null_percentage": 26.8,
+      "unique_values": 79,
+      "unique_percentage": 17.79,
+      "sample_values": [
+        "=",
+        "25",
+        "225",
+        "0",
+        "12",
+        "24",
+        "31.2",
+        "65.58",
+        "192.78",
+        "417.78"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 4.1
+      },
+      "normalized_type": "string"
+    },
+    "Actual.5": {
+      "dtype": "object",
+      "non_null_count": 318,
+      "null_count": 126,
+      "null_percentage": 28.38,
+      "unique_values": 57,
+      "unique_percentage": 12.84,
+      "sample_values": [
+        "=",
+        "25",
+        "225",
+        "0",
+        "12",
+        "24",
+        "38.4",
+        "65.58",
+        "199.98000000000002",
+        "424.98"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 4.0
+      },
+      "normalized_type": "string"
+    },
+    "Budget.6": {
+      "dtype": "object",
+      "non_null_count": 275,
+      "null_count": 169,
+      "null_percentage": 38.06,
+      "unique_values": 50,
+      "unique_percentage": 11.26,
+      "sample_values": [
+        "25",
+        "225",
+        "0",
+        "12",
+        "24",
+        "144",
+        "369",
+        "4.68",
+        "9.36",
+        "23.4"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 4.1
+      },
+      "normalized_type": "string"
+    },
+    "Projected.6": {
+      "dtype": "object",
+      "non_null_count": 319,
+      "null_count": 125,
+      "null_percentage": 28.15,
+      "unique_values": 58,
+      "unique_percentage": 13.06,
+      "sample_values": [
+        "=",
+        "25",
+        "225",
+        "0",
+        "12",
+        "24",
+        "144",
+        "369",
+        "4.68",
+        "9.36"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 3.9
+      },
+      "normalized_type": "string"
+    },
+    "Actual.6": {
+      "dtype": "object",
+      "non_null_count": 320,
+      "null_count": 124,
+      "null_percentage": 27.93,
+      "unique_values": 60,
+      "unique_percentage": 13.51,
+      "sample_values": [
+        "=",
+        "25",
+        "225",
+        "0",
+        "12",
+        "27.020000000000003",
+        "24",
+        "159.02",
+        "384.02",
+        "6.795"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 4.1
+      },
+      "normalized_type": "string"
+    },
+    "Budget.7": {
+      "dtype": "object",
+      "non_null_count": 279,
+      "null_count": 165,
+      "null_percentage": 37.16,
+      "unique_values": 58,
+      "unique_percentage": 13.06,
+      "sample_values": [
+        "25",
+        "225",
+        "0",
+        "12",
+        "22",
+        "24",
+        "154",
+        "379",
+        "4.68",
+        "9.36"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 4.0
+      },
+      "normalized_type": "string"
+    },
+    "Projected.7": {
+      "dtype": "object",
+      "non_null_count": 317,
+      "null_count": 127,
+      "null_percentage": 28.6,
+      "unique_values": 57,
+      "unique_percentage": 12.84,
+      "sample_values": [
+        "=",
+        "25",
+        "225",
+        "0",
+        "12",
+        "40.5",
+        "24",
+        "172.5",
+        "397.5",
+        "4.68"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 3.9
+      },
+      "normalized_type": "string"
+    },
+    "Actual.7": {
+      "dtype": "object",
+      "non_null_count": 315,
+      "null_count": 129,
+      "null_percentage": 29.05,
+      "unique_values": 61,
+      "unique_percentage": 13.74,
+      "sample_values": [
+        "=",
+        "25",
+        "225",
+        "0",
+        "12",
+        "34.53",
+        "24",
+        "-41.58",
+        "100.95",
+        "325.95"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 4.0
+      },
+      "normalized_type": "string"
+    },
+    "Budget.8": {
+      "dtype": "object",
+      "non_null_count": 267,
+      "null_count": 177,
+      "null_percentage": 39.86,
+      "unique_values": 51,
+      "unique_percentage": 11.49,
+      "sample_values": [
+        "25",
+        "225",
+        "0",
+        "28.5",
+        "7.2",
+        "35.7",
+        "260.7",
+        "3.96",
+        "14.2",
+        "39.2"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 4.1
+      },
+      "normalized_type": "string"
+    },
+    "Projected.8": {
+      "dtype": "object",
+      "non_null_count": 304,
+      "null_count": 140,
+      "null_percentage": 31.53,
+      "unique_values": 43,
+      "unique_percentage": 9.68,
+      "sample_values": [
+        "=",
+        "25",
+        "225",
+        "0",
+        "3.96",
+        "14.2",
+        "142",
+        "6.2",
+        "12.4",
+        "68.20000000000002"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 3.8
+      },
+      "normalized_type": "string"
+    },
+    "Actual.8": {
+      "dtype": "object",
+      "non_null_count": 289,
+      "null_count": 155,
+      "null_percentage": 34.91,
+      "unique_values": 57,
+      "unique_percentage": 12.84,
+      "sample_values": [
+        "=",
+        "25",
+        "225",
+        "0",
+        "3.96",
+        "7.1",
+        "14.2",
+        "149.1",
+        "6.2",
+        "155.29999999999998"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 3.9
+      },
+      "normalized_type": "string"
+    },
+    "Budget.9": {
+      "dtype": "object",
+      "non_null_count": 243,
+      "null_count": 201,
+      "null_percentage": 45.27,
+      "unique_values": 37,
+      "unique_percentage": 8.33,
+      "sample_values": [
+        "25",
+        "225",
+        "0",
+        "20",
+        "3.96",
+        "14.2",
+        "142",
+        "3.73",
+        "13.73",
+        "8.73"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 3.8
+      },
+      "normalized_type": "string"
+    },
+    "Projected.9": {
+      "dtype": "object",
+      "non_null_count": 298,
+      "null_count": 146,
+      "null_percentage": 32.88,
+      "unique_values": 77,
+      "unique_percentage": 17.34,
+      "sample_values": [
+        "=",
+        "25",
+        "225",
+        "0",
+        "5.6",
+        "2.9280000000000004",
+        "8.528",
+        "12.5",
+        "3.96",
+        "22.2"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 4.0
+      },
+      "normalized_type": "string"
+    },
+    "Actual.9": {
+      "dtype": "object",
+      "non_null_count": 277,
+      "null_count": 167,
+      "null_percentage": 37.61,
+      "unique_values": 26,
+      "unique_percentage": 5.86,
+      "sample_values": [
+        "=",
+        "25",
+        "225",
+        "0",
+        "15.019",
+        "240.019",
+        "10.210909090909091",
+        "3.96",
+        "14.2",
+        "142"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 3.7
+      },
+      "normalized_type": "string"
+    },
+    "Budget.10": {
+      "dtype": "object",
+      "non_null_count": 189,
+      "null_count": 255,
+      "null_percentage": 57.43,
+      "unique_values": 29,
+      "unique_percentage": 6.53,
+      "sample_values": [
+        "25",
+        "225",
+        "0",
+        "3.96",
+        "29.2",
+        "14.2",
+        "156.99999999999997",
+        "15",
+        "171.99999999999997",
+        "20"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 3.9
+      },
+      "normalized_type": "string"
+    },
+    "Projected.10": {
+      "dtype": "object",
+      "non_null_count": 231,
+      "null_count": 213,
+      "null_percentage": 47.97,
+      "unique_values": 45,
+      "unique_percentage": 10.14,
+      "sample_values": [
+        "=",
+        "25",
+        "225",
+        "0",
+        "5.6",
+        "3.96",
+        "22.2",
+        "14.2",
+        "150",
+        "3"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 3.8
+      },
+      "normalized_type": "string"
+    },
+    "Actual.10": {
+      "dtype": "object",
+      "non_null_count": 217,
+      "null_count": 227,
+      "null_percentage": 51.13,
+      "unique_values": 13,
+      "unique_percentage": 2.93,
+      "sample_values": [
+        "=",
+        "25",
+        "225",
+        "0",
+        "3.96",
+        "14.2",
+        "142",
+        "7.2",
+        "14.4",
+        "1404.0000000000014"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 3.6
+      },
+      "normalized_type": "string"
+    },
+    "Budget.11": {
+      "dtype": "object",
+      "non_null_count": 186,
+      "null_count": 258,
+      "null_percentage": 58.11,
+      "unique_values": 30,
+      "unique_percentage": 6.76,
+      "sample_values": [
+        "25",
+        "225",
+        "0",
+        "28.5",
+        "253.5",
+        "3.96",
+        "14.2",
+        "39.2",
+        "167",
+        "25.89"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 3.8
+      },
+      "normalized_type": "string"
+    },
+    "Projected.11": {
+      "dtype": "object",
+      "non_null_count": 147,
+      "null_count": 297,
+      "null_percentage": 66.89,
+      "unique_values": 44,
+      "unique_percentage": 9.91,
+      "sample_values": [
+        "=",
+        "25",
+        "225",
+        "0",
+        "14.2",
+        "39.2",
+        "166.99999999999997",
+        "0.75",
+        "167.74999999999997",
+        "3.6955"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 3.9
+      },
+      "normalized_type": "string"
+    },
+    "Actual.11": {
+      "dtype": "object",
+      "non_null_count": 116,
+      "null_count": 328,
+      "null_percentage": 73.87,
+      "unique_values": 11,
+      "unique_percentage": 2.48,
+      "sample_values": [
+        "=",
+        "25",
+        "225",
+        "0",
+        "14.2",
+        "142",
+        "14.4",
+        "57.6",
+        "29.166",
+        "233.328"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 3.5
+      },
+      "normalized_type": "string"
+    },
+    "YTD Actual": {
+      "dtype": "object",
+      "non_null_count": 438,
+      "null_count": 6,
+      "null_percentage": 1.35,
+      "unique_values": 185,
+      "unique_percentage": 41.67,
+      "sample_values": [
+        "=",
+        "300",
+        "2700",
+        "0",
+        "96",
+        "171.09900000000002",
+        "118.53",
+        "156",
+        "206.4",
+        "168"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 8.9
+      },
+      "normalized_type": "string"
+    },
+    "Remaining Projection": {
+      "dtype": "object",
+      "non_null_count": 438,
+      "null_count": 6,
+      "null_percentage": 1.35,
+      "unique_values": 158,
+      "unique_percentage": 35.59,
+      "sample_values": [
+        "=",
+        "150",
+        "1350",
+        "0",
+        "24",
+        "52.5",
+        "48",
+        "316.5",
+        "1666.5",
+        "9.36"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 4.0
+      },
+      "normalized_type": "string"
+    },
+    "Total": {
+      "dtype": "object",
+      "non_null_count": 438,
+      "null_count": 6,
+      "null_percentage": 1.35,
+      "unique_values": 235,
+      "unique_percentage": 52.93,
+      "sample_values": [
+        "=",
+        "450",
+        "4050",
+        "0",
+        "120",
+        "223.59900000000002",
+        "142.53",
+        "204",
+        "254.4",
+        "216"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 9.1
+      },
+      "normalized_type": "string"
+    },
+    "WIH 2024": {
+      "dtype": "object",
+      "non_null_count": 79,
+      "null_count": 365,
+      "null_percentage": 82.21,
+      "unique_values": 66,
+      "unique_percentage": 14.86,
+      "sample_values": [
+        "=",
+        "0",
+        "22.53",
+        "24",
+        "46.53",
+        "3.229090909090909",
+        "10.210909090909091",
+        "13.44",
+        "21.299999999999997",
+        "4.81232"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 4.7
+      },
+      "normalized_type": "string"
+    },
+    "Advance 2025": {
+      "dtype": "object",
+      "non_null_count": 139,
+      "null_count": 305,
+      "null_percentage": 68.69,
+      "unique_values": 110,
+      "unique_percentage": 24.77,
+      "sample_values": [
+        "=",
+        "25",
+        "3.943",
+        "5.446",
+        "4.0835",
+        "3.2",
+        "2.006",
+        "28.59",
+        "72.2685",
+        "22.53"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 4.7
+      },
+      "normalized_type": "string"
+    },
+    "WIH 2025": {
+      "dtype": "object",
+      "non_null_count": 62,
+      "null_count": 382,
+      "null_percentage": 86.04,
+      "unique_values": 48,
+      "unique_percentage": 10.81,
+      "sample_values": [
+        "=",
+        "150",
+        "79.08",
+        "80.45",
+        "78.94",
+        "58.56",
+        "447.03",
+        "49.549",
+        "14.704090909090908",
+        "0"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 4.4
+      },
+      "normalized_type": "string"
+    },
+    "on hold": {
+      "dtype": "object",
+      "non_null_count": 179,
+      "null_count": 265,
+      "null_percentage": 59.68,
+      "unique_values": 58,
+      "unique_percentage": 13.06,
+      "sample_values": [
+        "=",
+        "125",
+        "216.97700000000003",
+        "214.10399999999998",
+        "216.9765",
+        "296.8",
+        "212.85000000000002",
+        "300",
+        "2180.7015",
+        "96"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "string",
+        "avg_string_length": 5.0
+      },
+      "normalized_type": "string"
+    },
+    "WIH 2026": {
+      "dtype": "float64",
+      "non_null_count": 44,
+      "null_count": 400,
+      "null_percentage": 90.09,
+      "unique_values": 43,
+      "unique_percentage": 9.68,
+      "sample_values": [
+        "3.7",
+        "4.39",
+        "16.14",
+        "6.0",
+        "51.78",
+        "10.75",
+        "25.05",
+        "10.481900000000001",
+        "31.36",
+        "4.5"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 1.0,
+        "max_value": 51.78,
+        "mean_value": 12.52,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "Shelved": {
+      "dtype": "float64",
+      "non_null_count": 18,
+      "null_count": 426,
+      "null_percentage": 95.95,
+      "unique_values": 18,
+      "unique_percentage": 4.05,
+      "sample_values": [
+        "7.1",
+        "10.21",
+        "1.45",
+        "3.6",
+        "4.0",
+        "6.74",
+        "3.62",
+        "5.6",
+        "14.63",
+        "10.0"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 1.45,
+        "max_value": 14.63,
+        "mean_value": 5.76,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "JAN": {
+      "dtype": "float64",
+      "non_null_count": 5,
+      "null_count": 439,
+      "null_percentage": 98.87,
+      "unique_values": 3,
+      "unique_percentage": 0.68,
+      "sample_values": [
+        "12.5",
+        "9.625",
+        "3.75"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 3.75,
+        "max_value": 12.5,
+        "mean_value": 8.43,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "FEB": {
+      "dtype": "float64",
+      "non_null_count": 5,
+      "null_count": 439,
+      "null_percentage": 98.87,
+      "unique_values": 5,
+      "unique_percentage": 1.13,
+      "sample_values": [
+        "25.0",
+        "5.655",
+        "10.0",
+        "2.5",
+        "40.185"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 2.5,
+        "max_value": 40.185,
+        "mean_value": 16.67,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "MAR": {
+      "dtype": "float64",
+      "non_null_count": 18,
+      "null_count": 426,
+      "null_percentage": 95.95,
+      "unique_values": 12,
+      "unique_percentage": 2.7,
+      "sample_values": [
+        "2.8275",
+        "7.5",
+        "9.0",
+        "12.5",
+        "3.75",
+        "20.092",
+        "6.0",
+        "10.0",
+        "90.0",
+        "1.25"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 1.25,
+        "max_value": 90.0,
+        "mean_value": 11.55,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    },
+    "Unnamed: 55": {
+      "dtype": "float64",
+      "non_null_count": 6,
+      "null_count": 438,
+      "null_percentage": 98.65,
+      "unique_values": 6,
+      "unique_percentage": 1.35,
+      "sample_values": [
+        "3.0",
+        "65.0",
+        "15.0",
+        "24.9",
+        "7.5",
+        "50.0"
+      ],
+      "is_constant": false,
+      "data_characteristics": {
+        "data_type": "numeric",
+        "min_value": 3.0,
+        "max_value": 65.0,
+        "mean_value": 27.57,
+        "has_negative_values": false,
+        "all_integers": false
+      },
+      "normalized_type": "numeric"
+    }
+  },
+  "data_types": {
+    "numerical": [
+      "WIH 2026",
+      "Shelved",
+      "JAN",
+      "FEB",
+      "MAR",
+      "Unnamed: 55"
+    ],
+    "categorical": [
+      "Unit",
+      "Product",
+      "Region",
+      "Country",
+      "Customer",
+      "Category",
+      "Project Code",
+      "Budget",
+      "Projected",
+      "Actual",
+      "Budget.1",
+      "Projected.1",
+      "Actual.1",
+      "Budget.2",
+      "Projected.2",
+      "Actual.2",
+      "Budget.3",
+      "Projected.3",
+      "Actual.3",
+      "Budget.4",
+      "Projected.4",
+      "Actual.4",
+      "Budget.5",
+      "Projected.5",
+      "Actual.5",
+      "Budget.6",
+      "Projected.6",
+      "Actual.6",
+      "Budget.7",
+      "Projected.7",
+      "Actual.7",
+      "Budget.8",
+      "Projected.8",
+      "Actual.8",
+      "Budget.9",
+      "Projected.9",
+      "Actual.9",
+      "Budget.10",
+      "Projected.10",
+      "Actual.10",
+      "Budget.11",
+      "Projected.11",
+      "Actual.11",
+      "YTD Actual",
+      "Remaining Projection",
+      "Total",
+      "WIH 2024",
+      "Advance 2025",
+      "WIH 2025",
+      "on hold"
+    ],
+    "datetime": [],
+    "boolean": [],
+    "high_cardinality": [],
+    "low_cardinality": [
+      "Product",
+      "Region",
+      "Country",
+      "Category",
+      "Actual.10",
+      "Actual.11",
+      "Shelved",
+      "JAN",
+      "FEB",
+      "MAR",
+      "Unnamed: 55"
+    ]
+  },
+  "business_entities": {
+    "revenue": [
+      {
+        "column": "Total",
+        "confidence": 0.5,
+        "reasoning": "Column name contains 'revenue' keywords"
+      }
+    ],
+    "geography": [
+      {
+        "column": "Region",
+        "confidence": 0.7,
+        "reasoning": "Column name contains 'geography' keywords"
+      },
+      {
+        "column": "Country",
+        "confidence": 0.7,
+        "reasoning": "Column name contains 'geography' keywords"
+      }
+    ],
+    "product": [
+      {
+        "column": "Product",
+        "confidence": 0.5,
+        "reasoning": "Column name contains 'product' keywords"
+      },
+      {
+        "column": "Category",
+        "confidence": 0.5,
+        "reasoning": "Column name contains 'product' keywords"
+      }
+    ],
+    "customer": [
+      {
+        "column": "Customer",
+        "confidence": 0.5,
+        "reasoning": "Column name contains 'customer' keywords"
+      }
+    ],
+    "quantity": [
+      {
+        "column": "Country",
+        "confidence": 0.5,
+        "reasoning": "Column name contains 'quantity' keywords"
+      }
+    ]
+  },
+  "data_quality": {
+    "overall_completeness": 58.92,
+    "columns_with_nulls": 56,
+    "fully_complete_columns": 0,
+    "duplicate_rows": 1,
+    "constant_columns": [],
+    "potential_issues": [
+      "High missing values in: Budget.10, Actual.10, Budget.11",
+      "1 duplicate rows found"
+    ]
+  },
+  "relationships": {
+    "potential_hierarchies": [
+      {
+        "parent": "Unit",
+        "child": "Product",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Region",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Country",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Category",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Budget",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Projected",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Actual",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Budget.1",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Projected.1",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Actual.1",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Budget.2",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Projected.2",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Actual.2",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Budget.3",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Projected.3",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Actual.3",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Budget.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Projected.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Actual.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Budget.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Projected.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Actual.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Budget.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Projected.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Actual.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Budget.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Projected.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Actual.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Budget.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Projected.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Actual.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Budget.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Projected.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Actual.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Budget.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Projected.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Actual.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Budget.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Projected.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Actual.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "WIH 2024",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "Advance 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "WIH 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Unit",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "Product",
+        "child": "Region",
+        "strength": 0.8
+      },
+      {
+        "parent": "Product",
+        "child": "Actual.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Product",
+        "child": "Actual.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Country",
+        "child": "Actual.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Country",
+        "child": "Actual.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Customer",
+        "child": "Category",
+        "strength": 0.8
+      },
+      {
+        "parent": "Customer",
+        "child": "Budget",
+        "strength": 0.8
+      },
+      {
+        "parent": "Customer",
+        "child": "Projected",
+        "strength": 0.8
+      },
+      {
+        "parent": "Customer",
+        "child": "Actual",
+        "strength": 0.8
+      },
+      {
+        "parent": "Customer",
+        "child": "Budget.1",
+        "strength": 0.8
+      },
+      {
+        "parent": "Customer",
+        "child": "Projected.1",
+        "strength": 0.8
+      },
+      {
+        "parent": "Customer",
+        "child": "Actual.1",
+        "strength": 0.8
+      },
+      {
+        "parent": "Customer",
+        "child": "Projected.2",
+        "strength": 0.8
+      },
+      {
+        "parent": "Customer",
+        "child": "Actual.2",
+        "strength": 0.8
+      },
+      {
+        "parent": "Customer",
+        "child": "Projected.3",
+        "strength": 0.8
+      },
+      {
+        "parent": "Customer",
+        "child": "Actual.3",
+        "strength": 0.8
+      },
+      {
+        "parent": "Customer",
+        "child": "Budget.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Customer",
+        "child": "Projected.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Customer",
+        "child": "Actual.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Customer",
+        "child": "Actual.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Customer",
+        "child": "Budget.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Customer",
+        "child": "Projected.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Customer",
+        "child": "Actual.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Customer",
+        "child": "Budget.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Customer",
+        "child": "Projected.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Customer",
+        "child": "Actual.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Customer",
+        "child": "Budget.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Customer",
+        "child": "Projected.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Customer",
+        "child": "Actual.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Customer",
+        "child": "Budget.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Customer",
+        "child": "Projected.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Customer",
+        "child": "Actual.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Customer",
+        "child": "Budget.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Customer",
+        "child": "Projected.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Customer",
+        "child": "Actual.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Customer",
+        "child": "Budget.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Customer",
+        "child": "Projected.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Customer",
+        "child": "Actual.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Customer",
+        "child": "WIH 2024",
+        "strength": 0.8
+      },
+      {
+        "parent": "Customer",
+        "child": "Advance 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Customer",
+        "child": "WIH 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Customer",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "Budget",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "Projected",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "Actual",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "Budget.1",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "Projected.1",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "Actual.1",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "Budget.2",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "Projected.2",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "Actual.2",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "Budget.3",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "Projected.3",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "Actual.3",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "Budget.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "Projected.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "Actual.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "Budget.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "Projected.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "Actual.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "Budget.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "Projected.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "Actual.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "Budget.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "Projected.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "Actual.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "Budget.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "Projected.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "Actual.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "Budget.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "Projected.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "Actual.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "Budget.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "Projected.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "Actual.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "Budget.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "Projected.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "Actual.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "YTD Actual",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "Remaining Projection",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "Total",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "WIH 2024",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "Advance 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "WIH 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Project Code",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget",
+        "child": "Projected",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget",
+        "child": "Actual",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget",
+        "child": "Budget.1",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget",
+        "child": "Projected.1",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget",
+        "child": "Actual.1",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget",
+        "child": "Budget.2",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget",
+        "child": "Projected.2",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget",
+        "child": "Actual.2",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget",
+        "child": "Budget.3",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget",
+        "child": "Projected.3",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget",
+        "child": "Actual.3",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget",
+        "child": "Budget.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget",
+        "child": "Projected.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget",
+        "child": "Actual.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget",
+        "child": "Budget.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget",
+        "child": "Projected.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget",
+        "child": "Actual.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget",
+        "child": "Budget.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget",
+        "child": "Projected.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget",
+        "child": "Actual.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget",
+        "child": "Budget.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget",
+        "child": "Projected.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget",
+        "child": "Actual.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget",
+        "child": "Budget.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget",
+        "child": "Projected.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget",
+        "child": "Actual.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget",
+        "child": "Budget.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget",
+        "child": "Projected.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget",
+        "child": "Actual.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget",
+        "child": "Budget.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget",
+        "child": "Projected.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget",
+        "child": "Actual.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget",
+        "child": "Budget.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget",
+        "child": "Projected.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget",
+        "child": "Actual.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget",
+        "child": "WIH 2024",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget",
+        "child": "Advance 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget",
+        "child": "WIH 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected",
+        "child": "Actual",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected",
+        "child": "Budget.1",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected",
+        "child": "Projected.1",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected",
+        "child": "Actual.1",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected",
+        "child": "Budget.2",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected",
+        "child": "Projected.2",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected",
+        "child": "Actual.2",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected",
+        "child": "Budget.3",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected",
+        "child": "Projected.3",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected",
+        "child": "Actual.3",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected",
+        "child": "Budget.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected",
+        "child": "Projected.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected",
+        "child": "Actual.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected",
+        "child": "Budget.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected",
+        "child": "Projected.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected",
+        "child": "Actual.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected",
+        "child": "Budget.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected",
+        "child": "Projected.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected",
+        "child": "Actual.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected",
+        "child": "Budget.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected",
+        "child": "Projected.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected",
+        "child": "Actual.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected",
+        "child": "Budget.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected",
+        "child": "Projected.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected",
+        "child": "Actual.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected",
+        "child": "Budget.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected",
+        "child": "Projected.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected",
+        "child": "Actual.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected",
+        "child": "Budget.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected",
+        "child": "Projected.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected",
+        "child": "Actual.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected",
+        "child": "Budget.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected",
+        "child": "Projected.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected",
+        "child": "Actual.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected",
+        "child": "WIH 2024",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected",
+        "child": "Advance 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected",
+        "child": "WIH 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual",
+        "child": "Budget.1",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual",
+        "child": "Projected.1",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual",
+        "child": "Actual.1",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual",
+        "child": "Budget.2",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual",
+        "child": "Projected.2",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual",
+        "child": "Actual.2",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual",
+        "child": "Budget.3",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual",
+        "child": "Projected.3",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual",
+        "child": "Actual.3",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual",
+        "child": "Budget.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual",
+        "child": "Projected.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual",
+        "child": "Actual.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual",
+        "child": "Budget.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual",
+        "child": "Projected.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual",
+        "child": "Actual.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual",
+        "child": "Budget.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual",
+        "child": "Projected.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual",
+        "child": "Actual.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual",
+        "child": "Budget.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual",
+        "child": "Projected.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual",
+        "child": "Actual.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual",
+        "child": "Budget.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual",
+        "child": "Projected.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual",
+        "child": "Actual.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual",
+        "child": "Budget.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual",
+        "child": "Projected.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual",
+        "child": "Actual.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual",
+        "child": "Budget.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual",
+        "child": "Projected.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual",
+        "child": "Actual.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual",
+        "child": "Budget.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual",
+        "child": "Projected.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual",
+        "child": "Actual.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual",
+        "child": "WIH 2024",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual",
+        "child": "Advance 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual",
+        "child": "WIH 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.1",
+        "child": "Projected.1",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.1",
+        "child": "Actual.1",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.1",
+        "child": "Budget.2",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.1",
+        "child": "Projected.2",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.1",
+        "child": "Actual.2",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.1",
+        "child": "Budget.3",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.1",
+        "child": "Projected.3",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.1",
+        "child": "Actual.3",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.1",
+        "child": "Budget.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.1",
+        "child": "Projected.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.1",
+        "child": "Actual.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.1",
+        "child": "Budget.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.1",
+        "child": "Projected.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.1",
+        "child": "Actual.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.1",
+        "child": "Budget.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.1",
+        "child": "Projected.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.1",
+        "child": "Actual.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.1",
+        "child": "Budget.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.1",
+        "child": "Projected.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.1",
+        "child": "Actual.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.1",
+        "child": "Budget.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.1",
+        "child": "Projected.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.1",
+        "child": "Actual.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.1",
+        "child": "Budget.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.1",
+        "child": "Projected.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.1",
+        "child": "Actual.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.1",
+        "child": "Budget.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.1",
+        "child": "Projected.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.1",
+        "child": "Actual.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.1",
+        "child": "Budget.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.1",
+        "child": "Projected.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.1",
+        "child": "Actual.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.1",
+        "child": "WIH 2024",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.1",
+        "child": "Advance 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.1",
+        "child": "WIH 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.1",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.1",
+        "child": "Actual.1",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.1",
+        "child": "Budget.2",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.1",
+        "child": "Projected.2",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.1",
+        "child": "Actual.2",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.1",
+        "child": "Budget.3",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.1",
+        "child": "Projected.3",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.1",
+        "child": "Actual.3",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.1",
+        "child": "Budget.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.1",
+        "child": "Projected.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.1",
+        "child": "Actual.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.1",
+        "child": "Budget.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.1",
+        "child": "Projected.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.1",
+        "child": "Actual.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.1",
+        "child": "Budget.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.1",
+        "child": "Projected.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.1",
+        "child": "Actual.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.1",
+        "child": "Budget.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.1",
+        "child": "Projected.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.1",
+        "child": "Actual.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.1",
+        "child": "Budget.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.1",
+        "child": "Projected.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.1",
+        "child": "Actual.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.1",
+        "child": "Budget.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.1",
+        "child": "Projected.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.1",
+        "child": "Actual.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.1",
+        "child": "Budget.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.1",
+        "child": "Projected.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.1",
+        "child": "Actual.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.1",
+        "child": "Budget.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.1",
+        "child": "Projected.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.1",
+        "child": "Actual.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.1",
+        "child": "WIH 2024",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.1",
+        "child": "WIH 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.1",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.1",
+        "child": "Budget.2",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.1",
+        "child": "Projected.2",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.1",
+        "child": "Actual.2",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.1",
+        "child": "Budget.3",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.1",
+        "child": "Projected.3",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.1",
+        "child": "Actual.3",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.1",
+        "child": "Budget.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.1",
+        "child": "Projected.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.1",
+        "child": "Actual.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.1",
+        "child": "Budget.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.1",
+        "child": "Projected.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.1",
+        "child": "Actual.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.1",
+        "child": "Budget.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.1",
+        "child": "Projected.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.1",
+        "child": "Actual.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.1",
+        "child": "Budget.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.1",
+        "child": "Projected.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.1",
+        "child": "Actual.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.1",
+        "child": "Budget.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.1",
+        "child": "Projected.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.1",
+        "child": "Actual.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.1",
+        "child": "Budget.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.1",
+        "child": "Projected.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.1",
+        "child": "Actual.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.1",
+        "child": "Budget.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.1",
+        "child": "Projected.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.1",
+        "child": "Actual.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.1",
+        "child": "Budget.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.1",
+        "child": "Projected.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.1",
+        "child": "Actual.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.1",
+        "child": "WIH 2024",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.1",
+        "child": "Advance 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.1",
+        "child": "WIH 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.1",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.2",
+        "child": "Projected.2",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.2",
+        "child": "Actual.2",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.2",
+        "child": "Budget.3",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.2",
+        "child": "Projected.3",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.2",
+        "child": "Actual.3",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.2",
+        "child": "Budget.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.2",
+        "child": "Projected.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.2",
+        "child": "Actual.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.2",
+        "child": "Budget.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.2",
+        "child": "Projected.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.2",
+        "child": "Actual.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.2",
+        "child": "Budget.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.2",
+        "child": "Projected.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.2",
+        "child": "Actual.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.2",
+        "child": "Budget.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.2",
+        "child": "Projected.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.2",
+        "child": "Actual.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.2",
+        "child": "Budget.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.2",
+        "child": "Projected.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.2",
+        "child": "Actual.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.2",
+        "child": "Budget.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.2",
+        "child": "Projected.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.2",
+        "child": "Actual.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.2",
+        "child": "Budget.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.2",
+        "child": "Projected.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.2",
+        "child": "Actual.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.2",
+        "child": "Budget.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.2",
+        "child": "Projected.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.2",
+        "child": "Actual.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.2",
+        "child": "YTD Actual",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.2",
+        "child": "Remaining Projection",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.2",
+        "child": "WIH 2024",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.2",
+        "child": "Advance 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.2",
+        "child": "WIH 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.2",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.2",
+        "child": "Actual.2",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.2",
+        "child": "Budget.3",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.2",
+        "child": "Projected.3",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.2",
+        "child": "Actual.3",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.2",
+        "child": "Budget.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.2",
+        "child": "Projected.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.2",
+        "child": "Actual.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.2",
+        "child": "Budget.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.2",
+        "child": "Projected.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.2",
+        "child": "Actual.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.2",
+        "child": "Budget.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.2",
+        "child": "Projected.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.2",
+        "child": "Actual.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.2",
+        "child": "Budget.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.2",
+        "child": "Projected.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.2",
+        "child": "Actual.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.2",
+        "child": "Budget.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.2",
+        "child": "Projected.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.2",
+        "child": "Actual.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.2",
+        "child": "Budget.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.2",
+        "child": "Projected.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.2",
+        "child": "Actual.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.2",
+        "child": "Budget.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.2",
+        "child": "Projected.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.2",
+        "child": "Actual.10",
+        "strength": 1.0
+      },
+      {
+        "parent": "Projected.2",
+        "child": "Budget.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.2",
+        "child": "Projected.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.2",
+        "child": "Actual.11",
+        "strength": 1.0
+      },
+      {
+        "parent": "Projected.2",
+        "child": "WIH 2024",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.2",
+        "child": "Advance 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.2",
+        "child": "WIH 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.2",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.2",
+        "child": "Budget.3",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.2",
+        "child": "Projected.3",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.2",
+        "child": "Actual.3",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.2",
+        "child": "Budget.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.2",
+        "child": "Projected.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.2",
+        "child": "Actual.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.2",
+        "child": "Budget.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.2",
+        "child": "Projected.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.2",
+        "child": "Actual.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.2",
+        "child": "Budget.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.2",
+        "child": "Projected.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.2",
+        "child": "Actual.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.2",
+        "child": "Budget.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.2",
+        "child": "Projected.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.2",
+        "child": "Actual.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.2",
+        "child": "Budget.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.2",
+        "child": "Projected.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.2",
+        "child": "Actual.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.2",
+        "child": "Budget.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.2",
+        "child": "Projected.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.2",
+        "child": "Actual.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.2",
+        "child": "Budget.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.2",
+        "child": "Projected.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.2",
+        "child": "Actual.10",
+        "strength": 1.0
+      },
+      {
+        "parent": "Actual.2",
+        "child": "Budget.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.2",
+        "child": "Projected.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.2",
+        "child": "Actual.11",
+        "strength": 1.0
+      },
+      {
+        "parent": "Actual.2",
+        "child": "YTD Actual",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.2",
+        "child": "WIH 2024",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.2",
+        "child": "Advance 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.2",
+        "child": "WIH 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.2",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.3",
+        "child": "Projected.3",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.3",
+        "child": "Actual.3",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.3",
+        "child": "Budget.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.3",
+        "child": "Projected.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.3",
+        "child": "Actual.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.3",
+        "child": "Budget.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.3",
+        "child": "Projected.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.3",
+        "child": "Actual.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.3",
+        "child": "Budget.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.3",
+        "child": "Projected.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.3",
+        "child": "Actual.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.3",
+        "child": "Budget.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.3",
+        "child": "Projected.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.3",
+        "child": "Actual.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.3",
+        "child": "Budget.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.3",
+        "child": "Projected.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.3",
+        "child": "Actual.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.3",
+        "child": "Budget.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.3",
+        "child": "Projected.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.3",
+        "child": "Actual.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.3",
+        "child": "Budget.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.3",
+        "child": "Projected.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.3",
+        "child": "Actual.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.3",
+        "child": "Budget.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.3",
+        "child": "Projected.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.3",
+        "child": "Actual.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.3",
+        "child": "WIH 2024",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.3",
+        "child": "Advance 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.3",
+        "child": "WIH 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.3",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.3",
+        "child": "Actual.3",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.3",
+        "child": "Budget.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.3",
+        "child": "Projected.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.3",
+        "child": "Actual.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.3",
+        "child": "Budget.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.3",
+        "child": "Projected.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.3",
+        "child": "Actual.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.3",
+        "child": "Budget.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.3",
+        "child": "Projected.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.3",
+        "child": "Actual.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.3",
+        "child": "Budget.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.3",
+        "child": "Projected.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.3",
+        "child": "Actual.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.3",
+        "child": "Budget.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.3",
+        "child": "Projected.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.3",
+        "child": "Actual.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.3",
+        "child": "Budget.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.3",
+        "child": "Projected.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.3",
+        "child": "Actual.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.3",
+        "child": "Budget.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.3",
+        "child": "Projected.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.3",
+        "child": "Actual.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.3",
+        "child": "Budget.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.3",
+        "child": "Projected.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.3",
+        "child": "Actual.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.3",
+        "child": "WIH 2024",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.3",
+        "child": "Advance 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.3",
+        "child": "WIH 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.3",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.3",
+        "child": "Budget.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.3",
+        "child": "Projected.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.3",
+        "child": "Actual.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.3",
+        "child": "Budget.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.3",
+        "child": "Projected.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.3",
+        "child": "Actual.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.3",
+        "child": "Budget.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.3",
+        "child": "Projected.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.3",
+        "child": "Actual.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.3",
+        "child": "Budget.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.3",
+        "child": "Projected.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.3",
+        "child": "Actual.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.3",
+        "child": "Budget.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.3",
+        "child": "Projected.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.3",
+        "child": "Actual.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.3",
+        "child": "Budget.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.3",
+        "child": "Projected.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.3",
+        "child": "Actual.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.3",
+        "child": "Budget.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.3",
+        "child": "Projected.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.3",
+        "child": "Actual.10",
+        "strength": 1.0
+      },
+      {
+        "parent": "Actual.3",
+        "child": "Budget.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.3",
+        "child": "Projected.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.3",
+        "child": "Actual.11",
+        "strength": 1.0
+      },
+      {
+        "parent": "Actual.3",
+        "child": "WIH 2024",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.3",
+        "child": "Advance 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.3",
+        "child": "WIH 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.3",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.4",
+        "child": "Projected.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.4",
+        "child": "Actual.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.4",
+        "child": "Budget.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.4",
+        "child": "Projected.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.4",
+        "child": "Actual.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.4",
+        "child": "Budget.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.4",
+        "child": "Projected.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.4",
+        "child": "Actual.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.4",
+        "child": "Budget.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.4",
+        "child": "Projected.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.4",
+        "child": "Actual.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.4",
+        "child": "Budget.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.4",
+        "child": "Projected.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.4",
+        "child": "Actual.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.4",
+        "child": "Budget.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.4",
+        "child": "Projected.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.4",
+        "child": "Actual.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.4",
+        "child": "Budget.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.4",
+        "child": "Projected.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.4",
+        "child": "Actual.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.4",
+        "child": "Budget.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.4",
+        "child": "Projected.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.4",
+        "child": "Actual.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.4",
+        "child": "WIH 2024",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.4",
+        "child": "Advance 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.4",
+        "child": "WIH 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.4",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.4",
+        "child": "Actual.4",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.4",
+        "child": "Budget.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.4",
+        "child": "Projected.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.4",
+        "child": "Actual.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.4",
+        "child": "Budget.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.4",
+        "child": "Projected.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.4",
+        "child": "Actual.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.4",
+        "child": "Budget.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.4",
+        "child": "Projected.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.4",
+        "child": "Actual.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.4",
+        "child": "Budget.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.4",
+        "child": "Projected.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.4",
+        "child": "Actual.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.4",
+        "child": "Budget.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.4",
+        "child": "Projected.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.4",
+        "child": "Actual.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.4",
+        "child": "Budget.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.4",
+        "child": "Projected.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.4",
+        "child": "Actual.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.4",
+        "child": "Budget.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.4",
+        "child": "Projected.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.4",
+        "child": "Actual.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.4",
+        "child": "WIH 2024",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.4",
+        "child": "Advance 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.4",
+        "child": "WIH 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.4",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.4",
+        "child": "Budget.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.4",
+        "child": "Projected.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.4",
+        "child": "Actual.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.4",
+        "child": "Budget.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.4",
+        "child": "Projected.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.4",
+        "child": "Actual.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.4",
+        "child": "Budget.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.4",
+        "child": "Projected.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.4",
+        "child": "Actual.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.4",
+        "child": "Budget.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.4",
+        "child": "Projected.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.4",
+        "child": "Actual.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.4",
+        "child": "Budget.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.4",
+        "child": "Projected.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.4",
+        "child": "Actual.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.4",
+        "child": "Budget.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.4",
+        "child": "Projected.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.4",
+        "child": "Actual.10",
+        "strength": 1.0
+      },
+      {
+        "parent": "Actual.4",
+        "child": "Budget.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.4",
+        "child": "Projected.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.4",
+        "child": "Actual.11",
+        "strength": 1.0
+      },
+      {
+        "parent": "Actual.4",
+        "child": "WIH 2024",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.4",
+        "child": "Advance 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.4",
+        "child": "WIH 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.4",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.5",
+        "child": "Projected.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.5",
+        "child": "Actual.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.5",
+        "child": "Budget.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.5",
+        "child": "Projected.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.5",
+        "child": "Actual.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.5",
+        "child": "Budget.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.5",
+        "child": "Projected.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.5",
+        "child": "Actual.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.5",
+        "child": "Budget.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.5",
+        "child": "Projected.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.5",
+        "child": "Actual.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.5",
+        "child": "Budget.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.5",
+        "child": "Projected.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.5",
+        "child": "Actual.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.5",
+        "child": "Budget.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.5",
+        "child": "Projected.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.5",
+        "child": "Actual.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.5",
+        "child": "Budget.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.5",
+        "child": "Projected.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.5",
+        "child": "Actual.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.5",
+        "child": "WIH 2024",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.5",
+        "child": "Advance 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.5",
+        "child": "WIH 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.5",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.5",
+        "child": "Actual.5",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.5",
+        "child": "Budget.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.5",
+        "child": "Projected.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.5",
+        "child": "Actual.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.5",
+        "child": "Budget.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.5",
+        "child": "Projected.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.5",
+        "child": "Actual.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.5",
+        "child": "Budget.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.5",
+        "child": "Projected.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.5",
+        "child": "Actual.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.5",
+        "child": "Budget.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.5",
+        "child": "Projected.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.5",
+        "child": "Actual.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.5",
+        "child": "Budget.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.5",
+        "child": "Projected.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.5",
+        "child": "Actual.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.5",
+        "child": "Budget.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.5",
+        "child": "Projected.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.5",
+        "child": "Actual.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.5",
+        "child": "YTD Actual",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.5",
+        "child": "Remaining Projection",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.5",
+        "child": "WIH 2024",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.5",
+        "child": "Advance 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.5",
+        "child": "WIH 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.5",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.5",
+        "child": "Budget.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.5",
+        "child": "Projected.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.5",
+        "child": "Actual.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.5",
+        "child": "Budget.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.5",
+        "child": "Projected.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.5",
+        "child": "Actual.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.5",
+        "child": "Budget.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.5",
+        "child": "Projected.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.5",
+        "child": "Actual.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.5",
+        "child": "Budget.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.5",
+        "child": "Projected.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.5",
+        "child": "Actual.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.5",
+        "child": "Budget.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.5",
+        "child": "Projected.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.5",
+        "child": "Actual.10",
+        "strength": 1.0
+      },
+      {
+        "parent": "Actual.5",
+        "child": "Budget.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.5",
+        "child": "Projected.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.5",
+        "child": "Actual.11",
+        "strength": 1.0
+      },
+      {
+        "parent": "Actual.5",
+        "child": "WIH 2024",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.5",
+        "child": "Advance 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.5",
+        "child": "WIH 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.5",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.6",
+        "child": "Projected.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.6",
+        "child": "Actual.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.6",
+        "child": "Budget.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.6",
+        "child": "Projected.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.6",
+        "child": "Actual.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.6",
+        "child": "Budget.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.6",
+        "child": "Projected.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.6",
+        "child": "Actual.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.6",
+        "child": "Budget.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.6",
+        "child": "Projected.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.6",
+        "child": "Actual.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.6",
+        "child": "Budget.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.6",
+        "child": "Projected.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.6",
+        "child": "Actual.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.6",
+        "child": "Budget.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.6",
+        "child": "Projected.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.6",
+        "child": "Actual.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.6",
+        "child": "WIH 2024",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.6",
+        "child": "Advance 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.6",
+        "child": "WIH 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.6",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.6",
+        "child": "Actual.6",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.6",
+        "child": "Budget.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.6",
+        "child": "Projected.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.6",
+        "child": "Actual.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.6",
+        "child": "Budget.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.6",
+        "child": "Projected.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.6",
+        "child": "Actual.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.6",
+        "child": "Budget.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.6",
+        "child": "Projected.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.6",
+        "child": "Actual.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.6",
+        "child": "Budget.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.6",
+        "child": "Projected.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.6",
+        "child": "Actual.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.6",
+        "child": "Budget.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.6",
+        "child": "Projected.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.6",
+        "child": "Actual.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.6",
+        "child": "WIH 2024",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.6",
+        "child": "Advance 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.6",
+        "child": "WIH 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.6",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.6",
+        "child": "Budget.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.6",
+        "child": "Projected.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.6",
+        "child": "Actual.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.6",
+        "child": "Budget.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.6",
+        "child": "Projected.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.6",
+        "child": "Actual.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.6",
+        "child": "Budget.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.6",
+        "child": "Projected.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.6",
+        "child": "Actual.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.6",
+        "child": "Budget.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.6",
+        "child": "Projected.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.6",
+        "child": "Actual.10",
+        "strength": 1.0
+      },
+      {
+        "parent": "Actual.6",
+        "child": "Budget.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.6",
+        "child": "Projected.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.6",
+        "child": "Actual.11",
+        "strength": 1.0
+      },
+      {
+        "parent": "Actual.6",
+        "child": "WIH 2024",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.6",
+        "child": "Advance 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.6",
+        "child": "WIH 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.6",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.7",
+        "child": "Projected.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.7",
+        "child": "Actual.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.7",
+        "child": "Budget.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.7",
+        "child": "Projected.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.7",
+        "child": "Actual.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.7",
+        "child": "Budget.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.7",
+        "child": "Projected.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.7",
+        "child": "Actual.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.7",
+        "child": "Budget.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.7",
+        "child": "Projected.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.7",
+        "child": "Actual.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.7",
+        "child": "Budget.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.7",
+        "child": "Projected.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.7",
+        "child": "Actual.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.7",
+        "child": "WIH 2024",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.7",
+        "child": "Advance 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.7",
+        "child": "WIH 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.7",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.7",
+        "child": "Actual.7",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.7",
+        "child": "Budget.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.7",
+        "child": "Projected.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.7",
+        "child": "Actual.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.7",
+        "child": "Budget.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.7",
+        "child": "Projected.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.7",
+        "child": "Actual.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.7",
+        "child": "Budget.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.7",
+        "child": "Projected.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.7",
+        "child": "Actual.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.7",
+        "child": "Budget.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.7",
+        "child": "Projected.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.7",
+        "child": "Actual.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.7",
+        "child": "WIH 2024",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.7",
+        "child": "Advance 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.7",
+        "child": "WIH 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.7",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.7",
+        "child": "Budget.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.7",
+        "child": "Projected.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.7",
+        "child": "Actual.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.7",
+        "child": "Budget.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.7",
+        "child": "Projected.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.7",
+        "child": "Actual.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.7",
+        "child": "Budget.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.7",
+        "child": "Projected.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.7",
+        "child": "Actual.10",
+        "strength": 1.0
+      },
+      {
+        "parent": "Actual.7",
+        "child": "Budget.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.7",
+        "child": "Projected.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.7",
+        "child": "Actual.11",
+        "strength": 1.0
+      },
+      {
+        "parent": "Actual.7",
+        "child": "WIH 2024",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.7",
+        "child": "Advance 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.7",
+        "child": "WIH 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.7",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.8",
+        "child": "Projected.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.8",
+        "child": "Actual.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.8",
+        "child": "Budget.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.8",
+        "child": "Projected.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.8",
+        "child": "Actual.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.8",
+        "child": "Budget.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.8",
+        "child": "Projected.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.8",
+        "child": "Actual.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.8",
+        "child": "Budget.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.8",
+        "child": "Projected.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.8",
+        "child": "Actual.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.8",
+        "child": "WIH 2024",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.8",
+        "child": "Advance 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.8",
+        "child": "WIH 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.8",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.8",
+        "child": "Actual.8",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.8",
+        "child": "Budget.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.8",
+        "child": "Projected.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.8",
+        "child": "Actual.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.8",
+        "child": "Budget.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.8",
+        "child": "Projected.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.8",
+        "child": "Actual.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.8",
+        "child": "Budget.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.8",
+        "child": "Projected.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.8",
+        "child": "Actual.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.8",
+        "child": "WIH 2024",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.8",
+        "child": "Advance 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.8",
+        "child": "WIH 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.8",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.8",
+        "child": "Budget.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.8",
+        "child": "Projected.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.8",
+        "child": "Actual.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.8",
+        "child": "Budget.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.8",
+        "child": "Projected.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.8",
+        "child": "Actual.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.8",
+        "child": "Budget.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.8",
+        "child": "Projected.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.8",
+        "child": "Actual.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.8",
+        "child": "WIH 2024",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.8",
+        "child": "Advance 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.8",
+        "child": "WIH 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.8",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.9",
+        "child": "Projected.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.9",
+        "child": "Actual.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.9",
+        "child": "Budget.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.9",
+        "child": "Projected.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.9",
+        "child": "Actual.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.9",
+        "child": "Budget.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.9",
+        "child": "Projected.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.9",
+        "child": "Actual.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.9",
+        "child": "WIH 2024",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.9",
+        "child": "Advance 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.9",
+        "child": "WIH 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.9",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.9",
+        "child": "Actual.9",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.9",
+        "child": "Budget.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.9",
+        "child": "Projected.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.9",
+        "child": "Actual.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.9",
+        "child": "Budget.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.9",
+        "child": "Projected.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.9",
+        "child": "Actual.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.9",
+        "child": "YTD Actual",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.9",
+        "child": "Remaining Projection",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.9",
+        "child": "WIH 2024",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.9",
+        "child": "Advance 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.9",
+        "child": "WIH 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.9",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.9",
+        "child": "Budget.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.9",
+        "child": "Projected.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.9",
+        "child": "Actual.10",
+        "strength": 1.0
+      },
+      {
+        "parent": "Actual.9",
+        "child": "Budget.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.9",
+        "child": "Projected.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.9",
+        "child": "Actual.11",
+        "strength": 1.0
+      },
+      {
+        "parent": "Actual.9",
+        "child": "WIH 2024",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.9",
+        "child": "WIH 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.9",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.10",
+        "child": "Projected.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.10",
+        "child": "Actual.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.10",
+        "child": "Budget.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.10",
+        "child": "Projected.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.10",
+        "child": "Actual.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.10",
+        "child": "WIH 2024",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.10",
+        "child": "WIH 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.10",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.10",
+        "child": "Actual.10",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.10",
+        "child": "Budget.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.10",
+        "child": "Projected.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.10",
+        "child": "Actual.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.10",
+        "child": "WIH 2024",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.10",
+        "child": "Advance 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.10",
+        "child": "WIH 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.10",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.10",
+        "child": "Actual.11",
+        "strength": 1.0
+      },
+      {
+        "parent": "Actual.10",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.11",
+        "child": "Projected.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.11",
+        "child": "Actual.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.11",
+        "child": "WIH 2024",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.11",
+        "child": "WIH 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Budget.11",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.11",
+        "child": "Actual.11",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.11",
+        "child": "YTD Actual",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.11",
+        "child": "Remaining Projection",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.11",
+        "child": "Total",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.11",
+        "child": "WIH 2024",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.11",
+        "child": "Advance 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.11",
+        "child": "WIH 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Projected.11",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.11",
+        "child": "WIH 2024",
+        "strength": 0.8
+      },
+      {
+        "parent": "Actual.11",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "YTD Actual",
+        "child": "Remaining Projection",
+        "strength": 0.8
+      },
+      {
+        "parent": "YTD Actual",
+        "child": "Total",
+        "strength": 0.8
+      },
+      {
+        "parent": "YTD Actual",
+        "child": "WIH 2024",
+        "strength": 1.0
+      },
+      {
+        "parent": "YTD Actual",
+        "child": "Advance 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "YTD Actual",
+        "child": "WIH 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "YTD Actual",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "Remaining Projection",
+        "child": "Total",
+        "strength": 0.8
+      },
+      {
+        "parent": "Remaining Projection",
+        "child": "WIH 2024",
+        "strength": 0.8
+      },
+      {
+        "parent": "Remaining Projection",
+        "child": "Advance 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Remaining Projection",
+        "child": "WIH 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Remaining Projection",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "Total",
+        "child": "WIH 2024",
+        "strength": 1.0
+      },
+      {
+        "parent": "Total",
+        "child": "Advance 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Total",
+        "child": "WIH 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Total",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "WIH 2024",
+        "child": "Advance 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "WIH 2024",
+        "child": "WIH 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "WIH 2024",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "Advance 2025",
+        "child": "WIH 2025",
+        "strength": 0.8
+      },
+      {
+        "parent": "Advance 2025",
+        "child": "on hold",
+        "strength": 0.8
+      },
+      {
+        "parent": "WIH 2025",
+        "child": "on hold",
+        "strength": 0.8
+      }
+    ],
+    "high_correlations": [
+      {
+        "column1": "FEB",
+        "column2": "MAR",
+        "correlation": 1.0
+      }
+    ]
+  },
+  "sample_data": {
+    "first_rows": {
+      "Unit": {
+        "0": "AMS",
+        "1": "AMS ME Region",
+        "2": "AMS"
+      },
+      "Product": {
+        "0": "=",
+        "1": "=",
+        "2": "AMS - Resource Placement"
+      },
+      "Region": {
+        "0": "=",
+        "1": "=",
+        "2": "ME"
+      },
+      "Country": {
+        "0": "=",
+        "1": "=",
+        "2": "UAE"
+      },
+      "Customer": {
+        "0": "=",
+        "1": "=",
+        "2": "ADIB - Abu Dhabi Islamic Bank"
+      },
+      "Category": {
+        "0": "=",
+        "1": "=",
+        "2": "Funnel"
+      },
+      "Project Code": {
+        "0": "=",
+        "1": "=",
+        "2": "<NA>"
+      },
+      "Budget": {
+        "0": "<NA>",
+        "1": "<NA>",
+        "2": "25"
+      },
+      "Projected": {
+        "0": "=",
+        "1": "=",
+        "2": "25"
+      },
+      "Actual": {
+        "0": "=",
+        "1": "=",
+        "2": "25"
+      },
+      "Budget.1": {
+        "0": "<NA>",
+        "1": "<NA>",
+        "2": "25"
+      },
+      "Projected.1": {
+        "0": "=",
+        "1": "=",
+        "2": "25"
+      },
+      "Actual.1": {
+        "0": "=",
+        "1": "=",
+        "2": "25"
+      },
+      "Budget.2": {
+        "0": "<NA>",
+        "1": "<NA>",
+        "2": "25"
+      },
+      "Projected.2": {
+        "0": "=",
+        "1": "=",
+        "2": "25"
+      },
+      "Actual.2": {
+        "0": "=",
+        "1": "=",
+        "2": "25"
+      },
+      "Budget.3": {
+        "0": "<NA>",
+        "1": "<NA>",
+        "2": "25"
+      },
+      "Projected.3": {
+        "0": "=",
+        "1": "=",
+        "2": "25"
+      },
+      "Actual.3": {
+        "0": "=",
+        "1": "=",
+        "2": "25"
+      },
+      "Budget.4": {
+        "0": "<NA>",
+        "1": "<NA>",
+        "2": "25"
+      },
+      "Projected.4": {
+        "0": "=",
+        "1": "=",
+        "2": "25"
+      },
+      "Actual.4": {
+        "0": "=",
+        "1": "=",
+        "2": "25"
+      },
+      "Budget.5": {
+        "0": "<NA>",
+        "1": "<NA>",
+        "2": "25"
+      },
+      "Projected.5": {
+        "0": "=",
+        "1": "=",
+        "2": "25"
+      },
+      "Actual.5": {
+        "0": "=",
+        "1": "=",
+        "2": "25"
+      },
+      "Budget.6": {
+        "0": "<NA>",
+        "1": "<NA>",
+        "2": "25"
+      },
+      "Projected.6": {
+        "0": "=",
+        "1": "=",
+        "2": "25"
+      },
+      "Actual.6": {
+        "0": "=",
+        "1": "=",
+        "2": "25"
+      },
+      "Budget.7": {
+        "0": "<NA>",
+        "1": "<NA>",
+        "2": "25"
+      },
+      "Projected.7": {
+        "0": "=",
+        "1": "=",
+        "2": "25"
+      },
+      "Actual.7": {
+        "0": "=",
+        "1": "=",
+        "2": "25"
+      },
+      "Budget.8": {
+        "0": "<NA>",
+        "1": "<NA>",
+        "2": "25"
+      },
+      "Projected.8": {
+        "0": "=",
+        "1": "=",
+        "2": "25"
+      },
+      "Actual.8": {
+        "0": "=",
+        "1": "=",
+        "2": "25"
+      },
+      "Budget.9": {
+        "0": "<NA>",
+        "1": "<NA>",
+        "2": "25"
+      },
+      "Projected.9": {
+        "0": "=",
+        "1": "=",
+        "2": "25"
+      },
+      "Actual.9": {
+        "0": "=",
+        "1": "=",
+        "2": "25"
+      },
+      "Budget.10": {
+        "0": "<NA>",
+        "1": "<NA>",
+        "2": "25"
+      },
+      "Projected.10": {
+        "0": "=",
+        "1": "=",
+        "2": "25"
+      },
+      "Actual.10": {
+        "0": "=",
+        "1": "=",
+        "2": "25"
+      },
+      "Budget.11": {
+        "0": "<NA>",
+        "1": "<NA>",
+        "2": "25"
+      },
+      "Projected.11": {
+        "0": "=",
+        "1": "=",
+        "2": "25"
+      },
+      "Actual.11": {
+        "0": "=",
+        "1": "=",
+        "2": "25"
+      },
+      "YTD Actual": {
+        "0": "=",
+        "1": "=",
+        "2": "300"
+      },
+      "Remaining Projection": {
+        "0": "=",
+        "1": "=",
+        "2": "150"
+      },
+      "Total": {
+        "0": "=",
+        "1": "=",
+        "2": "450"
+      },
+      "WIH 2024": {
+        "0": "=",
+        "1": "=",
+        "2": "<NA>"
+      },
+      "Advance 2025": {
+        "0": "=",
+        "1": "=",
+        "2": "<NA>"
+      },
+      "WIH 2025": {
+        "0": "=",
+        "1": "=",
+        "2": "<NA>"
+      },
+      "on hold": {
+        "0": "=",
+        "1": "=",
+        "2": "<NA>"
+      },
+      "WIH 2026": {
+        "0": "nan",
+        "1": "nan",
+        "2": "nan"
+      },
+      "Shelved": {
+        "0": "nan",
+        "1": "nan",
+        "2": "nan"
+      },
+      "JAN": {
+        "0": "nan",
+        "1": "nan",
+        "2": "nan"
+      },
+      "FEB": {
+        "0": "nan",
+        "1": "nan",
+        "2": "nan"
+      },
+      "MAR": {
+        "0": "nan",
+        "1": "nan",
+        "2": "nan"
+      },
+      "Unnamed: 55": {
+        "0": "nan",
+        "1": "nan",
+        "2": "nan"
+      }
+    },
+    "data_preview": {
+      "Unit": [
+        "AMS",
+        "AMS ME Region",
+        "AMS"
+      ],
+      "Product": [
+        "=",
+        "=",
+        "AMS - Resource Placement"
+      ],
+      "Region": [
+        "=",
+        "=",
+        "ME"
+      ],
+      "Country": [
+        "=",
+        "=",
+        "UAE"
+      ],
+      "Customer": [
+        "=",
+        "=",
+        "ADIB - Abu Dhabi Islamic Bank"
+      ],
+      "Category": [
+        "=",
+        "=",
+        "Funnel"
+      ],
+      "Project Code": [
+        "=",
+        "=",
+        "="
+      ],
+      "Budget": [
+        "25",
+        "25",
+        "25"
+      ],
+      "Projected": [
+        "=",
+        "=",
+        "25"
+      ],
+      "Actual": [
+        "=",
+        "=",
+        "25"
+      ],
+      "Budget.1": [
+        "25",
+        "25",
+        "25"
+      ],
+      "Projected.1": [
+        "=",
+        "=",
+        "25"
+      ],
+      "Actual.1": [
+        "=",
+        "=",
+        "25"
+      ],
+      "Budget.2": [
+        "25",
+        "25",
+        "25"
+      ],
+      "Projected.2": [
+        "=",
+        "=",
+        "25"
+      ],
+      "Actual.2": [
+        "=",
+        "=",
+        "25"
+      ],
+      "Budget.3": [
+        "25",
+        "25",
+        "25"
+      ],
+      "Projected.3": [
+        "=",
+        "=",
+        "25"
+      ],
+      "Actual.3": [
+        "=",
+        "=",
+        "25"
+      ],
+      "Budget.4": [
+        "25",
+        "25",
+        "25"
+      ],
+      "Projected.4": [
+        "=",
+        "=",
+        "25"
+      ],
+      "Actual.4": [
+        "=",
+        "=",
+        "25"
+      ],
+      "Budget.5": [
+        "25",
+        "25",
+        "25"
+      ],
+      "Projected.5": [
+        "=",
+        "=",
+        "25"
+      ],
+      "Actual.5": [
+        "=",
+        "=",
+        "25"
+      ],
+      "Budget.6": [
+        "25",
+        "25",
+        "25"
+      ],
+      "Projected.6": [
+        "=",
+        "=",
+        "25"
+      ],
+      "Actual.6": [
+        "=",
+        "=",
+        "25"
+      ],
+      "Budget.7": [
+        "25",
+        "25",
+        "25"
+      ],
+      "Projected.7": [
+        "=",
+        "=",
+        "25"
+      ],
+      "Actual.7": [
+        "=",
+        "=",
+        "25"
+      ],
+      "Budget.8": [
+        "25",
+        "25",
+        "25"
+      ],
+      "Projected.8": [
+        "=",
+        "=",
+        "25"
+      ],
+      "Actual.8": [
+        "=",
+        "=",
+        "25"
+      ],
+      "Budget.9": [
+        "25",
+        "25",
+        "25"
+      ],
+      "Projected.9": [
+        "=",
+        "=",
+        "25"
+      ],
+      "Actual.9": [
+        "=",
+        "=",
+        "25"
+      ],
+      "Budget.10": [
+        "25",
+        "25",
+        "25"
+      ],
+      "Projected.10": [
+        "=",
+        "=",
+        "25"
+      ],
+      "Actual.10": [
+        "=",
+        "=",
+        "25"
+      ],
+      "Budget.11": [
+        "25",
+        "25",
+        "25"
+      ],
+      "Projected.11": [
+        "=",
+        "=",
+        "25"
+      ],
+      "Actual.11": [
+        "=",
+        "=",
+        "25"
+      ],
+      "YTD Actual": [
+        "=",
+        "=",
+        "300"
+      ],
+      "Remaining Projection": [
+        "=",
+        "=",
+        "150"
+      ],
+      "Total": [
+        "=",
+        "=",
+        "450"
+      ],
+      "WIH 2024": [
+        "=",
+        "=",
+        "0"
+      ],
+      "Advance 2025": [
+        "=",
+        "=",
+        "25"
+      ],
+      "WIH 2025": [
+        "=",
+        "=",
+        "150"
+      ],
+      "on hold": [
+        "=",
+        "=",
+        "125"
+      ],
+      "WIH 2026": [
+        "3.7",
+        "4.39",
+        "16.14"
+      ],
+      "Shelved": [
+        "7.1",
+        "10.21",
+        "1.45"
+      ],
+      "JAN": [
+        "12.5",
+        "12.5",
+        "9.625"
+      ],
+      "FEB": [
+        "25.0",
+        "5.655",
+        "10.0"
+      ],
+      "MAR": [
+        "2.8275",
+        "7.5",
+        "9.0"
+      ],
+      "Unnamed: 55": [
+        "3.0",
+        "65.0",
+        "15.0"
+      ]
+    }
+  },
+  "analysis_suggestions": [
+    "Calculate totals and averages for WIH 2026, Shelved, JAN",
+    "Analyze WIH 2026 by Unit",
+    "Revenue analysis: totals, trends, and breakdowns",
+    "Geographic performance analysis"
+  ]
+}

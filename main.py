@@ -12,6 +12,7 @@ from services.file_manager import FileManager
 from services.ai_code_agent import AICodeAgent
 from services.conversation_agent import ConversationAgent
 from services.code_executor import SafeCodeExecutor
+from services.result_translator import ResultTranslator
 from models.schemas import UploadResponse, ChatMessage, ChatResponse, FileInfo
 from config.settings import get_settings
 
@@ -75,7 +76,7 @@ except Exception as e:
 
 @app.post("/webhook/upload", response_model=UploadResponse)
 async def upload_file_webhook(file: UploadFile = File(...)):
-    """Webhook for multi-sheet file upload"""
+    """Webhook for file upload - reads FIRST SHEET ONLY"""
     logger.info(f"Upload request received for file: {file.filename}")
     
     try:
@@ -90,26 +91,22 @@ async def upload_file_webhook(file: UploadFile = File(...)):
         upload_id, file_path = file_manager.save_uploaded_file(file)
         logger.info(f"File saved with upload_id: {upload_id}")
         
-        # Load ALL sheets
+        # Load FIRST SHEET ONLY
         sheets_dict = file_manager.load_all_sheets(file_path)
-        logger.info(f"Loaded {len(sheets_dict)} sheets: {list(sheets_dict.keys())}")
+        logger.info(f"Loaded first sheet: {list(sheets_dict.keys())[0]}")
         
         # Save sheets data for later use
         file_manager.save_sheets_data(upload_id, sheets_dict)
         
-        # Detect multi-sheet schema
-        if len(sheets_dict) > 1:
-            schema_info = schema_detector.detect_multi_sheet_schema(sheets_dict)
-            total_rows = sum(df.shape[0] for df in sheets_dict.values())
-            total_cols = len(schema_info['all_columns'])
-            message = f"File uploaded successfully! Found {len(sheets_dict)} sheets with {total_rows} total rows. You can now ask questions about your data."
-        else:
-            # Single sheet
-            df = list(sheets_dict.values())[0]
-            schema_info = schema_detector.detect_complete_schema(df)
-            total_rows = schema_info['basic_info']['total_rows']
-            total_cols = schema_info['basic_info']['total_columns']
-            message = f"File uploaded successfully! Found {total_rows} rows and {total_cols} columns."
+        # Detect schema (will always be single sheet now)
+        sheet_name = list(sheets_dict.keys())[0]
+        df = sheets_dict[sheet_name]
+        schema_info = schema_detector.detect_complete_schema(df)
+        total_rows = schema_info['basic_info']['total_rows']
+        total_cols = schema_info['basic_info']['total_columns']
+        
+        # Always single sheet message
+        message = f"File uploaded successfully! Loaded sheet '{sheet_name}' with {total_rows} rows and {total_cols} columns."
         
         # Save schema
         file_manager.save_schema(upload_id, schema_info)
@@ -119,8 +116,8 @@ async def upload_file_webhook(file: UploadFile = File(...)):
             upload_id=upload_id,
             filename=file.filename,
             schema_info={
-                'sheet_count': len(sheets_dict),
-                'sheet_names': list(sheets_dict.keys()),
+                'sheet_count': 1,
+                'sheet_names': [sheet_name],
                 'total_rows': total_rows,
                 'total_columns': total_cols
             },
@@ -141,6 +138,7 @@ async def upload_file_webhook(file: UploadFile = File(...)):
             message="",
             error=str(e)
         )
+
 
 
 @app.post("/webhook/chat/{upload_id}", response_model=ChatResponse)
@@ -308,11 +306,32 @@ async def chat_webhook(upload_id: str, message: ChatMessage):
                 )
             
             # ========================================================================
+            # STEP 4.5: TRANSLATE RESULTS (NEW)
+            # ========================================================================
+            logger.info("=" * 80)
+            logger.info("STEP 4.5: TRANSLATING RESULTS")
+            logger.info("=" * 80)
+            
+            try:
+                translator = ResultTranslator(schema)
+                translated_result = translator.translate_result(
+                    execution_result['result'], 
+                    message.message
+                )
+                logger.info(f"✅ Translated Result: {translated_result}")
+                result_to_use = translated_result
+            except Exception as e:
+                logger.error(f"⚠️ Translation failed: {str(e)}", exc_info=True)
+                logger.info("Falling back to raw result")
+                result_to_use = execution_result['result']
+            
+            # ========================================================================
             # STEP 5: GENERATE INSIGHTS (with hallucination prevention)
             # ========================================================================
             logger.info("=" * 80)
             logger.info("STEP 5: GENERATING INSIGHTS FROM RAW RESULTS")
             logger.info("=" * 80)
+            
             
             # After execution succeeds, around line 258 in main.py:
             try:
@@ -321,9 +340,8 @@ async def chat_webhook(upload_id: str, message: ChatMessage):
                         conversation_agent.generate_insights_response,
                         upload_id,
                         message.message,
-                        execution_result['result'],
-                        schema,
-                        True
+                        result_to_use,  # This is the translated result
+                        schema
                     ),
                     timeout=90.0
                 )

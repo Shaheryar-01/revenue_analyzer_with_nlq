@@ -99,12 +99,33 @@ class FileManager:
             raise
     
     def save_schema(self, upload_id: str, schema: Dict[str, Any]):
-        """Save schema information"""
+        """Save schema information with year detection from filename"""
         logger.info(f"Saving schema for upload_id: {upload_id}")
         
         try:
             schema_path = f"{self.schema_dir}/{upload_id}_schema.json"
             logger.info(f"Schema file path: {schema_path}")
+            
+            # ✅ EXTRACT YEAR FROM FILENAME
+            upload_info = self.get_upload_info(upload_id)
+            if upload_info:
+                filename = upload_info.get('filename', '')
+                logger.info(f"Extracting year from filename: {filename}")
+                
+                # Look for 4-digit year in filename (20XX pattern)
+                import re
+                year_match = re.search(r'(20\d{2})', filename)
+                if year_match:
+                    detected_year = year_match.group(1)
+                    
+                    # Add to column_patterns if it exists
+                    if 'column_patterns' in schema:
+                        schema['column_patterns']['inferred_year'] = detected_year
+                        logger.info(f"✅ Inferred year {detected_year} from filename '{filename}'")
+                    else:
+                        # If column_patterns doesn't exist yet, add it
+                        schema['column_patterns'] = {'inferred_year': detected_year}
+                        logger.info(f"✅ Created column_patterns with inferred year {detected_year}")
             
             # Save schema to file
             logger.info("Writing schema to JSON file")
@@ -130,7 +151,9 @@ class FileManager:
         except Exception as e:
             logger.error(f"Failed to save schema for upload_id: {upload_id}: {str(e)}", exc_info=True)
             raise
-    
+
+
+
     def get_schema(self, upload_id: str) -> Optional[Dict[str, Any]]:
         """Load schema information"""
         logger.info(f"Loading schema for upload_id: {upload_id}")
@@ -178,7 +201,7 @@ class FileManager:
             return None
     
     def load_dataframe(self, file_path: str) -> pd.DataFrame:
-        """Load file into pandas DataFrame with normalization"""
+        """Load file into pandas DataFrame with normalization and smart header detection"""
         logger.info(f"Loading dataframe from file: {file_path}")
         
         try:
@@ -188,7 +211,21 @@ class FileManager:
             
             if file_path.endswith(('.xlsx', '.xls')):
                 logger.info("Loading Excel file")
-                df = pd.read_excel(file_path)
+                
+                # CRITICAL FIX: Detect which row has the actual headers
+                df_preview = pd.read_excel(file_path, header=None, nrows=5)
+                header_row = self._detect_header_row(df_preview)
+                logger.info(f"Detected header row at index: {header_row}")
+                
+                # Read with correct header
+                if header_row > 0:
+                    df = pd.read_excel(file_path, header=header_row)
+                else:
+                    df = pd.read_excel(file_path)
+                
+                # Remove empty rows
+                df = df.dropna(how='all')
+                
             elif file_path.endswith('.csv'):
                 logger.info("Loading CSV file")
                 df = pd.read_csv(file_path)
@@ -197,6 +234,7 @@ class FileManager:
                 raise ValueError(f"Unsupported file type: {file_path}")
             
             logger.info(f"Dataframe loaded, shape: {df.shape}")
+            logger.info(f"Columns: {list(df.columns)}")
             
             # NORMALIZE THE DATAFRAME
             df = self._normalize_dataframe(df, "single_sheet")
@@ -207,7 +245,10 @@ class FileManager:
         except Exception as e:
             logger.error(f"Failed to load dataframe from {file_path}: {str(e)}", exc_info=True)
             raise
-    
+
+
+
+
     def get_upload_info(self, upload_id: str) -> Optional[Dict]:
         """Get upload information"""
         logger.info(f"Getting upload info for upload_id: {upload_id}")
@@ -295,8 +336,8 @@ class FileManager:
             return False
     
     def load_all_sheets(self, file_path: str) -> Dict[str, pd.DataFrame]:
-        """Load all sheets from Excel file with normalization"""
-        logger.info(f"Loading all sheets from file: {file_path}")
+        """Load ONLY the first sheet from Excel file with normalization and smart header detection"""
+        logger.info(f"Loading first sheet only from file: {file_path}")
         
         try:
             if not os.path.exists(file_path):
@@ -304,9 +345,38 @@ class FileManager:
                 raise FileNotFoundError(f"File not found: {file_path}")
             
             if file_path.endswith(('.xlsx', '.xls')):
-                logger.info("Loading all Excel sheets")
-                sheets_dict = pd.read_excel(file_path, sheet_name=None)
-                logger.info(f"Loaded {len(sheets_dict)} sheets: {list(sheets_dict.keys())}")
+                logger.info("Loading first Excel sheet only")
+                
+                # CRITICAL FIX: Detect which row has the actual headers
+                # Read first few rows without header to inspect
+                df_preview = pd.read_excel(file_path, sheet_name=0, header=None, nrows=5)
+                logger.info(f"Preview of first 5 rows:\n{df_preview}")
+                
+                # Find the row with the most non-null, meaningful values
+                # This is likely the header row
+                header_row = self._detect_header_row(df_preview)
+                logger.info(f"Detected header row at index: {header_row}")
+                
+                # Now read with the correct header
+                if header_row > 0:
+                    df = pd.read_excel(file_path, sheet_name=0, header=header_row)
+                    logger.info(f"Loaded with header at row {header_row}")
+                else:
+                    df = pd.read_excel(file_path, sheet_name=0)
+                    logger.info(f"Loaded with default header (row 0)")
+                
+                # Get the actual sheet name
+                xl_file = pd.ExcelFile(file_path)
+                first_sheet_name = xl_file.sheet_names[0]
+                logger.info(f"Loaded first sheet: '{first_sheet_name}'")
+                logger.info(f"Detected columns: {list(df.columns)}")
+                
+                # Remove rows that are all NaN (empty rows)
+                df = df.dropna(how='all')
+                logger.info(f"After removing empty rows, shape: {df.shape}")
+                
+                sheets_dict = {first_sheet_name: df}
+                
             elif file_path.endswith('.csv'):
                 logger.info("Loading CSV file (single sheet)")
                 df = pd.read_csv(file_path)
@@ -315,7 +385,7 @@ class FileManager:
                 logger.error(f"Unsupported file type: {file_path}")
                 raise ValueError(f"Unsupported file type: {file_path}")
             
-            # NORMALIZE ALL SHEETS
+            # NORMALIZE THE SHEET
             normalized_sheets = {}
             for sheet_name, df in sheets_dict.items():
                 logger.info(f"Normalizing sheet: {sheet_name}")
@@ -328,20 +398,55 @@ class FileManager:
             logger.error(f"Failed to load sheets from {file_path}: {str(e)}", exc_info=True)
             raise
 
+    def _detect_header_row(self, df_preview: pd.DataFrame) -> int:
+        """
+        Detect which row contains the actual column headers
+        
+        Strategy:
+        1. Look for rows with most unique, non-numeric text values
+        2. Avoid rows with mostly "Unnamed" or numeric values
+        3. Return the row index (0-based)
+        """
+        logger.info("Detecting header row...")
+        
+        best_row = 0
+        best_score = 0
+        
+        for idx in range(min(5, len(df_preview))):
+            row = df_preview.iloc[idx]
+            
+            # Count non-null values
+            non_null_count = row.notna().sum()
+            
+            # Count unique values
+            unique_count = row.nunique()
+            
+            # Count text values (not numbers)
+            text_count = sum(1 for val in row if isinstance(val, str) and len(str(val).strip()) > 0)
+            
+            # Penalize rows with "Unnamed" (likely not real headers)
+            unnamed_count = sum(1 for val in row if isinstance(val, str) and 'Unnamed' in str(val))
+            
+            # Calculate score
+            score = (non_null_count * 2) + (unique_count * 3) + (text_count * 4) - (unnamed_count * 10)
+            
+            logger.info(f"Row {idx}: non_null={non_null_count}, unique={unique_count}, text={text_count}, unnamed={unnamed_count}, score={score}")
+            
+            if score > best_score:
+                best_score = score
+                best_row = idx
+        
+        logger.info(f"Best header row: {best_row} with score {best_score}")
+        return best_row
+
+
+
+
+
     def _normalize_dataframe(self, df: pd.DataFrame, sheet_name: str = "unknown") -> pd.DataFrame:
         """
         CRITICAL: Normalize data types for consistent querying
         This is the single source of truth for data cleaning
-        
-        Args:
-            df: Raw DataFrame from Excel/CSV
-            sheet_name: Name of sheet for logging
-            
-        Returns:
-            Normalized DataFrame with clean types
-            
-        Raises:
-            ValueError: If critical validation fails
         """
         logger.info(f"=" * 80)
         logger.info(f"NORMALIZING SHEET: {sheet_name}")
@@ -403,27 +508,42 @@ class FileManager:
                     
                     normalization_report.append(f"{col}: {original_dtype} → datetime64[ns]")
                 
-                # 4B. STRING NORMALIZATION
+                # 4B. NUMERIC CONVERSION (CRITICAL FIX)
+                # Try to convert object columns to numeric if they contain numbers
                 elif df[col].dtype == 'object':
-                    logger.info(f"Normalizing string column: {col}")
-                    logger.debug(f"  Sample values before: {col_sample}")
+                    logger.info(f"Checking if string column '{col}' can be numeric")
                     
-                    # Convert to string and strip whitespace
-                    df[col] = df[col].astype(str).str.strip()
+                    # Try numeric conversion first
+                    numeric_converted = pd.to_numeric(df[col], errors='coerce')
                     
-                    # Replace common null representations
-                    null_values = ['nan', 'NaN', 'None', 'NULL', 'null', '', 'N/A', 'n/a', 'NA']
-                    df[col] = df[col].replace(null_values, pd.NA)
+                    # If more than 50% of non-null values successfully converted, treat as numeric
+                    non_null_original = df[col].notna().sum()
+                    non_null_numeric = numeric_converted.notna().sum()
                     
-                    # Check if column became entirely null
-                    if df[col].notna().sum() == 0:
-                        warnings.append(f"Column '{col}': All values are null after cleaning")
-                    
-                    normalization_report.append(f"{col}: cleaned strings")
+                    if non_null_original > 0:
+                        conversion_rate = non_null_numeric / non_null_original
+                        
+                        if conversion_rate > 0.5:  # If >50% are numeric
+                            logger.info(f"  Converting '{col}' to numeric ({conversion_rate*100:.1f}% conversion rate)")
+                            df[col] = numeric_converted
+                            normalization_report.append(f"{col}: {original_dtype} → numeric (auto-detected)")
+                        else:
+                            # It's truly a string column
+                            logger.info(f"  Keeping '{col}' as string (only {conversion_rate*100:.1f}% numeric)")
+                            df[col] = df[col].astype(str).str.strip()
+                            
+                            # Replace common null representations
+                            null_values = ['nan', 'NaN', 'None', 'NULL', 'null', '', 'N/A', 'n/a', 'NA']
+                            df[col] = df[col].replace(null_values, pd.NA)
+                            
+                            normalization_report.append(f"{col}: cleaned strings")
+                    else:
+                        # Column is entirely null
+                        logger.warning(f"  Column '{col}' is entirely null")
+                        warnings.append(f"Column '{col}': All values are null")
                 
-                # 4C. NUMERIC NORMALIZATION
+                # 4C. ALREADY NUMERIC - ensure proper type
                 elif pd.api.types.is_numeric_dtype(df[col]):
-                    # Check if needs conversion
                     if df[col].dtype not in ['float64', 'int64']:
                         logger.info(f"Normalizing numeric column: {col}")
                         df[col] = pd.to_numeric(df[col], errors='coerce')
@@ -438,7 +558,6 @@ class FileManager:
                 error_msg = f"Failed to normalize column '{col}': {str(e)}"
                 logger.error(error_msg, exc_info=True)
                 errors.append(error_msg)
-                # Keep original column if normalization fails
                 continue
         
         # STEP 5: Post-normalization validation
@@ -459,7 +578,7 @@ class FileManager:
         if warnings:
             logger.warning(f"Warnings: {len(warnings)}")
             for warning in warnings:
-                logger.warning(f"  ⚠️  {warning}")
+                logger.warning(f"  ⚠️ {warning}")
         
         # Log errors (non-critical)
         if errors:
@@ -472,16 +591,16 @@ class FileManager:
         if null_cols:
             logger.warning(f"Columns with all null values: {null_cols}")
         
-        # Final shape check
-        if df.shape != (len(df), len(df.columns)):
-            raise ValueError(f"Shape mismatch after normalization: expected {df.shape}, got something else")
-        
         logger.info(f"✅ Normalization complete for '{sheet_name}'")
         logger.info(f"Final shape: {df.shape}")
         logger.info(f"=" * 80)
         
         return df
-    
+
+
+
+
+
     def _looks_like_date_column(self, series: pd.Series) -> bool:
         """
         Heuristic to detect date columns with comprehensive checks
