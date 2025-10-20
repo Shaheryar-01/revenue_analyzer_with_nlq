@@ -45,7 +45,12 @@ class ExcelTransformer:
             # Remove aggregate rows (rows where Product is '=')
             df = df[df['Product'] != '=']
             
-            logger.info(f"After filtering: {len(df)} data rows")
+            logger.info(f"After basic filtering: {len(df)} rows")
+            
+            # 🔥 NEW: Filter out TOTAL rows
+            df = self._filter_total_rows(df)
+            
+            logger.info(f"After filtering totals: {len(df)} data rows")
             
             # Transform to long format
             records = self._transform_to_long_format(df, upload_id)
@@ -57,6 +62,40 @@ class ExcelTransformer:
         except Exception as e:
             logger.error(f"Failed to transform Excel: {str(e)}", exc_info=True)
             raise
+    
+    def _filter_total_rows(self, df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Filter out summary/total rows from dataframe.
+        
+        Total rows are identified by:
+        - Unit containing "Total", "Region", "CISO"
+        - Product containing "Total"
+        - Category being empty when Unit has "Total"
+        """
+        
+        initial_count = len(df)
+        
+        # Create masks for total rows
+        unit_total_mask = df['Unit'].str.contains('Total', case=False, na=False)
+        unit_region_mask = df['Unit'].str.contains('Region', case=False, na=False)
+        unit_ciso_mask = df['Unit'].str.contains('CISO', case=False, na=False)
+        product_total_mask = df['Product'].str.contains('Total', case=False, na=False)
+        
+        # Combine masks - keep rows that are NOT totals
+        is_total_row = unit_total_mask | unit_region_mask | unit_ciso_mask | product_total_mask
+        
+        # Filter out total rows
+        df_filtered = df[~is_total_row].copy()
+        
+        removed_count = initial_count - len(df_filtered)
+        logger.info(f"Filtered out {removed_count} total/summary rows")
+        
+        # Log some examples of what was filtered
+        if removed_count > 0:
+            total_rows = df[is_total_row][['Unit', 'Product']].head(5)
+            logger.info(f"Examples of filtered rows:\n{total_rows.to_string()}")
+        
+        return df_filtered
     
     def _transform_to_long_format(self, df: pd.DataFrame, upload_id: str) -> List[Dict[str, Any]]:
         """
