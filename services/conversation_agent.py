@@ -1,255 +1,241 @@
-# app/services/conversation_agent.py
+import os
 from openai import OpenAI
-import json
-from config.settings import get_settings
-from typing import Dict, Any, List
+from dotenv import load_dotenv
 from datetime import datetime
 import logging
+import json
 
+load_dotenv()
 logger = logging.getLogger(__name__)
 
-settings = get_settings()
-
 class ConversationAgent:
-    """AI agent for natural conversation with SQL-based backend"""
+    """Handles conversational responses with NO hallucinations"""
     
     def __init__(self):
-        try:
-            self.client = OpenAI(api_key=settings.openai_api_key)
-            self.conversation_history = {}
-            logger.info("Conversation Agent initialized (SQL mode)")
-        except Exception as e:
-            logger.error(f"Failed to initialize Conversation Agent: {str(e)}")
-            raise
+        api_key = os.getenv('OPENAI_API_KEY')
+        if not api_key:
+            raise ValueError("OPENAI_API_KEY not found")
+        self.client = OpenAI(api_key=api_key)
+        self.conversation_history = {}
     
-    def determine_intent_sql(self, upload_id: str, user_message: str) -> Dict[str, Any]:
-        """
-        Determine if user needs analysis or conversation (SQL-based)
-        """
+    def determine_intent_sql(self, upload_id: str, user_message: str) -> dict:
+        """Determine intent - recognizing budget/projected/actual as valid"""
+        
         logger.info(f"Determining intent for: {user_message}")
         
-        try:
-            history = self.get_conversation_history(upload_id)
-            
-            # Build context
-            context_str = ""
-            if history:
-                recent = history[-2:]
-                context_parts = []
-                for exchange in recent:
-                    user_q = exchange.get('user_message', '')
-                    assistant_a = exchange.get('assistant_response', '')[:200]
-                    context_parts.append(f"Q: {user_q}\nA: {assistant_a}")
-                context_str = "\n\n".join(context_parts)
-            
-            prompt = f"""
-You are analyzing a user's message in a revenue tracking context.
+        system_prompt = """You are an intent classifier for a revenue analysis chatbot.
 
-DATABASE SCHEMA:
-- unit: Business units (AMS, ME Support, Sales Force, BSD)
-- product: Product names
-- region: Geographic regions (ME, AFR, PK)
-- country: Country names
-- customer: Customer names
-- category: Project categories (Funnel, New Sales, WIH)
-- month: Month codes (JAN, FEB, MAR, etc.)
-- budget, projected, actual: Revenue metrics
-- Summary fields: ytd_actual, total, wih_2024, etc.
+Classify into:
 
-RECENT CONVERSATION:
-{context_str if context_str else "No previous conversation"}
-
-USER MESSAGE: "{user_message}"
-
-TASK:
-1. Is this IN SCOPE or OUT OF SCOPE?
-   - IN SCOPE: Questions about revenue, budget, customers, regions, etc.
-   - OUT OF SCOPE: General knowledge, unrelated topics
+1. **NEEDS_ANALYSIS**: Questions requiring database queries
+   - Revenue questions (actual/projected/budget) ✅
+   - Financial metrics ✅
+   - Customer/product analysis ✅
+   - Examples: "total budget?", "projected revenue?", "actual sales?", "top customers"
    
-2. If IN SCOPE, determine:
-   - NEEDS_ANALYSIS: Requires data query (aggregations, comparisons, rankings)
-   - CONVERSATIONAL: Asks about capabilities, clarifications, explanations
+2. **CONVERSATIONAL**: General chat
+   - Greetings, thanks, capabilities
+   
+3. **OUT_OF_SCOPE**: Unrelated questions
+   - Weather, news, jokes
 
-3. Resolve contextual references:
-   - Replace "this", "that", "these" with actual entities from context
+## CRITICAL: 
+- Budget/Projected/Actual are ALL valid metrics = NEEDS_ANALYSIS
+- "analysis_query" = natural language (NOT SQL!)
 
-Return ONLY valid JSON:
-{{
-    "intent": "NEEDS_ANALYSIS" | "CONVERSATIONAL" | "OUT_OF_SCOPE",
-    "analysis_query": "resolved query" or null,
-    "reason": "explanation if OUT_OF_SCOPE"
-}}
-
-EXAMPLES:
-
-Input: "What's the total actual revenue for AMS?"
-Output: {{"intent": "NEEDS_ANALYSIS", "analysis_query": "total actual revenue for AMS unit"}}
-
-Input: "Which customers are in the ME region?"
-Output: {{"intent": "NEEDS_ANALYSIS", "analysis_query": "list customers in ME region"}}
-
-Input: "What columns are available?"
-Output: {{"intent": "CONVERSATIONAL", "analysis_query": null}}
-
-Input: "Who is Donald Trump?"
-Output: {{"intent": "OUT_OF_SCOPE", "reason": "Question is not related to revenue data"}}
+Return JSON:
+{
+  "intent": "NEEDS_ANALYSIS|CONVERSATIONAL|OUT_OF_SCOPE",
+  "analysis_query": "clear natural language question",
+  "reason": "brief explanation"
+}
 """
-            
-            response = self.client.chat.completions.create(
-                model="gpt-4o",
-                messages=[{"role": "user", "content": prompt}],
-                temperature=0.1,
-                max_tokens=300
-            )
-            
-            raw_response = response.choices[0].message.content
-            
-            # Parse JSON
-            if "```json" in raw_response:
-                raw_response = raw_response.split("```json")[1].split("```")[0]
-            elif "```" in raw_response:
-                raw_response = raw_response.split("```")[1].split("```")[0]
-            
-            intent_result = json.loads(raw_response.strip())
-            logger.info(f"Intent determined: {intent_result['intent']}")
-            
-            return intent_result
-            
-        except Exception as e:
-            logger.error(f"Intent determination failed: {str(e)}", exc_info=True)
-            return {"intent": "NEEDS_ANALYSIS", "analysis_query": user_message}
-    
-    def generate_insights_from_sql(self, upload_id: str, user_message: str, 
-                                   sql_result: Any) -> str:
-        """
-        Generate natural language insights from SQL results
-        """
-        logger.info(f"Generating insights from SQL result")
-        logger.info(f"Result type: {type(sql_result)}, value: {sql_result}")
-        
+
         try:
-            # Handle empty results
-            if sql_result is None or (isinstance(sql_result, (list, dict)) and len(sql_result) == 0):
-                return "No data found matching your query."
-            
-            # Handle simple numeric results
-            if isinstance(sql_result, (int, float)) and not isinstance(sql_result, bool):
-                if 'count' in user_message.lower() or 'how many' in user_message.lower():
-                    return f"Found **{int(sql_result)}** entries."
-                else:
-                    return f"The result is **${sql_result:,.2f}**"
-            
-            # Handle string results
-            if isinstance(sql_result, str):
-                return f"**{sql_result}**"
-            
-            # Handle complex results - use AI
-            results_str = str(sql_result)
-            
-            prompt = f"""
-The user asked: "{user_message}"
-
-The SQL query returned: {results_str}
-
-Generate a clear, concise response in natural language.
-
-FORMATTING RULES:
-1. Use bold (**text**) for numbers, names, and key terms
-2. Format currency with $ and commas (e.g., **$12,345.67**)
-3. Use bullet points for lists of 3+ items
-4. Keep responses business-friendly and concise
-5. If showing multiple items, format as: **Name: $value**
-
-EXAMPLES:
-
-Query: "Which customer has highest revenue?"
-Result: {{"customer": "ADIB Bank", "total_revenue": 45230.50}}
-Response: "**ADIB Bank** has the highest revenue with **$45,230.50**"
-
-Query: "Total revenue by region"
-Result: [{{"region": "ME", "total": 50000}}, {{"region": "AFR", "total": 30000}}]
-Response: "Revenue by region:
-- **ME**: $50,000
-- **AFR**: $30,000"
-
-Now generate the response:
-"""
-            
             response = self.client.chat.completions.create(
-                model="gpt-4o",
-                messages=[{"role": "user", "content": prompt}],
-                temperature=0.3,
-                max_tokens=500
+                model="gpt-4o-mini",
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_message}
+                ],
+                temperature=0.1,
+                response_format={"type": "json_object"}
             )
             
-            insights = response.choices[0].message.content
+            result = json.loads(response.choices[0].message.content)
+            logger.info(f"Intent: {result['intent']}")
             
-            # Add to conversation history
-            self.add_to_history(upload_id, user_message, insights)
+            # Validate no SQL in analysis_query
+            if result.get('intent') == 'NEEDS_ANALYSIS' and result.get('analysis_query'):
+                query = result['analysis_query'].upper()
+                if any(kw in query for kw in ['SELECT', 'FROM', 'WHERE', 'INSERT', 'UPDATE', 'DELETE']):
+                    logger.warning("Intent returned SQL, using original message")
+                    result['analysis_query'] = user_message
             
-            return insights
+            return result
             
         except Exception as e:
-            logger.error(f"Insights generation failed: {str(e)}", exc_info=True)
-            return f"I found results but encountered an error formatting them: {str(sql_result)[:200]}"
+            logger.error(f"Error determining intent: {str(e)}")
+            return {
+                'intent': 'OUT_OF_SCOPE',
+                'reason': f'Error: {str(e)}'
+            }
+    
+    def generate_insights_from_sql(self, upload_id: str, user_question: str, sql_results: list, metadata: dict = None) -> str:
+        """Generate response using ONLY provided metadata - NO hallucinations"""
+        
+        logger.info("Generating insights from SQL results")
+        logger.info(f"Metadata provided: {metadata}")
+        
+        # Extract filter details
+        filters = metadata.get('filters_applied', {}) if metadata else {}
+        metric = metadata.get('metric_used', 'revenue') if metadata else 'revenue'
+        aggregation = metadata.get('aggregation', 'sum') if metadata else 'sum'
+        group_by = metadata.get('group_by', []) if metadata else []
+        
+        # Build filter description
+        filter_desc = []
+        if filters.get('year'):
+            filter_desc.append(f"Year: {filters['year']}")
+        if filters.get('month'):
+            filter_desc.append(f"Month: {filters['month']}")
+        if filters.get('months'):
+            filter_desc.append(f"Months: {', '.join(filters['months'])}")
+        if filters.get('customer'):
+            filter_desc.append(f"Customer: {filters['customer']}")
+        if filters.get('region'):
+            filter_desc.append(f"Region: {filters['region']}")
+        if filters.get('quarter'):
+            filter_desc.append(f"Quarter: {filters['quarter']}")
+        
+        filter_summary = " | ".join(filter_desc) if filter_desc else "All data"
+        
+        system_prompt = f"""You are a financial analyst. Present SQL results clearly.
+
+## CRITICAL RULES:
+1. Use ONLY the provided metadata - NEVER invent years, months, or filters
+2. State ALL filters that were applied
+3. If data is grouped by year, show breakdown by year
+4. Format numbers with currency and thousands separators
+
+## PROVIDED METADATA:
+Metric: {metric}
+Filters Applied: {filter_summary}
+Grouped By: {', '.join(group_by) if group_by else 'None'}
+Aggregation: {aggregation}
+
+## RESPONSE FORMAT:
+**[Main Answer with numbers from results]**
+
+**Details:**
+• Metric: {metric.capitalize()} Revenue
+• Filters: {filter_summary}
+{f"• Breakdown: By {', '.join(group_by)}" if group_by else ""}
+• Calculation: {aggregation.upper()} of {metric} values
+
+## EXAMPLES:
+
+If grouped by year:
+"**Revenue Breakdown:**
+• 2023: $5,000
+• 2024: $6,500  
+• 2025: $7,200
+
+**Details:**
+• Metric: Actual Revenue
+• Filters: Month: MAR
+• Breakdown: By year
+• Calculation: SUM of monthly actual values"
+
+If single value:
+"**Total: $18,700**
+
+**Details:**
+• Metric: Projected Revenue
+• Filters: Year: 2025 | Quarter: Q1
+• Calculation: SUM of monthly projected values"
+
+## NEVER:
+- Invent years (use only from results)
+- Assume filters (state only provided filters)
+- Add extra explanations not based on data
+"""
+
+        try:
+            response = self.client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": f"""User Question: {user_question}
+
+SQL Results: {json.dumps(sql_results, indent=2)}
+
+Format into transparent response."""}
+                ],
+                temperature=0.3
+            )
+            
+            formatted_response = response.choices[0].message.content
+            
+            # Store in history
+            if upload_id not in self.conversation_history:
+                self.conversation_history[upload_id] = []
+            
+            self.conversation_history[upload_id].append({
+                'question': user_question,
+                'answer': formatted_response,
+                'timestamp': datetime.now().isoformat()
+            })
+            
+            if len(self.conversation_history[upload_id]) > 10:
+                self.conversation_history[upload_id] = self.conversation_history[upload_id][-10:]
+            
+            return formatted_response
+            
+        except Exception as e:
+            logger.error(f"Error generating insights: {str(e)}")
+            if sql_results:
+                return f"Results: {json.dumps(sql_results, indent=2)}\n\n(Based on {metric} revenue with filters: {filter_summary})"
+            else:
+                return "No results found."
     
     def handle_conversational_sql(self, upload_id: str, user_message: str) -> str:
         """Handle conversational messages"""
-        logger.info(f"Handling conversational message")
         
-        try:
-            history = self.get_conversation_history(upload_id)
-            
-            prompt = f"""
-You are a helpful AI assistant for a revenue tracking system.
+        logger.info("Handling conversational message")
+        
+        system_prompt = """You are a friendly AI assistant for revenue analysis.
 
-The system has the following data:
-- Business units, products, regions, countries, customers
-- Monthly revenue data (budget, projected, actual)
-- 12 months of data for 2025
+Respond naturally to:
+- Greetings
+- Thanks
+- Capability questions
 
-CONVERSATION HISTORY: {history[-2:] if history else "None"}
-USER QUESTION: "{user_message}"
-
-Provide a helpful, friendly response about the system's capabilities.
-
-EXAMPLES:
-- "What can I ask?" → Explain types of queries (totals, comparisons, rankings)
-- "What data do you have?" → Describe the revenue tracking data structure
-- "How does this work?" → Explain the query process
+Keep responses brief. Remind users you analyze revenue data (actual/projected/budget).
 """
-            
+
+        try:
             response = self.client.chat.completions.create(
-                model="gpt-4o",
-                messages=[{"role": "user", "content": prompt}],
-                temperature=0.3,
-                max_tokens=300
+                model="gpt-4o-mini",
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_message}
+                ],
+                temperature=0.7
             )
             
-            conversational_response = response.choices[0].message.content
-            self.add_to_history(upload_id, user_message, conversational_response)
-            
-            return conversational_response
+            return response.choices[0].message.content
             
         except Exception as e:
-            logger.error(f"Conversational response failed: {str(e)}", exc_info=True)
-            return "I'm here to help you analyze your revenue data. What would you like to know?"
+            logger.error(f"Error: {str(e)}")
+            return "I'm here to help analyze your revenue data. What would you like to know?"
     
-    def get_conversation_history(self, upload_id: str) -> List[Dict]:
+    def get_conversation_history(self, upload_id: str) -> list:
         """Get conversation history"""
         return self.conversation_history.get(upload_id, [])
     
-    def add_to_history(self, upload_id: str, query: str, response: str):
-        """Add exchange to conversation history"""
-        if upload_id not in self.conversation_history:
-            self.conversation_history[upload_id] = []
-        
-        self.conversation_history[upload_id].append({
-            'user_message': query,
-            'assistant_response': response,
-            'timestamp': datetime.now().isoformat()
-        })
-        
-        # Keep only last 20 exchanges
-        if len(self.conversation_history[upload_id]) > 20:
-            self.conversation_history[upload_id] = self.conversation_history[upload_id][-20:]
+    def clear_history(self, upload_id: str):
+        """Clear conversation history"""
+        if upload_id in self.conversation_history:
+            del self.conversation_history[upload_id]
+            logger.info(f"History cleared for: {upload_id}")

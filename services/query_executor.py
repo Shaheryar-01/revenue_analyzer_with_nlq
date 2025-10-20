@@ -1,191 +1,189 @@
-# app/services/query_executor.py
 import logging
-from typing import Dict, Any
+from typing import Dict, Any, List, Tuple
 from services.supabase_client import SupabaseManager
 
 logger = logging.getLogger(__name__)
 
+
 class QueryExecutor:
-    """Execute SQL queries on Supabase database"""
+    """
+    Executes SQL queries with validation and safety checks.
+    Works with Supabase database.
+    """
     
     def __init__(self):
+        """Initialize the query executor with Supabase connection"""
         self.supabase = SupabaseManager()
-        logger.info("Query Executor initialized")
     
     def execute_sql(self, sql: str, upload_id: str) -> Dict[str, Any]:
         """
-        Execute SQL query safely
+        Execute a SQL query with validation.
         
         Args:
             sql: SQL query to execute
-            upload_id: Upload identifier for validation
+            upload_id: Upload ID for data isolation
             
         Returns:
-            Execution result with data and metadata
+            dict: {
+                'success': bool,
+                'result': list of results,
+                'row_count': number of rows returned,
+                'error': error message if any
+            }
         """
-        logger.info(f"=" * 80)
-        logger.info("QUERY EXECUTION START")
-        logger.info(f"=" * 80)
-        logger.info(f"Upload ID: {upload_id}")
-        logger.info(f"SQL Query:\n{sql}")
         
+        logger.info(f"Executing SQL for upload_id: {upload_id}")
+        logger.info(f"Query: {sql[:200]}...")
+        
+        # Validate query safety
+        is_valid, validation_errors = self.validate_query_safety(sql)
+        
+        if not is_valid:
+            error_msg = '; '.join(validation_errors)
+            logger.error(f"Query validation failed: {error_msg}")
+            return {
+                'success': False,
+                'result': [],
+                'row_count': 0,
+                'error': error_msg
+            }
+        
+        # Execute query using Supabase
         try:
-            # Validate SQL (basic security check)
-            if not self._is_sql_safe(sql):
-                logger.error("SQL query failed security validation")
+            result = self.supabase.execute_raw_sql(sql)
+            
+            if result.get('success'):
+                data = result.get('data', [])
+                row_count = len(data)
+                
+                # Post-execution validation
+                warnings = self._validate_results(data)
+                if warnings:
+                    logger.warning(f"Result warnings: {'; '.join(warnings)}")
+                
+                logger.info(f"Query executed successfully. Rows returned: {row_count}")
+                
+                return {
+                    'success': True,
+                    'result': data,
+                    'row_count': row_count,
+                    'warnings': warnings
+                }
+            else:
+                error = result.get('error', 'Unknown error')
+                logger.error(f"Query execution failed: {error}")
                 return {
                     'success': False,
-                    'error': 'Query failed security validation',
-                    'result': None
+                    'result': [],
+                    'row_count': 0,
+                    'error': error
                 }
-            
-            # Verify upload_id is in the query
-            if upload_id not in sql:
-                logger.warning(f"upload_id not found in query, adding it")
-                # This shouldn't happen if AI is working correctly, but safety check
-            
-            # Execute query
-            result = self._execute_query_direct(sql)
-            
-            if result['success']:
-                logger.info(f"✅ Query executed successfully")
-                logger.info(f"Rows returned: {len(result['data'])}")
-                logger.info(f"Result preview: {result['data'][:3] if result['data'] else 'No data'}")
-            else:
-                logger.error(f"❌ Query execution failed: {result['error']}")
-            
-            logger.info(f"=" * 80)
-            logger.info("QUERY EXECUTION COMPLETE")
-            logger.info(f"=" * 80)
-            
-            return result
-            
+                
         except Exception as e:
-            logger.error(f"Query execution exception: {str(e)}", exc_info=True)
+            error_msg = f"Unexpected error executing query: {str(e)}"
+            logger.error(error_msg, exc_info=True)
             return {
                 'success': False,
-                'error': str(e),
-                'result': None
+                'result': [],
+                'row_count': 0,
+                'error': error_msg
             }
     
-    def _execute_query_direct(self, sql: str) -> Dict[str, Any]:
+    def validate_query_safety(self, query: str) -> Tuple[bool, List[str]]:
         """
-        Execute SQL directly using Supabase RPC
-        
-        Note: You need to create this RPC function in Supabase:
-        
-        CREATE OR REPLACE FUNCTION execute_custom_query(query_text TEXT)
-        RETURNS TABLE (result JSONB) AS $$
-        BEGIN
-            RETURN QUERY EXECUTE query_text;
-        END;
-        $$ LANGUAGE plpgsql SECURITY DEFINER;
-        """
-        try:
-            # For now, use postgrest-py to execute
-            # This requires the RPC function in Supabase
-            response = self.supabase.supabase.rpc('execute_custom_query', {
-                'query_text': sql
-            }).execute()
-            
-            # Process results
-            result_data = self._process_query_results(response.data)
-            
-            return {
-                'success': True,
-                'data': result_data,
-                'row_count': len(result_data),
-                'result': self._format_result(result_data)
-            }
-            
-        except Exception as e:
-            logger.error(f"Direct query execution failed: {str(e)}", exc_info=True)
-            return {
-                'success': False,
-                'error': str(e),
-                'data': [],
-                'result': None
-            }
-    
-    def _process_query_results(self, raw_data: list) -> list:
-        """Process raw query results"""
-        if not raw_data:
-            return []
-        
-        # If results are wrapped in 'result' key
-        if isinstance(raw_data[0], dict) and 'result' in raw_data[0]:
-            return [row['result'] for row in raw_data]
-        
-        return raw_data
-    
-    def _format_result(self, data: list) -> Any:
-        """
-        Format result for natural language processing
+        Validate query for safety and correctness.
         
         Returns:
-            - Single value if one row, one column
-            - Dictionary if one row, multiple columns
-            - List of dictionaries if multiple rows
+            Tuple of (is_valid, list of errors)
         """
-        if not data:
-            return None
+        errors = []
+        query_upper = query.upper()
         
-        if len(data) == 1:
-            # Single row
-            row = data[0]
-            
-            if isinstance(row, dict):
-                # If only one column, return just the value
-                if len(row) == 1:
-                    return list(row.values())[0]
-                else:
-                    return row
-            else:
-                return row
-        
-        # Multiple rows
-        return data
-    
-    def _is_sql_safe(self, sql: str) -> bool:
-        """
-        Basic SQL safety validation
-        
-        Blocks:
-        - DROP, DELETE without WHERE
-        - Multiple statements (;)
-        - System commands
-        """
-        sql_lower = sql.lower()
-        
-        # Block dangerous operations
-        dangerous_patterns = [
-            'drop table',
-            'drop database',
-            'truncate',
-            'delete from revenue_tracker;',  # DELETE without WHERE
-            'update revenue_tracker set',  # No updates allowed
-            'insert into',  # No inserts via query
-            'create ',
-            'alter ',
-            '--',  # SQL comments could hide malicious code
-            '/*',
-            '*/'
+        # Check for forbidden operations
+        forbidden_operations = [
+            'DROP', 'DELETE', 'TRUNCATE', 'ALTER', 'CREATE',
+            'INSERT', 'UPDATE', 'GRANT', 'REVOKE', 'EXEC'
         ]
         
-        for pattern in dangerous_patterns:
-            if pattern in sql_lower:
-                logger.warning(f"Dangerous SQL pattern detected: {pattern}")
-                return False
+        for operation in forbidden_operations:
+            if f' {operation} ' in f' {query_upper} ':
+                errors.append(f"Forbidden operation: {operation}")
         
-        # Ensure it's a SELECT query
-        if not sql_lower.strip().startswith('select'):
-            logger.warning("Query must be a SELECT statement")
-            return False
+        # Check for forbidden column usage in aggregations
+        forbidden_patterns = [
+            ('SUM(TOTAL)', 'Cannot use SUM(total) - this inflates results by 12x'),
+            ('SUM(YTD_ACTUAL)', 'Cannot use SUM(ytd_actual) - use SUM(actual)'),
+            ('SUM(REMAINING_PROJECTION)', 'Cannot use SUM(remaining_projection)'),
+            ('AVG(TOTAL)', 'Cannot use AVG(total) - use AVG(actual/projected/budget)'),
+            ('MAX(TOTAL)', 'Cannot use MAX(total) - use MAX(actual/projected/budget)'),
+            ('MIN(TOTAL)', 'Cannot use MIN(total) - use MIN(actual/projected/budget)'),
+        ]
         
-        # Check for multiple statements
-        if sql.count(';') > 1:
-            logger.warning("Multiple SQL statements not allowed")
-            return False
+        query_normalized = query_upper.replace(' ', '').replace('\n', '')
         
-        logger.info("SQL query passed safety validation")
-        return True
+        for pattern, error_msg in forbidden_patterns:
+            pattern_normalized = pattern.replace(' ', '')
+            if pattern_normalized in query_normalized:
+                errors.append(error_msg)
+        
+        # Check if using aggregation with summary columns
+        if 'SUM(' in query_upper or 'AVG(' in query_upper:
+            summary_cols = ['TOTAL', 'YTD_ACTUAL', 'REMAINING_PROJECTION']
+            for col in summary_cols:
+                if col in query_upper:
+                    import re
+                    agg_pattern = rf'(SUM|AVG|MAX|MIN)\s*\(\s*{col}\s*\)'
+                    if re.search(agg_pattern, query_upper):
+                        errors.append(
+                            f'Summary column {col} used in aggregation - '
+                            'this will produce incorrect results'
+                        )
+        
+        # Verify upload_id is present
+        if 'upload_id' not in query.lower():
+            errors.append('Query must filter by upload_id')
+        
+        is_valid = len(errors) == 0
+        return is_valid, errors
+    
+    def _validate_results(self, data: List[Dict]) -> List[str]:
+        """
+        Validate query results for common issues.
+        
+        Returns:
+            List of warning messages
+        """
+        warnings = []
+        
+        if not data:
+            return warnings
+        
+        # Check for suspiciously large values
+        for row in data:
+            for key, value in row.items():
+                if isinstance(value, (int, float)) and value > 500000:
+                    warnings.append(
+                        f"Warning: Large value ${value:,.2f} detected for '{key}'. "
+                        "Please verify this is not using summary columns."
+                    )
+                    break
+        
+        return warnings
+    
+    def test_query(self, sql: str, upload_id: str, limit: int = 5) -> Dict[str, Any]:
+        """
+        Test a query with a limit to preview results.
+        
+        Args:
+            sql: SQL query to test
+            upload_id: Upload ID for data isolation
+            limit: Maximum rows to return
+            
+        Returns:
+            Query results with limited rows
+        """
+        # Add LIMIT if not present
+        if 'LIMIT' not in sql.upper():
+            sql = sql.rstrip(';') + f' LIMIT {limit}'
+        
+        return self.execute_sql(sql, upload_id)

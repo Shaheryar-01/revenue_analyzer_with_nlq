@@ -1,190 +1,267 @@
-# app/services/sql_generator.py
+import os
 from openai import OpenAI
-from config.settings import get_settings
-import logging
+from dotenv import load_dotenv
 import json
+import logging
+import re
 
+load_dotenv()
 logger = logging.getLogger(__name__)
 
-settings = get_settings()
+SCHEMA_DEFINITION = """
+## DATABASE SCHEMA:
+
+Table: revenue_tracker (PostgreSQL/Supabase)
+Columns:
+- upload_id (TEXT): Unique identifier - REQUIRED IN ALL QUERIES
+- unit, product, region, country, customer, category, project_code (TEXT): Dimensions
+- year (INTEGER): Year (2025)
+- month (TEXT): JAN, FEB, MAR, APR, MAY, JUN, JUL, AUG, SEP, OCT, NOV, DEC
+- budget (NUMERIC): Monthly budgeted amount ✅ VALID FOR QUERIES
+- projected (NUMERIC): Monthly projected amount ✅ VALID FOR QUERIES
+- actual (NUMERIC): Monthly actual amount ✅ VALID FOR QUERIES
+- total, ytd_actual, remaining_projection (NUMERIC): Summary columns - DO NOT USE IN SUM!
+
+## CRITICAL RULES:
+
+### Rule 1: Table Name & upload_id
+- Table: revenue_tracker
+- MUST include: WHERE upload_id = '{upload_id}'
+
+### Rule 2: Valid Metrics
+✅ CORRECT: SUM(actual), SUM(projected), SUM(budget)
+❌ FORBIDDEN: SUM(total), SUM(ytd_actual), SUM(remaining_projection)
+
+### Rule 3: Year Handling
+When NO year specified:
+```sql
+SELECT year, month, SUM(actual) as revenue
+FROM revenue_tracker
+WHERE upload_id = '...' AND month = 'MAR'
+GROUP BY year, month
+ORDER BY year, month
+```
+
+When year specified:
+```sql
+SELECT SUM(actual) as revenue
+FROM revenue_tracker  
+WHERE upload_id = '...' AND month = 'MAR' AND year = 2025
+```
+
+### Rule 4: Return Complete Metadata
+EVERY query must return detailed filters:
+```json
+{
+  "metric_used": "actual|projected|budget",
+  "filters_applied": {
+    "month": "JAN" or null,
+    "year": 2025 or null,
+    "customer": "ADIB" or null,
+    "region": "AFR" or null
+  },
+  "group_by": ["year", "month"] or [],
+  "aggregation": "sum|avg|max|min|count"
+}
+```
+"""
 
 class SQLGenerator:
-    """AI agent that generates SQL queries from natural language"""
-    
     def __init__(self):
-        try:
-            self.client = OpenAI(api_key=settings.openai_api_key)
-            logger.info("SQL Generator initialized successfully")
-        except Exception as e:
-            logger.error(f"Failed to initialize SQL Generator: {str(e)}")
-            raise
+        api_key = os.getenv('OPENAI_API_KEY')
+        if not api_key:
+            raise ValueError("OPENAI_API_KEY not found")
+        self.client = OpenAI(api_key=api_key)
+        logger.info("SQL Generator initialized")
     
-    def generate_sql(self, user_query: str, upload_id: str) -> dict:
-        """
-        Generate SQL query from natural language
+    def generate_sql(self, user_question: str, upload_id: str, conversation_history=None):
+        """Generate SQL with complete metadata"""
         
-        Args:
-            user_query: User's natural language question
-            upload_id: Upload identifier to filter data
-            
-        Returns:
-            Dictionary with SQL query and metadata
-        """
-        logger.info(f"Generating SQL for query: {user_query}")
+        logger.info(f"Generating SQL for: {user_question}")
         
+        context = ""
+        if conversation_history:
+            context = "\n## CONVERSATION HISTORY:\n"
+            for item in conversation_history[-3:]:
+                context += f"Q: {item.get('question', '')}\nA: {item.get('answer', '')}\n\n"
+        
+        system_prompt = f"""You are a SQL expert for revenue data analysis.
+
+{SCHEMA_DEFINITION}
+
+## YOUR TASK:
+1. Generate valid PostgreSQL query
+2. Table: revenue_tracker
+3. MANDATORY: WHERE upload_id = '{upload_id}'
+4. Return COMPLETE metadata about ALL filters used
+
+## METADATA REQUIREMENTS:
+You MUST extract and return ALL filters applied:
+- metric_used: "actual", "projected", or "budget"
+- filters_applied: ALL WHERE conditions (month, year, customer, region, etc.)
+- group_by: Any GROUP BY columns (especially year when not specified)
+- aggregation: sum, avg, max, min, count, or none
+
+## EXAMPLES:
+
+Query: "What is total budget for 2025?"
+Response:
+{{
+  "can_answer": true,
+  "sql": "SELECT SUM(budget) as total FROM revenue_tracker WHERE upload_id = '{upload_id}' AND year = 2025",
+  "metadata": {{
+    "metric_used": "budget",
+    "filters_applied": {{"year": 2025}},
+    "group_by": [],
+    "aggregation": "sum"
+  }}
+}}
+
+Query: "Show actual revenue for March"
+Response:
+{{
+  "can_answer": true,
+  "sql": "SELECT year, SUM(actual) as revenue FROM revenue_tracker WHERE upload_id = '{upload_id}' AND month = 'MAR' GROUP BY year ORDER BY year",
+  "metadata": {{
+    "metric_used": "actual",
+    "filters_applied": {{"month": "MAR"}},
+    "group_by": ["year"],
+    "aggregation": "sum"
+  }}
+}}
+
+Query: "Projected revenue for ADIB in Q1"
+Response:
+{{
+  "can_answer": true,
+  "sql": "SELECT year, month, SUM(projected) as revenue FROM revenue_tracker WHERE upload_id = '{upload_id}' AND customer ILIKE '%adib%' AND month IN ('JAN','FEB','MAR') GROUP BY year, month ORDER BY year, month",
+  "metadata": {{
+    "metric_used": "projected",
+    "filters_applied": {{"customer": "ADIB", "quarter": "Q1", "months": ["JAN","FEB","MAR"]}},
+    "group_by": ["year", "month"],
+    "aggregation": "sum"
+  }}
+}}
+
+## CRITICAL:
+- NEVER use SUM(total), use SUM(actual/projected/budget)
+- Include year in GROUP BY when year not specified in question
+- Return ALL filters in metadata
+
+{context}
+"""
+
         try:
-            prompt = self._build_prompt(user_query, upload_id)
-            
             response = self.client.chat.completions.create(
-                model="gpt-4o",
-                messages=[{"role": "user", "content": prompt}],
+                model="gpt-4o-mini",
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_question}
+                ],
                 temperature=0.1,
-                max_tokens=1000
+                response_format={"type": "json_object"}
             )
             
-            raw_response = response.choices[0].message.content
-            logger.info(f"Received SQL generation response")
+            result = json.loads(response.choices[0].message.content)
+            logger.info(f"Generated SQL: {result.get('sql', 'N/A')[:100]}")
+            logger.info(f"Metadata: {result.get('metadata', {})}")
             
-            # Parse response
-            result = self._parse_response(raw_response)
-            
-            logger.info(f"SQL generation result: can_answer={result.get('can_answer')}")
+            if result.get('can_answer') and result.get('sql'):
+                # Validate query
+                validation_errors = self.validate_sql_query(result['sql'], upload_id)
+                if validation_errors:
+                    logger.error(f"Validation errors: {validation_errors}")
+                    return {
+                        'can_answer': False,
+                        'explanation': f"Query validation failed: {', '.join(validation_errors)}"
+                    }
+                
+                # Extract actual filters from SQL for accuracy
+                extracted_filters = self._extract_filters_from_sql(result['sql'])
+                
+                # Merge with metadata
+                if 'filters_applied' not in result['metadata']:
+                    result['metadata']['filters_applied'] = {}
+                result['metadata']['filters_applied'].update(extracted_filters)
+                
+                logger.info(f"Final metadata: {result['metadata']}")
             
             return result
             
         except Exception as e:
-            logger.error(f"Failed to generate SQL: {str(e)}", exc_info=True)
+            logger.error(f"Error generating SQL: {str(e)}", exc_info=True)
             return {
                 'can_answer': False,
-                'sql': None,
-                'explanation': f'Error generating SQL: {str(e)}'
+                'explanation': f"Error: {str(e)}"
             }
     
-    def _build_prompt(self, user_query: str, upload_id: str) -> str:
-        """Build the prompt for SQL generation"""
+    def _extract_filters_from_sql(self, sql: str) -> dict:
+        """Extract actual filters from SQL query for accuracy"""
+        filters = {}
+        sql_upper = sql.upper()
         
-        prompt = f"""
-You are a PostgreSQL expert. Generate SQL queries for a revenue tracking database.
-
-DATABASE SCHEMA:
-Table: revenue_tracker
-
-Columns:
-- id (UUID): Primary key
-- upload_id (TEXT): Filter to identify uploaded file data
-- unit (TEXT): Business unit (e.g., 'AMS', 'ME Support', 'Sales Force', 'BSD')
-- product (TEXT): Product name
-- region (TEXT): Geographic region (e.g., 'ME', 'AFR', 'PK')
-- country (TEXT): Country name
-- customer (TEXT): Customer name
-- category (TEXT): Project category (e.g., 'Funnel', 'New Sales', 'WIH')
-- project_code (TEXT): Project identifier
-- month (TEXT): Month code ('JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC')
-- year (INTEGER): Year (2025)
-- budget (DECIMAL): Budget amount
-- projected (DECIMAL): Projected revenue
-- actual (DECIMAL): Actual revenue
-- ytd_actual (DECIMAL): Year-to-date actual
-- remaining_projection (DECIMAL): Remaining projection
-- total (DECIMAL): Total
-- wih_2024, advance_2025, wih_2025, on_hold, wih_2026, shelved (DECIMAL): Various tracking metrics
-- created_at (TIMESTAMP): Record creation time
-
-IMPORTANT NOTES:
-1. ALWAYS include WHERE upload_id = '{upload_id}' in every query
-2. Month values are TEXT: 'JAN', 'FEB', 'MAR', etc.
-3. For quarters:
-   - Q1 = 'JAN', 'FEB', 'MAR'
-   - Q2 = 'APR', 'MAY', 'JUN'
-   - Q3 = 'JUL', 'AUG', 'SEP'
-   - Q4 = 'OCT', 'NOV', 'DEC'
-4. Use COALESCE for handling NULLs in aggregations
-5. For "total X" queries, use SUM()
-6. For "average X" queries, use AVG()
-7. For "which X has highest Y", use ORDER BY Y DESC LIMIT 1
-8. ALWAYS use case-insensitive matching: LOWER(column) = LOWER('value')
-
-USER QUERY: "{user_query}"
-
-TASK:
-1. Determine if this query can be answered with the schema
-2. If yes, generate a PostgreSQL query
-3. If no, explain what data is missing
-
-QUERY PATTERNS:
-
-Example 1: "Total actual revenue for AMS"
-SQL:
-SELECT COALESCE(SUM(actual), 0) as total_revenue
-FROM revenue_tracker
-WHERE upload_id = '{upload_id}'
-  AND LOWER(unit) = 'ams'
-
-Example 2: "Budget for ME Support in Q1"
-SQL:
-SELECT COALESCE(SUM(budget), 0) as total_budget
-FROM revenue_tracker
-WHERE upload_id = '{upload_id}'
-  AND LOWER(unit) LIKE '%me support%'
-  AND month IN ('JAN', 'FEB', 'MAR')
-
-Example 3: "Which customer has highest actual revenue?"
-SQL:
-SELECT customer, COALESCE(SUM(actual), 0) as total_revenue
-FROM revenue_tracker
-WHERE upload_id = '{upload_id}'
-  AND customer IS NOT NULL
-GROUP BY customer
-ORDER BY total_revenue DESC
-LIMIT 1
-
-Example 4: "Total revenue by region"
-SQL:
-SELECT region, COALESCE(SUM(actual), 0) as total_revenue
-FROM revenue_tracker
-WHERE upload_id = '{upload_id}'
-  AND region IS NOT NULL
-GROUP BY region
-ORDER BY total_revenue DESC
-
-Example 5: "Average monthly budget for BSD"
-SQL:
-SELECT AVG(monthly_budget) as avg_budget
-FROM (
-    SELECT month, SUM(budget) as monthly_budget
-    FROM revenue_tracker
-    WHERE upload_id = '{upload_id}'
-      AND LOWER(unit) = 'bsd'
-    GROUP BY month
-) as monthly_totals
-
-Return ONLY valid JSON:
-{{
-    "can_answer": true/false,
-    "sql": "SELECT ... SQL query here" or null,
-    "explanation": "reason if cannot answer",
-    "query_type": "aggregation" | "ranking" | "comparison" | "simple"
-}}
-"""
+        # Extract month
+        month_match = re.search(r"MONTH\s*=\s*'([A-Z]{3})'", sql_upper)
+        if month_match:
+            filters['month'] = month_match.group(1)
         
-        return prompt
+        months_match = re.search(r"MONTH\s+IN\s*\('([^']+)'(?:,\s*'([^']+)')*\)", sql_upper)
+        if months_match:
+            months = re.findall(r"'([A-Z]{3})'", month_match.group(0) if month_match else months_match.group(0))
+            filters['months'] = months
+        
+        # Extract year
+        year_match = re.search(r"YEAR\s*=\s*(\d{4})", sql_upper)
+        if year_match:
+            filters['year'] = int(year_match.group(1))
+        
+        # Extract customer
+        customer_match = re.search(r"CUSTOMER\s+(?:I?LIKE|=)\s*'%?([^'%]+)%?'", sql_upper)
+        if customer_match:
+            filters['customer'] = customer_match.group(1)
+        
+        # Extract region
+        region_match = re.search(r"REGION\s*=\s*'([^']+)'", sql_upper)
+        if region_match:
+            filters['region'] = region_match.group(1)
+        
+        # Extract GROUP BY
+        group_match = re.search(r"GROUP\s+BY\s+([^\s]+(?:\s*,\s*[^\s]+)*)", sql_upper)
+        if group_match:
+            filters['grouped_by'] = [col.strip() for col in group_match.group(1).split(',')]
+        
+        return filters
     
-    def _parse_response(self, raw_response: str) -> dict:
-        """Parse AI response"""
-        try:
-            # Remove markdown code blocks if present
-            if "```json" in raw_response:
-                raw_response = raw_response.split("```json")[1].split("```")[0]
-            elif "```" in raw_response:
-                raw_response = raw_response.split("```")[1].split("```")[0]
-            
-            result = json.loads(raw_response.strip())
-            return result
-            
-        except json.JSONDecodeError as e:
-            logger.error(f"Failed to parse response as JSON: {str(e)}")
-            return {
-                'can_answer': False,
-                'sql': None,
-                'explanation': 'Failed to parse response'
-            }
+    def validate_sql_query(self, query: str, upload_id: str):
+        """Validate SQL query"""
+        errors = []
+        query_upper = query.upper()
+        query_lower = query.lower()
+        
+        # Check table name
+        if 'revenue_tracker' not in query_lower:
+            errors.append("Must use table 'revenue_tracker'")
+        
+        # Check upload_id
+        if 'upload_id' not in query_lower:
+            errors.append(f"Must include WHERE upload_id = '{upload_id}'")
+        
+        # Check forbidden patterns
+        forbidden = [
+            ('SUM(TOTAL)', 'Use SUM(actual/projected/budget)'),
+            ('SUM(YTD_ACTUAL)', 'Use SUM(actual)'),
+            ('SUM(REMAINING_PROJECTION)', 'Use SUM(projected)'),
+            ('AVG(TOTAL)', 'Use AVG(actual/projected/budget)'),
+        ]
+        
+        query_normalized = query_upper.replace(' ', '')
+        for pattern, msg in forbidden:
+            if pattern.replace(' ', '') in query_normalized:
+                errors.append(msg)
+        
+        return errors
+
+def generate_sql_query(user_question, upload_id, conversation_history=None):
+    """Backward compatibility"""
+    generator = SQLGenerator()
+    return generator.generate_sql(user_question, upload_id, conversation_history)

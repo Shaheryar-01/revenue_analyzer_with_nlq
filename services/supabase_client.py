@@ -63,6 +63,52 @@ class SupabaseManager:
             logger.error(f"Failed to save upload metadata: {str(e)}")
             return False
     
+    def execute_raw_sql(self, sql: str) -> Dict[str, Any]:
+        """
+        Execute raw SQL query using Supabase RPC function.
+        
+        Note: You need to create this RPC function in Supabase:
+        
+        CREATE OR REPLACE FUNCTION execute_custom_query(query_text TEXT)
+        RETURNS TABLE(result JSONB) AS $$
+        BEGIN
+            RETURN QUERY EXECUTE query_text;
+        END;
+        $$ LANGUAGE plpgsql SECURITY DEFINER;
+        
+        Args:
+            sql: SQL query to execute
+            
+        Returns:
+            dict: {
+                'success': bool,
+                'data': list of results,
+                'error': error message if any
+            }
+        """
+        try:
+            logger.info(f"Executing raw SQL: {sql[:200]}...")
+            
+            # Execute using rpc function
+            response = self.supabase.rpc('execute_custom_query', {
+                'query_text': sql
+            }).execute()
+            
+            logger.info(f"Query executed successfully, returned {len(response.data)} rows")
+            
+            return {
+                'success': True,
+                'data': response.data
+            }
+            
+        except Exception as e:
+            logger.error(f"Raw SQL execution failed: {str(e)}", exc_info=True)
+            return {
+                'success': False,
+                'data': [],
+                'error': str(e)
+            }
+    
     def execute_query(self, upload_id: str, sql: str) -> Dict[str, Any]:
         """
         Execute a SQL query using Supabase PostgREST
@@ -73,7 +119,7 @@ class SupabaseManager:
             logger.info(f"Executing query for upload_id: {upload_id}")
             logger.info(f"SQL: {sql}")
             
-            # Execute using rpc function (you'll need to create this in Supabase)
+            # Execute using rpc function
             response = self.supabase.rpc('execute_custom_query', {
                 'query_text': sql
             }).execute()
@@ -153,10 +199,15 @@ class SupabaseManager:
         try:
             logger.info(f"Deleting all data for upload_id: {upload_id}")
             
-            # Use the stored procedure
-            self.supabase.rpc('delete_upload_data', {
-                'p_upload_id': upload_id
-            }).execute()
+            # Delete from revenue_tracker
+            self.supabase.table('revenue_tracker').delete().eq(
+                'upload_id', upload_id
+            ).execute()
+            
+            # Delete from upload_metadata
+            self.supabase.table('upload_metadata').delete().eq(
+                'upload_id', upload_id
+            ).execute()
             
             logger.info(f"Successfully deleted data for upload_id: {upload_id}")
             return True

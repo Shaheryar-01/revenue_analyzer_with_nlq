@@ -241,12 +241,14 @@ async def chat_webhook(upload_id: str, message: ChatMessage):
             logger.info("STEP 4: GENERATING NATURAL LANGUAGE RESPONSE")
             logger.info("=" * 80)
             
+            # 🔥 UPDATED LINE - Pass metadata to prevent hallucinations
             insights = await asyncio.wait_for(
                 asyncio.to_thread(
                     conversation_agent.generate_insights_from_sql,
                     upload_id,
                     message.message,
-                    execution_result['result']
+                    execution_result['result'],
+                    sql_result.get('metadata', {})  # ← ADDED THIS PARAMETER
                 ),
                 timeout=30.0
             )
