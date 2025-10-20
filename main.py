@@ -1,23 +1,21 @@
 # app/main.py
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
 import uvicorn
 from datetime import datetime
 import logging
 import sys
+import uuid
+import os
+import asyncio
 
-from services.schema_detector import PythonSchemaDetector
-from services.file_manager import FileManager
-from services.ai_code_agent import AICodeAgent
+from services.supabase_client import SupabaseManager
+from services.excel_transformer import ExcelTransformer
+from services.sql_generator import SQLGenerator
+from services.query_executor import QueryExecutor
 from services.conversation_agent import ConversationAgent
-from services.code_executor import SafeCodeExecutor
-from services.result_translator import ResultTranslator
 from models.schemas import UploadResponse, ChatMessage, ChatResponse, FileInfo
 from config.settings import get_settings
-
-from services.context_resolver import ContextResolver
-
 
 # Configure logging
 logging.basicConfig(
@@ -31,16 +29,16 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 settings = get_settings()
-logger.info("Starting AI Revenue Analyzer application")
+logger.info("Starting AI Revenue Analyzer with Supabase")
 
 # Initialize FastAPI
 app = FastAPI(
     title="AI Revenue Analyzer",
-    description="AI-powered data analysis with natural conversation",
-    version="1.0.0"
+    description="AI-powered data analysis with Supabase",
+    version="2.0.0"
 )
 
-# CORS for Next.js
+# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins_list,
@@ -48,87 +46,99 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-logger.info(f"CORS configured with origins: {settings.cors_origins_list}")
 
 # Initialize services
 try:
-    schema_detector = PythonSchemaDetector()
-    logger.info("Schema detector initialized successfully")
-    
-    file_manager = FileManager()
-    logger.info("File manager initialized successfully")
-    
-    ai_code_agent = AICodeAgent()
-    logger.info("AI code agent initialized successfully")
-    
+    supabase_manager = SupabaseManager()
+    excel_transformer = ExcelTransformer()
+    sql_generator = SQLGenerator()
+    query_executor = QueryExecutor()
     conversation_agent = ConversationAgent()
-    logger.info("Conversation agent initialized successfully")
     
-    context_resolver = ContextResolver()
-    logger.info("Context resolver initialized successfully")
-
-    code_executor = SafeCodeExecutor()
-    logger.info("Code executor initialized successfully")
-    
+    logger.info("All services initialized successfully")
 except Exception as e:
     logger.error(f"Failed to initialize services: {str(e)}")
     raise
 
+# Temporary directory for file uploads
+TEMP_DIR = "temp_uploads"
+os.makedirs(TEMP_DIR, exist_ok=True)
+
 @app.post("/webhook/upload", response_model=UploadResponse)
 async def upload_file_webhook(file: UploadFile = File(...)):
-    """Webhook for file upload - reads FIRST SHEET ONLY"""
-    logger.info(f"Upload request received for file: {file.filename}")
+    """Upload Excel file and save to Supabase database"""
+    logger.info(f"Upload request received: {file.filename}")
     
     try:
         # Validate file type
-        if not file.filename.endswith(('.xlsx', '.xls', '.csv')):
+        if not file.filename.endswith(('.xlsx', '.xls')):
             raise HTTPException(
-                status_code=400, 
-                detail="Only Excel (.xlsx, .xls) and CSV files are supported"
+                status_code=400,
+                detail="Only Excel files (.xlsx, .xls) are supported"
             )
         
-        # Save uploaded file
-        upload_id, file_path = file_manager.save_uploaded_file(file)
-        logger.info(f"File saved with upload_id: {upload_id}")
+        # Generate unique upload ID
+        upload_id = str(uuid.uuid4())
+        logger.info(f"Generated upload_id: {upload_id}")
         
-        # Load FIRST SHEET ONLY
-        sheets_dict = file_manager.load_all_sheets(file_path)
-        logger.info(f"Loaded first sheet: {list(sheets_dict.keys())[0]}")
+        # Save file temporarily
+        temp_path = os.path.join(TEMP_DIR, f"{upload_id}_{file.filename}")
+        with open(temp_path, "wb") as f:
+            content = await file.read()
+            f.write(content)
+        logger.info(f"File saved temporarily: {temp_path}")
         
-        # Save sheets data for later use
-        file_manager.save_sheets_data(upload_id, sheets_dict)
+        # Validate file structure
+        validation = excel_transformer.validate_excel_structure(temp_path)
+        if not validation['valid']:
+            os.remove(temp_path)
+            raise HTTPException(status_code=400, detail=validation['message'])
         
-        # Detect schema (will always be single sheet now)
-        sheet_name = list(sheets_dict.keys())[0]
-        df = sheets_dict[sheet_name]
-        schema_info = schema_detector.detect_complete_schema(df)
-        total_rows = schema_info['basic_info']['total_rows']
-        total_cols = schema_info['basic_info']['total_columns']
+        # Transform Excel to database records
+        logger.info("Transforming Excel to database format...")
+        records = excel_transformer.transform_excel_to_records(temp_path, upload_id)
+        logger.info(f"Generated {len(records)} database records")
         
-        # Always single sheet message
-        message = f"File uploaded successfully! Loaded sheet '{sheet_name}' with {total_rows} rows and {total_cols} columns."
+        # Insert into Supabase
+        logger.info("Inserting data into Supabase...")
+        insert_result = supabase_manager.insert_revenue_data(records)
         
-        # Save schema
-        file_manager.save_schema(upload_id, schema_info)
+        if not insert_result['success']:
+            os.remove(temp_path)
+            raise HTTPException(status_code=500, detail=insert_result['error'])
         
-        response_data = UploadResponse(
+        # Save upload metadata
+        total_rows = len(records) // 12  # Divide by 12 months to get original row count
+        supabase_manager.save_upload_metadata(upload_id, file.filename, total_rows)
+        
+        # Clean up temp file
+        os.remove(temp_path)
+        logger.info(f"Temp file removed: {temp_path}")
+        
+        message = f"File uploaded successfully! Loaded {total_rows} projects with 12 months of data ({len(records)} total records) into database."
+        
+        return UploadResponse(
             success=True,
             upload_id=upload_id,
             filename=file.filename,
             schema_info={
                 'sheet_count': 1,
-                'sheet_names': [sheet_name],
+                'sheet_names': ['Monthly Tracker'],
                 'total_rows': total_rows,
-                'total_columns': total_cols
+                'total_records': len(records)
             },
             ready_for_queries=True,
             message=message
         )
         
-        return response_data
-        
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Upload failed: {str(e)}", exc_info=True)
+        # Clean up temp file if exists
+        if 'temp_path' in locals() and os.path.exists(temp_path):
+            os.remove(temp_path)
+        
         return UploadResponse(
             success=False,
             upload_id="",
@@ -139,219 +149,108 @@ async def upload_file_webhook(file: UploadFile = File(...)):
             error=str(e)
         )
 
-
-
 @app.post("/webhook/chat/{upload_id}", response_model=ChatResponse)
 async def chat_webhook(upload_id: str, message: ChatMessage):
-    """Webhook for multi-sheet chat interface with OUT_OF_SCOPE detection"""
+    """Chat interface with SQL generation"""
     logger.info(f"Chat request for upload_id: {upload_id}")
     logger.info(f"User message: {message.message}")
     
     try:
-        schema = file_manager.get_schema(upload_id)
-        if not schema:
+        # Verify upload exists
+        upload_info = supabase_manager.get_upload_info(upload_id)
+        if not upload_info:
             raise HTTPException(status_code=404, detail="Upload not found")
         
-        import asyncio
+        # STEP 1: Determine Intent
+        logger.info("=" * 80)
+        logger.info("STEP 1: DETERMINING INTENT")
+        logger.info("=" * 80)
         
-        # ============================================================================
-        # STEP 1: DETERMINE INTENT (with schema passed to detect OUT_OF_SCOPE)
-        # ============================================================================
         try:
-            logger.info("=" * 80)
-            logger.info("STEP 1: DETERMINING INTENT")
-            logger.info("=" * 80)
-            
             intent_result = await asyncio.wait_for(
                 asyncio.to_thread(
-                    conversation_agent.determine_intent, 
-                    upload_id, 
-                    message.message, 
-                    schema  # FIXED: Pass schema to enable OUT_OF_SCOPE detection
+                    conversation_agent.determine_intent_sql,
+                    upload_id,
+                    message.message
                 ),
-                timeout=90.0
+                timeout=30.0
             )
-            
-            logger.info(f"Intent Result: {intent_result}")
-            
+            logger.info(f"Intent: {intent_result['intent']}")
         except asyncio.TimeoutError:
-            logger.error(f"Intent determination timed out for upload_id: {upload_id}")
             return ChatResponse(
                 success=False,
-                response="Sorry, that request took too long. Please try asking a simpler question.",
+                response="Request timed out. Please try a simpler question.",
                 analysis_performed=False,
                 upload_id=upload_id,
                 timestamp=datetime.now().isoformat(),
-                error="Request timeout"
+                error="Timeout"
             )
         
-        # ============================================================================
-        # STEP 2: HANDLE OUT_OF_SCOPE QUERIES
-        # ============================================================================
+        # STEP 2: Handle OUT_OF_SCOPE
         if intent_result["intent"] == "OUT_OF_SCOPE":
-            logger.info("=" * 80)
-            logger.info("QUERY IS OUT OF SCOPE - REJECTING")
-            logger.info(f"Reason: {intent_result.get('reason', 'Unknown')}")
-            logger.info("=" * 80)
-            
-            # Get column info for helpful message
-            if schema.get('sheet_count', 1) > 1:
-                columns_preview = schema.get('all_columns', [])[:5]
-            else:
-                columns_preview = schema.get('basic_info', {}).get('column_names', [])[:5]
-            
-            out_of_scope_message = (
-                f"I can only answer questions about your uploaded data. "
-                f"{intent_result.get('reason', 'Your question appears to be outside the scope of the dataset.')} "
-                f"\n\n**Your dataset contains columns like:** {', '.join(columns_preview)}..."
-                f"\n\nPlease ask questions about this data."
-            )
-            
             return ChatResponse(
                 success=True,
-                response=out_of_scope_message,
+                response=f"I can only answer questions about your uploaded revenue data. {intent_result.get('reason', '')}",
                 analysis_performed=False,
                 upload_id=upload_id,
                 timestamp=datetime.now().isoformat()
             )
         
-        # ============================================================================
-        # STEP 3: HANDLE NEEDS_ANALYSIS
-        # ============================================================================
+        # STEP 3: Generate SQL for NEEDS_ANALYSIS
         if intent_result["intent"] == "NEEDS_ANALYSIS":
             logger.info("=" * 80)
-            logger.info("STEP 2: GENERATING ANALYSIS CODE")
-            logger.info(f"Analysis Query: {intent_result['analysis_query']}")
+            logger.info("STEP 2: GENERATING SQL")
             logger.info("=" * 80)
             
-            try:
-                ai_result = await asyncio.wait_for(
-                    asyncio.to_thread(
-                        ai_code_agent.generate_analysis_code, 
-                        schema, 
-                        intent_result["analysis_query"]
-                    ),
-                    timeout=90.0
-                )
-                
-                logger.info(f"AI Code Generation Result:")
-                logger.info(f"  - can_answer: {ai_result.get('can_answer', True)}")
-                logger.info(f"  - target_sheet: {ai_result.get('target_sheet')}")
-                logger.info(f"  - code_length: {len(ai_result.get('code', '')) if ai_result.get('code') else 0}")
-                
-            except asyncio.TimeoutError:
-                logger.error(f"Code generation timed out for upload_id: {upload_id}")
-                return ChatResponse(
-                    success=False,
-                    response="The analysis is taking too long. Please try a simpler query.",
-                    analysis_performed=False,
-                    upload_id=upload_id,
-                    timestamp=datetime.now().isoformat(),
-                    error="Analysis timeout"
-                )
+            sql_result = sql_generator.generate_sql(
+                intent_result["analysis_query"],
+                upload_id
+            )
             
-            if not ai_result.get('can_answer', True):
-                logger.warning(f"AI cannot answer query: {ai_result.get('explanation', 'Unknown reason')}")
+            if not sql_result.get('can_answer'):
                 return ChatResponse(
                     success=True,
-                    response=ai_result.get('explanation', 'Unable to process query'),
+                    response=sql_result.get('explanation', 'Cannot answer this query'),
                     analysis_performed=False,
                     upload_id=upload_id,
                     timestamp=datetime.now().isoformat()
                 )
             
-            # ========================================================================
-            # STEP 4: EXECUTE CODE
-            # ========================================================================
+            # STEP 4: Execute SQL
             logger.info("=" * 80)
-            logger.info("STEP 3: EXECUTING CODE")
+            logger.info("STEP 3: EXECUTING SQL")
             logger.info("=" * 80)
-            logger.info(f"Generated Code:\n{ai_result['code']}")
             
-            # Load data and execute
-            is_multi_sheet = schema.get('sheet_count', 1) > 1
-            
-            if is_multi_sheet:
-                sheets_dict = file_manager.load_sheets_data(upload_id)
-                execution_result = code_executor.execute_code(
-                    sheets_dict, 
-                    ai_result['code'],
-                    target_sheet=ai_result.get('target_sheet')
-                )
-            else:
-                file_path = file_manager.get_file_path(upload_id)
-                df = file_manager.load_dataframe(file_path)
-                execution_result = code_executor.execute_code(df, ai_result['code'])
-            
-            # ========================================================================
-            # CRITICAL LOGGING: RAW RESULTS BEFORE INSIGHTS GENERATION
-            # ========================================================================
-            logger.info("=" * 80)
-            logger.info("STEP 4: CODE EXECUTION RESULTS (BEFORE INSIGHTS)")
-            logger.info("=" * 80)
-            logger.info(f"Execution Success: {execution_result['success']}")
-            logger.info(f"Raw Result Type: {type(execution_result['result'])}")
-            logger.info(f"Raw Result Value: {execution_result['result']}")
-            logger.info(f"Raw Result Length: {len(str(execution_result['result']))}")
+            execution_result = query_executor.execute_sql(
+                sql_result['sql'],
+                upload_id
+            )
             
             if not execution_result['success']:
-                logger.error(f"Code execution failed: {execution_result['error']}")
                 return ChatResponse(
                     success=False,
-                    response=f"Error analyzing data: {execution_result['error']}",
+                    response=f"Error executing query: {execution_result['error']}",
                     analysis_performed=False,
                     upload_id=upload_id,
                     timestamp=datetime.now().isoformat(),
                     error=execution_result['error']
                 )
             
-            # ========================================================================
-            # STEP 4.5: TRANSLATE RESULTS (NEW)
-            # ========================================================================
+            # STEP 5: Generate Natural Language Response
             logger.info("=" * 80)
-            logger.info("STEP 4.5: TRANSLATING RESULTS")
+            logger.info("STEP 4: GENERATING NATURAL LANGUAGE RESPONSE")
             logger.info("=" * 80)
             
-            try:
-                translator = ResultTranslator(schema)
-                translated_result = translator.translate_result(
-                    execution_result['result'], 
-                    message.message
-                )
-                logger.info(f"✅ Translated Result: {translated_result}")
-                result_to_use = translated_result
-            except Exception as e:
-                logger.error(f"⚠️ Translation failed: {str(e)}", exc_info=True)
-                logger.info("Falling back to raw result")
-                result_to_use = execution_result['result']
+            insights = await asyncio.wait_for(
+                asyncio.to_thread(
+                    conversation_agent.generate_insights_from_sql,
+                    upload_id,
+                    message.message,
+                    execution_result['result']
+                ),
+                timeout=30.0
+            )
             
-            # ========================================================================
-            # STEP 5: GENERATE INSIGHTS (with hallucination prevention)
-            # ========================================================================
-            logger.info("=" * 80)
-            logger.info("STEP 5: GENERATING INSIGHTS FROM RAW RESULTS")
-            logger.info("=" * 80)
-            
-            
-            # After execution succeeds, around line 258 in main.py:
-            try:
-                insights = await asyncio.wait_for(
-                    asyncio.to_thread(
-                        conversation_agent.generate_insights_response,
-                        upload_id,
-                        message.message,
-                        result_to_use,  # This is the translated result
-                        schema
-                    ),
-                    timeout=90.0
-                )
-            except asyncio.TimeoutError:
-                insights = f"Analysis complete: {execution_result['result']}"
-            except Exception as e:
-                logger.error(f"Insights generation failed: {str(e)}", exc_info=True)
-                insights = f"Result: {execution_result['result']}"
-
-            # THIS MUST ALWAYS EXECUTE
             return ChatResponse(
                 success=True,
                 response=insights,
@@ -360,37 +259,21 @@ async def chat_webhook(upload_id: str, message: ChatMessage):
                 timestamp=datetime.now().isoformat(),
                 raw_results=execution_result['result']
             )
-
         
-        # ============================================================================
-        # STEP 6: HANDLE CONVERSATIONAL
-        # ============================================================================
+        # STEP 6: Handle CONVERSATIONAL
         else:
             logger.info("=" * 80)
             logger.info("HANDLING CONVERSATIONAL RESPONSE")
             logger.info("=" * 80)
             
-            try:
-                conversational_response = await asyncio.wait_for(
-                    asyncio.to_thread(
-                        conversation_agent.handle_conversational_response,
-                        upload_id,
-                        message.message,
-                        schema
-                    ),
-                    timeout=90.0
-                )
-            except asyncio.TimeoutError:
-                return ChatResponse(
-                    success=False,
-                    response="That question is taking too long to answer. Could you ask something more specific?",
-                    analysis_performed=False,
-                    upload_id=upload_id,
-                    timestamp=datetime.now().isoformat(),
-                    error="Response timeout"
-                )
-            
-            logger.info(f"Conversational Response: {conversational_response}")
+            conversational_response = await asyncio.wait_for(
+                asyncio.to_thread(
+                    conversation_agent.handle_conversational_sql,
+                    upload_id,
+                    message.message
+                ),
+                timeout=30.0
+            )
             
             return ChatResponse(
                 success=True,
@@ -400,6 +283,8 @@ async def chat_webhook(upload_id: str, message: ChatMessage):
                 timestamp=datetime.now().isoformat()
             )
             
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Chat failed: {str(e)}", exc_info=True)
         return ChatResponse(
@@ -411,69 +296,58 @@ async def chat_webhook(upload_id: str, message: ChatMessage):
             error=str(e)
         )
 
-
 @app.delete("/api/upload/{upload_id}")
 async def delete_upload(upload_id: str):
-    """Delete an uploaded file and all associated data"""
-    logger.info(f"Delete request received for upload_id: {upload_id}")
+    """Delete upload data from database"""
+    logger.info(f"Delete request for upload_id: {upload_id}")
     
     try:
-        # Delete from file manager (this will handle all file cleanup)
-        success = file_manager.delete_upload(upload_id)
+        success = supabase_manager.delete_upload(upload_id)
         
         if success:
-            # Clear conversation history for this upload
+            # Clear conversation history
             if upload_id in conversation_agent.conversation_history:
                 del conversation_agent.conversation_history[upload_id]
-                logger.info(f"Cleared conversation history for upload_id: {upload_id}")
             
-            logger.info(f"Successfully deleted upload_id: {upload_id}")
             return {
                 "success": True,
-                "message": "File deleted successfully",
+                "message": "Upload deleted successfully",
                 "upload_id": upload_id
             }
         else:
-            logger.warning(f"Upload not found for deletion: {upload_id}")
             raise HTTPException(status_code=404, detail="Upload not found")
             
     except Exception as e:
-        logger.error(f"Failed to delete upload_id: {upload_id}: {str(e)}", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Failed to delete file: {str(e)}")
-
+        logger.error(f"Delete failed: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/upload/{upload_id}", response_model=FileInfo)
 async def get_upload_info(upload_id: str):
-    """Get information about an uploaded file"""
-    logger.info(f"Upload info request for upload_id: {upload_id}")
+    """Get upload information"""
+    logger.info(f"Info request for upload_id: {upload_id}")
     
-    upload_info = file_manager.get_upload_info(upload_id)
+    upload_info = supabase_manager.get_upload_info(upload_id)
     if not upload_info:
-        logger.warning(f"Upload info not found for upload_id: {upload_id}")
         raise HTTPException(status_code=404, detail="Upload not found")
     
-    logger.info(f"Upload info retrieved successfully for upload_id: {upload_id}")
-    return FileInfo(**upload_info)
+    return FileInfo(
+        upload_id=upload_info['upload_id'],
+        filename=upload_info['filename'],
+        uploaded_at=upload_info['uploaded_at'],
+        status=upload_info['status'],
+        file_size=upload_info.get('total_rows', 0) * 1000,  # Estimate
+        schema_available=True
+    )
 
 @app.get("/api/health")
 async def health_check():
-    """Health check endpoint"""
-    logger.info("Health check requested")
+    """Health check"""
     return {
         "status": "healthy",
         "timestamp": datetime.now().isoformat(),
-        "services": {
-            "schema_detector": "ready",
-            "file_manager": "ready",
-            "ai_agents": "ready"
-        }
+        "version": "2.0.0",
+        "database": "supabase"
     }
 
 if __name__ == "__main__":
-    logger.info("Starting uvicorn server")
-    uvicorn.run(
-        "main:app", 
-        host="0.0.0.0", 
-        port=8000, 
-        reload=settings.debug
-    )
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=settings.debug)

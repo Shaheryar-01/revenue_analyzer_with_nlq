@@ -4,428 +4,176 @@ import json
 from config.settings import get_settings
 from typing import Dict, Any, List
 from datetime import datetime
-import os
 import logging
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
-
-# Clear proxy environment variables
-proxy_vars = ['HTTP_PROXY', 'HTTPS_PROXY', 'http_proxy', 'https_proxy', 'ALL_PROXY', 'all_proxy']
-for var in proxy_vars:
-    if var in os.environ:
-        logger.info(f"Removing proxy environment variable: {var}")
-        del os.environ[var]
 
 settings = get_settings()
-logger.info("Conversation Agent initializing...")
 
 class ConversationAgent:
-    """AI agent for natural conversation and CEO-level insights generation"""
+    """AI agent for natural conversation with SQL-based backend"""
     
     def __init__(self):
         try:
             self.client = OpenAI(api_key=settings.openai_api_key)
-            self.conversation_history = {}  # Store by upload_id
-            logger.info("Conversation Agent initialized successfully")
+            self.conversation_history = {}
+            logger.info("Conversation Agent initialized (SQL mode)")
         except Exception as e:
             logger.error(f"Failed to initialize Conversation Agent: {str(e)}")
             raise
-
-    # -------------------
-    # Intent determination - FIXED VERSION
-    # -------------------
-    def determine_intent(self, upload_id: str, user_message: str, schema: Dict[str, Any]) -> Dict[str, Any]:
-        """Determine if user needs new analysis or just conversation - and resolve contextual references"""
-        logger.info(f"Determining intent for upload_id: {upload_id}, message: {user_message}")
+    
+    def determine_intent_sql(self, upload_id: str, user_message: str) -> Dict[str, Any]:
+        """
+        Determine if user needs analysis or conversation (SQL-based)
+        """
+        logger.info(f"Determining intent for: {user_message}")
         
         try:
             history = self.get_conversation_history(upload_id)
             
-            # Get available columns AND sample values for context
-            if schema.get('sheet_count', 1) > 1:
-                available_columns = schema.get('all_columns', [])
-                sheet_info = f"Multi-sheet data with sheets: {schema.get('sheet_names', [])}"
-                # For multi-sheet, get from first sheet
-                first_sheet = list(schema.get('sheets', {}).values())[0]
-                columns_info = first_sheet.get('columns', {})
-            else:
-                available_columns = schema.get('basic_info', {}).get('column_names', [])
-                sheet_info = f"Single sheet with {len(available_columns)} columns"
-                columns_info = schema.get('columns', {})
-            
-            # ✅ SHOW ALL COLUMNS - with smart grouping for patterns
-            column_patterns = schema.get('column_patterns', {})
-            sequential_groups = column_patterns.get('sequential_groups', [])
-            group_base_names = [g['base_name'] for g in sequential_groups]
-
-            column_details = []
-            grouped_columns = set()
-
-            # First, show sequential groups as summaries
-            for group in sequential_groups:
-                base = group['base_name']
-                count = group['count']
-                meaning = group['likely_meaning']
-                first_col = group['first_column']
-                last_col = group['last_column']
-                
-                # Mark these columns as grouped
-                for col in group['columns']:
-                    grouped_columns.add(col)
-                
-                # Show summary instead of listing all
-                column_details.append(
-                    f"- **{base} (Sequential Group)**: {count} columns from '{first_col}' to '{last_col}' ({meaning})"
-                )
-
-            # Then show non-grouped columns individually
-            for col in available_columns:
-                if col in grouped_columns:
-                    continue  # Skip, already shown in group
-                
-                col_info = columns_info.get(col, {})
-                sample_values = col_info.get('sample_values', [])
-                
-                if sample_values:
-                    # Key columns get more samples
-                    if col.lower() in ['unit', 'product', 'region', 'category', 'customer', 'country']:
-                        samples_str = ', '.join([str(v)[:40] for v in sample_values[:25]])  # ✅ 25 samples
-                    else:
-                        samples_str = ', '.join([str(v)[:40] for v in sample_values[:15]])  # ✅ 15 samples
-                    column_details.append(f"- {col}: {samples_str}")
-                else:
-                    column_details.append(f"- {col}")
-
-            column_context = "\n".join(column_details)
-            
-            # DEBUG: Log what we're sending to the AI
-            logger.info("=" * 80)
-            logger.info("COLUMN CONTEXT BEING SENT TO INTENT DETERMINATION:")
-            logger.info(column_context)
-            logger.info("=" * 80)
-            
-            # Build context from recent exchanges
+            # Build context
             context_str = ""
-            if history and len(history) > 0:
-                recent = history[-2:] if len(history) >= 2 else history
+            if history:
+                recent = history[-2:]
                 context_parts = []
                 for exchange in recent:
                     user_q = exchange.get('user_message', '')
-                    assistant_a = exchange.get('assistant_response', '')[:300]
+                    assistant_a = exchange.get('assistant_response', '')[:200]
                     context_parts.append(f"Q: {user_q}\nA: {assistant_a}")
                 context_str = "\n\n".join(context_parts)
             
-            # ✅ ADD PATTERN CONTEXT
-            pattern_context = ""
-            column_patterns = schema.get('column_patterns', {})
-            if column_patterns.get('has_patterns'):
-                pattern_context = f"""
-    🔍 **IMPORTANT: DETECTED PATTERNS IN THIS FILE**
-
-    {column_patterns.get('summary', '')}
-
-    **QUERY TRANSLATION RULES:**
-    """
-                
-                for group in column_patterns.get('sequential_groups', []):
-                    if group['count'] == 12:
-                        pattern_context += f"""
-    - For {group['base_name']} columns (12 months detected):
-    * "January" / "Month 1" / "first month" → {group['columns'][0]}
-    * "February" / "Month 2" → {group['columns'][1] if len(group['columns']) > 1 else 'N/A'}
-    * "March" / "Month 3" → {group['columns'][2] if len(group['columns']) > 2 else 'N/A'}
-    * "April" / "Month 4" → {group['columns'][3] if len(group['columns']) > 3 else 'N/A'}
-    * ... up to "December" / "Month 12" → {group['columns'][-1]}
-    * "Q1" / "first quarter" → Sum columns: {', '.join(group['columns'][:3])}
-    * "Q2" / "second quarter" → Sum columns: {', '.join(group['columns'][3:6])}
-    * "Q3" / "third quarter" → Sum columns: {', '.join(group['columns'][6:9])}
-    * "Q4" / "fourth quarter" → Sum columns: {', '.join(group['columns'][9:12])}
-    * "first half" / "H1" → Sum columns: {', '.join(group['columns'][:6])}
-    * "second half" / "H2" → Sum columns: {', '.join(group['columns'][6:12])}
-    * "full year" / "annual" → Sum ALL {group['count']} columns: {', '.join(group['columns'])}
-    """
-                    elif group['count'] == 4:
-                        pattern_context += f"""
-    - For {group['base_name']} columns (quarterly):
-    * "Q1" / "first quarter" → {group['columns'][0]}
-    * "Q2" / "second quarter" → {group['columns'][1]}
-    * "Q3" / "third quarter" → {group['columns'][2]}
-    * "Q4" / "fourth quarter" → {group['columns'][3]}
-    * "full year" / "annual" → Sum ALL 4 columns: {', '.join(group['columns'])}
-    """
-                
-                explicit_periods = column_patterns.get('explicit_periods', {})
-                if explicit_periods:
-                    pattern_context += f"\n**EXPLICIT PERIOD COLUMNS FOUND:**\n"
-                    for period_type, cols in explicit_periods.items():
-                        pattern_context += f"- {period_type.title()}: {', '.join(cols[:10])}\n"
-                
-                pattern_context += """
-
-    **CRITICAL:** Queries mentioning months, quarters, or time periods are IN SCOPE. 
-    Translate them using the patterns above.
-    """
-            
-            # ✅ ADD FILENAME/YEAR CONTEXT
-            filename_context = ""
-            inferred_year = column_patterns.get('inferred_year')
-            if inferred_year:
-                filename_context = f"""
-
-    📅 **CRITICAL FILE CONTEXT:**
-    This file contains data for year **{inferred_year}** (detected from filename).
-
-    **IMPORTANT RULES:**
-    - When user asks about "{inferred_year}" data, they mean ALL the data in this file
-    - Example: "total {inferred_year} projected revenue" = sum ALL Projected columns (all 12 months)
-    - Example: "what's our {inferred_year} budget" = sum ALL Budget columns (all 12 months)
-    - Example: "{inferred_year} Q1 revenue" = sum first 3 Actual columns
-    - Example: "{inferred_year} performance" = analyze all columns in the file
-    - The file IS the {inferred_year} dataset - don't mark these queries as OUT_OF_SCOPE
-
-    All columns in this file represent {inferred_year} data unless explicitly stated otherwise.
-    """
-            
             prompt = f"""
-    You are analyzing a user's message in a data analysis context.
+You are analyzing a user's message in a revenue tracking context.
 
-    {filename_context}
+DATABASE SCHEMA:
+- unit: Business units (AMS, ME Support, Sales Force, BSD)
+- product: Product names
+- region: Geographic regions (ME, AFR, PK)
+- country: Country names
+- customer: Customer names
+- category: Project categories (Funnel, New Sales, WIH)
+- month: Month codes (JAN, FEB, MAR, etc.)
+- budget, projected, actual: Revenue metrics
+- Summary fields: ytd_actual, total, wih_2024, etc.
 
-    {pattern_context}
+RECENT CONVERSATION:
+{context_str if context_str else "No previous conversation"}
 
-    DATASET INFO: {sheet_info}
+USER MESSAGE: "{user_message}"
 
-    CRITICAL: Here are the ACTUAL columns and their sample values from the dataset:
+TASK:
+1. Is this IN SCOPE or OUT OF SCOPE?
+   - IN SCOPE: Questions about revenue, budget, customers, regions, etc.
+   - OUT OF SCOPE: General knowledge, unrelated topics
+   
+2. If IN SCOPE, determine:
+   - NEEDS_ANALYSIS: Requires data query (aggregations, comparisons, rankings)
+   - CONVERSATIONAL: Asks about capabilities, clarifications, explanations
 
-    {column_context}
+3. Resolve contextual references:
+   - Replace "this", "that", "these" with actual entities from context
 
-    IMPORTANT COLUMN MAPPING RULES:
-    1. "Unit" column contains: Business units/departments like "ME Support", "AMS", "Sales Force", etc.
-    2. "Product" column contains: Product names and services
-    3. "Region" column contains: Geographic regions (ME, AFR, PK)
-    4. "Category" column contains: Project categories (Funnel, New Sales, WIH)
-    5. Budget columns contain: Numeric budget values
+Return ONLY valid JSON:
+{{
+    "intent": "NEEDS_ANALYSIS" | "CONVERSATIONAL" | "OUT_OF_SCOPE",
+    "analysis_query": "resolved query" or null,
+    "reason": "explanation if OUT_OF_SCOPE"
+}}
 
-    When user asks about "ME Support" or any business unit, they are referring to the **Unit** column, NOT Category.
+EXAMPLES:
 
-    RECENT CONVERSATION:
-    {context_str if context_str else "No previous conversation"}
+Input: "What's the total actual revenue for AMS?"
+Output: {{"intent": "NEEDS_ANALYSIS", "analysis_query": "total actual revenue for AMS unit"}}
 
-    NEW USER MESSAGE: "{user_message}"
+Input: "Which customers are in the ME region?"
+Output: {{"intent": "NEEDS_ANALYSIS", "analysis_query": "list customers in ME region"}}
 
-    CRITICAL SCOPE RULES:
-    1. Check if the query mentions VALUES that appear in the sample data above
-    2. Check if the query mentions COLUMN NAMES that exist in the list
-    3. If query mentions values/entities in the sample data OR column names, it's IN SCOPE
-    4. General knowledge questions (e.g., "who is donald trump", "what is python") are OUT OF SCOPE
-    5. Questions about data/columns NOT in the available list are OUT OF SCOPE
+Input: "What columns are available?"
+Output: {{"intent": "CONVERSATIONAL", "analysis_query": null}}
 
-    YOUR TASKS:
-    1. First check: Is this query IN SCOPE or OUT OF SCOPE?
-    - IN SCOPE: Mentions columns or values visible in the sample data
-    - OUT OF SCOPE: Requires data not present OR general knowledge
-
-    2. If IN SCOPE, determine intent:
-    - NEEDS_ANALYSIS: Requires data calculations/aggregations
-    - CONVERSATIONAL: Asks about dataset structure, explanations, clarifications
-
-    3. Replace contextual references with actual values from recent conversation:
-    - "this", "that", "these" → Replace with actual names from conversation
-
-    4. IDENTIFY THE CORRECT COLUMN:
-    - If user mentions a business unit name (like "ME Support", "AMS", "Sales Force"), the query should filter by **Unit** column
-    - If user mentions a region (ME, AFR, PK), filter by **Region** column
-    - If user mentions a project category (Funnel, WIH, New Sales), filter by **Category** column
-
-    EXAMPLES OF CORRECT COLUMN IDENTIFICATION:
-
-    Example 1:
-    User: "budget for ME Support"
-    → "ME Support" is in Unit column samples
-    → {{"intent": "NEEDS_ANALYSIS", "analysis_query": "total budget where Unit is ME Support"}}
-
-    Example 2:
-    User: "budget for ME region"
-    → "ME" is in Region column samples
-    → {{"intent": "NEEDS_ANALYSIS", "analysis_query": "total budget where Region is ME"}}
-
-    Example 3:
-    User: "budget for AMS"
-    → "AMS" is in Unit column samples
-    → {{"intent": "NEEDS_ANALYSIS", "analysis_query": "total budget where Unit is AMS"}}
-
-    Example 4:
-    User: "budget for New Sales"
-    → "New Sales" is in Category column samples
-    → {{"intent": "NEEDS_ANALYSIS", "analysis_query": "total budget where Category is New Sales"}}
-
-    Example 5:
-    User: "What's the total projected revenue for 2025?"
-    → File is for 2025, has Projected columns
-    → {{"intent": "NEEDS_ANALYSIS", "analysis_query": "sum all Projected columns (12 months of 2025 data)"}}
-
-    Return ONLY valid JSON:
-    {{"intent": "NEEDS_ANALYSIS" | "CONVERSATIONAL" | "OUT_OF_SCOPE", "analysis_query": "resolved query with correct column", "reason": "if OUT_OF_SCOPE"}}
-    """
+Input: "Who is Donald Trump?"
+Output: {{"intent": "OUT_OF_SCOPE", "reason": "Question is not related to revenue data"}}
+"""
             
             response = self.client.chat.completions.create(
                 model="gpt-4o",
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.1,
-                max_tokens=500
+                max_tokens=300
             )
             
             raw_response = response.choices[0].message.content
-            logger.info(f"Intent determination raw response: {raw_response[:300]}")
             
-            try:
-                if "```json" in raw_response:
-                    raw_response = raw_response.split("```json")[1].split("```")[0]
-                elif "```" in raw_response:
-                    raw_response = raw_response.split("```")[1].split("```")[0]
-                
-                intent_result = json.loads(raw_response.strip())
-                
-                logger.info(f"Resolved intent: {intent_result['intent']}")
-                logger.info(f"Resolved query: {intent_result.get('analysis_query', 'N/A')}")
-                
-                return intent_result
-            except json.JSONDecodeError as e:
-                logger.error(f"Failed to parse intent JSON: {str(e)}")
-                # Default to analysis if parsing fails
-                return {"intent": "NEEDS_ANALYSIS", "analysis_query": user_message}
-                
+            # Parse JSON
+            if "```json" in raw_response:
+                raw_response = raw_response.split("```json")[1].split("```")[0]
+            elif "```" in raw_response:
+                raw_response = raw_response.split("```")[1].split("```")[0]
+            
+            intent_result = json.loads(raw_response.strip())
+            logger.info(f"Intent determined: {intent_result['intent']}")
+            
+            return intent_result
+            
         except Exception as e:
-            logger.error(f"Failed to determine intent for upload_id: {upload_id}: {str(e)}", exc_info=True)
+            logger.error(f"Intent determination failed: {str(e)}", exc_info=True)
             return {"intent": "NEEDS_ANALYSIS", "analysis_query": user_message}
-            
-
-
-    # -------------------
-    # Generate insights - FIXED TO PREVENT HALLUCINATION
-    # -------------------
-    # Replace the generate_insights_response method in conversation_agent.py
-
-    def generate_insights_response(self, upload_id: str, user_message: str, 
-                            translated_results: Any, schema: Dict[str, Any]) -> str:
-        """Generate natural language insights from analysis results"""
-        logger.info(f"Generating insights response for upload_id: {upload_id}")
-        logger.info(f"Translated results type: {type(translated_results)}, value: {translated_results}")
+    
+    def generate_insights_from_sql(self, upload_id: str, user_message: str, 
+                                   sql_result: Any) -> str:
+        """
+        Generate natural language insights from SQL results
+        """
+        logger.info(f"Generating insights from SQL result")
+        logger.info(f"Result type: {type(sql_result)}, value: {sql_result}")
         
         try:
-            # ============================================================
-            # HANDLE TRANSLATED PERIOD RESULTS (from "which month" queries)
-            # ============================================================
-            if isinstance(translated_results, dict) and 'period' in translated_results:
-                period = translated_results['period']
-                value = translated_results['value']
-                
-                # Determine the metric from the query
-                metric = "revenue"
-                if 'budget' in user_message.lower():
-                    metric = "budget"
-                elif 'projected' in user_message.lower():
-                    metric = "projected revenue"
-                elif 'actual' in user_message.lower() or 'revenue' in user_message.lower():
-                    metric = "actual revenue"
-                
-                return f"The highest {metric} was in **{period}** with **${value:,.2f}**"
-            
-            # ============================================================
-            # HANDLE EMPTY RESULTS
-            # ============================================================
-            if translated_results is None or (isinstance(translated_results, (list, dict)) and len(translated_results) == 0):
+            # Handle empty results
+            if sql_result is None or (isinstance(sql_result, (list, dict)) and len(sql_result) == 0):
                 return "No data found matching your query."
             
-            # ============================================================
-            # HANDLE SIMPLE NUMERIC RESULTS
-            # ============================================================
-            if isinstance(translated_results, (int, float)) and not isinstance(translated_results, bool):
-                # Format based on context
-                if 'how many' in user_message.lower() or 'count' in user_message.lower():
-                    return f"Found **{int(translated_results)}** entries."
+            # Handle simple numeric results
+            if isinstance(sql_result, (int, float)) and not isinstance(sql_result, bool):
+                if 'count' in user_message.lower() or 'how many' in user_message.lower():
+                    return f"Found **{int(sql_result)}** entries."
                 else:
-                    return f"The result is **${translated_results:,.2f}**"
+                    return f"The result is **${sql_result:,.2f}**"
             
-            # ============================================================
-            # HANDLE STRING RESULTS (e.g., single customer name)
-            # ============================================================
-            if isinstance(translated_results, str):
-                # Check if it looks like a formatted answer already
-                if ':' in translated_results and '$' in translated_results:
-                    return translated_results  # Already formatted
-                else:
-                    return f"**{translated_results}**"
+            # Handle string results
+            if isinstance(sql_result, str):
+                return f"**{sql_result}**"
             
-            # ============================================================
-            # HANDLE COMPLEX RESULTS (lists, dicts) - Use AI
-            # ============================================================
-            # Convert results to string representation
-            if isinstance(translated_results, (list, dict)):
-                results_str = str(translated_results)
-            else:
-                results_str = str(translated_results)
-            
-            # Build context about the query type
-            query_context = ""
-            if 'which' in user_message.lower() and ('highest' in user_message.lower() or 'most' in user_message.lower()):
-                query_context = "This is a 'find maximum' query. Highlight the top result clearly."
-            elif 'rank' in user_message.lower() or 'top' in user_message.lower():
-                query_context = "This is a ranking query. Present as a ranked list."
-            elif 'compare' in user_message.lower():
-                query_context = "This is a comparison query. Show differences clearly."
+            # Handle complex results - use AI
+            results_str = str(sql_result)
             
             prompt = f"""
-    The user asked: "{user_message}"
+The user asked: "{user_message}"
 
-    The analysis returned these results:
-    {results_str}
+The SQL query returned: {results_str}
 
-    {query_context}
+Generate a clear, concise response in natural language.
 
-    Generate a clear, concise response in natural language.
+FORMATTING RULES:
+1. Use bold (**text**) for numbers, names, and key terms
+2. Format currency with $ and commas (e.g., **$12,345.67**)
+3. Use bullet points for lists of 3+ items
+4. Keep responses business-friendly and concise
+5. If showing multiple items, format as: **Name: $value**
 
-    CRITICAL FORMATTING RULES:
-    1. **Use bold (**text**) for key numbers, names, and important terms**
-    2. Use bullet points (- ) for lists of 3+ items
-    3. **Always format currency with $ and commas** (e.g., **$12,345.67**)
-    4. **If results contain technical column names (like "Actual.6", "Budget.1"), DO NOT show them to user**
-    5. If results are empty, "No data found", or null, say so clearly and suggest alternatives
-    6. Keep responses concise and business-friendly
-    7. If showing multiple entities with values, format as: **EntityName: $value**
-    8. For "which X has highest Y" queries, emphasize the winner prominently
-    9. Round currency to 2 decimal places maximum
-    10. If the result is a list or array, format it as a proper list with entities/values
+EXAMPLES:
 
-    EXAMPLES OF GOOD RESPONSES:
+Query: "Which customer has highest revenue?"
+Result: {{"customer": "ADIB Bank", "total_revenue": 45230.50}}
+Response: "**ADIB Bank** has the highest revenue with **$45,230.50**"
 
-    Query: "Which customer generated most revenue?"
-    Result: {{"ADIB Bank": 45230.50, "NCR Pakistan": 12000.0}}
-    Good Response: "**ADIB Bank** generated the most revenue with **$45,230.50**, followed by NCR Pakistan with $12,000.00"
+Query: "Total revenue by region"
+Result: [{{"region": "ME", "total": 50000}}, {{"region": "AFR", "total": 30000}}]
+Response: "Revenue by region:
+- **ME**: $50,000
+- **AFR**: $30,000"
 
-    Query: "Which customers exceeded their budget in January?"
-    Result: ['HBL', 'NCR Pakistan', 'ADIB Bank']
-    Good Response: "The following customers exceeded their budget in January:
-    - **HBL**
-    - **NCR Pakistan**
-    - **ADIB Bank**"
-
-    Query: "Top 5 customers by revenue"
-    Result: {{"ADIB": 50000, "NCR": 40000, "HBL": 30000, "MCB": 25000, "UBL": 20000}}
-    Good Response: "Top 5 customers by revenue:
-    - **ADIB**: $50,000
-    - **NCR**: $40,000
-    - **HBL**: $30,000
-    - **MCB**: $25,000
-    - **UBL**: $20,000"
-
-    Query: "Total revenue"
-    Result: 146007.09
-    Good Response: "The total revenue is **$146,007.09**"
-
-    Now generate the response:
-    """
+Now generate the response:
+"""
             
             response = self.client.chat.completions.create(
                 model="gpt-4o",
@@ -435,105 +183,58 @@ class ConversationAgent:
             )
             
             insights = response.choices[0].message.content
-            logger.info(f"Generated insights: {insights}")
+            
+            # Add to conversation history
+            self.add_to_history(upload_id, user_message, insights)
+            
             return insights
             
         except Exception as e:
-            logger.error(f"Failed to generate insights: {str(e)}", exc_info=True)
-            # Fallback: return raw results with basic formatting
-            try:
-                if isinstance(translated_results, (int, float)):
-                    return f"Result: **${translated_results:,.2f}**"
-                elif isinstance(translated_results, list):
-                    items = "\n- ".join([f"**{item}**" for item in translated_results])
-                    return f"Results:\n- {items}"
-                else:
-                    return f"I found results but couldn't format them properly. Here's what I got: {str(translated_results)[:300]}"
-            except:
-                return "I found results but encountered an error formatting them."
-            
-
-
-
-
-    def handle_conversational_response(
-        self, 
-        upload_id: str, 
-        user_message: str,
-        schema: Dict[str, Any],
-        last_analysis_results: Any = None
-    ) -> str:
-        """Handle purely conversational messages with proper formatting"""
-        logger.info(f"Handling conversational response for upload_id: {upload_id}")
+            logger.error(f"Insights generation failed: {str(e)}", exc_info=True)
+            return f"I found results but encountered an error formatting them: {str(sql_result)[:200]}"
+    
+    def handle_conversational_sql(self, upload_id: str, user_message: str) -> str:
+        """Handle conversational messages"""
+        logger.info(f"Handling conversational message")
         
         try:
             history = self.get_conversation_history(upload_id)
             
-            # Simplify schema but keep accuracy
-            is_multi_sheet = schema.get('sheet_count', 1) > 1
-            
-            if is_multi_sheet:
-                schema_context = {
-                    'sheet_count': schema.get('sheet_count'),
-                    'sheet_names': schema.get('sheet_names'),
-                    'sheets': {}
-                }
-                
-                for sheet_name, sheet_data in schema.get('sheets', {}).items():
-                    basic_info = sheet_data.get('basic_info', {})
-                    data_types = sheet_data.get('data_types', {})
-                    
-                    schema_context['sheets'][sheet_name] = {
-                        'row_count': basic_info.get('total_rows'),
-                        'columns': basic_info.get('column_names', []),
-                        'numerical_columns': data_types.get('numerical', []),
-                        'categorical_columns': data_types.get('categorical', [])
-                    }
-            else:
-                basic_info = schema.get('basic_info', {})
-                data_types = schema.get('data_types', {})
-                
-                schema_context = {
-                    'row_count': basic_info.get('total_rows'),
-                    'columns': basic_info.get('column_names', []),
-                    'numerical_columns': data_types.get('numerical', []),
-                    'categorical_columns': data_types.get('categorical', [])
-                }
-            
             prompt = f"""
-You are a business intelligence assistant providing information about the dataset structure.
+You are a helpful AI assistant for a revenue tracking system.
+
+The system has the following data:
+- Business units, products, regions, countries, customers
+- Monthly revenue data (budget, projected, actual)
+- 12 months of data for 2025
 
 CONVERSATION HISTORY: {history[-2:] if history else "None"}
 USER QUESTION: "{user_message}"
 
-DATA STRUCTURE:
-{json.dumps(schema_context, indent=2)}
+Provide a helpful, friendly response about the system's capabilities.
 
-RULES:
-1. Provide clear, factual information about the dataset
-2. Use natural language, not technical jargon
-3. Format numbers with commas
-4. Keep responses concise and business-focused
-5. DO NOT make up or assume any data
-
-Now respond to the user's question about their dataset:
+EXAMPLES:
+- "What can I ask?" → Explain types of queries (totals, comparisons, rankings)
+- "What data do you have?" → Describe the revenue tracking data structure
+- "How does this work?" → Explain the query process
 """
             
             response = self.client.chat.completions.create(
                 model="gpt-4o",
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.3,
-                max_tokens=800
+                max_tokens=300
             )
             
             conversational_response = response.choices[0].message.content
             self.add_to_history(upload_id, user_message, conversational_response)
+            
             return conversational_response
-        
+            
         except Exception as e:
-            logger.error(f"Failed to handle conversational response: {str(e)}", exc_info=True)
-            raise
-
+            logger.error(f"Conversational response failed: {str(e)}", exc_info=True)
+            return "I'm here to help you analyze your revenue data. What would you like to know?"
+    
     def get_conversation_history(self, upload_id: str) -> List[Dict]:
         """Get conversation history"""
         return self.conversation_history.get(upload_id, [])
