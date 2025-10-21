@@ -351,5 +351,28 @@ async def health_check():
         "database": "supabase"
     }
 
+@app.delete("/api/cleanup")
+async def cleanup_all_uploads():
+    """
+    Deletes all records from Supabase tables for a complete reset.
+    """
+    try:
+        logger.info("⚠️ Received full cleanup request — deleting all records from Supabase tables")
+
+        # ✅ Delete all rows from actual data tables
+        supabase_manager.supabase.table("revenue_tracker").delete().not_.is_("id", None).execute()
+        supabase_manager.supabase.table("upload_metadata").delete().gt("upload_id", 0).execute()
+
+        # ⚠️ Skip revenue_summary (it's a VIEW)
+        logger.info("ℹ️ Skipping 'revenue_summary' because it is a view and not directly deletable")
+
+        logger.info("✅ All real tables cleared successfully")
+        return {"success": True, "message": "All real tables cleared (revenue_summary is a view, skipped)"}
+
+    except Exception as e:
+        logger.error(f"❌ Failed to clear all tables: {e}", exc_info=True)
+        return {"success": False, "error": str(e)}
+
+
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=settings.debug)
