@@ -111,7 +111,12 @@ async def upload_file_webhook(file: UploadFile = File(...)):
         logger.info("=" * 80)
         logger.info("EXTRACTING ENTITY METADATA")
         logger.info("=" * 80)
-        
+
+        # Step 2: Save upload metadata (creates record)
+        total_rows = len(records) // 12
+        supabase_manager.save_upload_metadata(upload_id, file.filename, total_rows)
+
+        # Step 3: Extract entities
         entity_metadata = excel_transformer.extract_entity_metadata(records)
         
         logger.info(f" Entity extraction complete:")
@@ -120,12 +125,26 @@ async def upload_file_webhook(file: UploadFile = File(...)):
         logger.info(f"    {len(entity_metadata.get('customers', []))} customers")
         logger.info(f"    {len(entity_metadata.get('categories', []))} categories")
         
-        # 🆕 STEP: Save entity metadata to database
+
+
+        # --- AUTO NORMALIZATION PATCH ---
+        normalized_metadata = {}
+
+        for key, values in entity_metadata.items():
+            if isinstance(values, list):
+                normalized_metadata[key.lower()] = [str(v).strip().lower() for v in values if v]
+            else:
+                normalized_metadata[key.lower()] = str(values).strip().lower() if values else values
+
+        entity_metadata = normalized_metadata
+        logger.info(f"Normalized entity metadata keys and values: {entity_metadata}")
+        # --- END PATCH ---
+
+
+        
+        # Step 4: Update with entity metadata
         supabase_manager.save_entity_metadata(upload_id, entity_metadata)
         
-        # Save upload metadata
-        total_rows = len(records) // 12  # Divide by 12 months to get original row count
-        supabase_manager.save_upload_metadata(upload_id, file.filename, total_rows)
         
         # Clean up temp file
         os.remove(temp_path)

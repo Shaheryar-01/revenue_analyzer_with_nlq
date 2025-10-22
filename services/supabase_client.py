@@ -119,6 +119,18 @@ class SupabaseManager:
             logger.error(f" Failed to get entity metadata: {str(e)}", exc_info=True)
             return None
     
+
+
+    async def get_unique_values(self, column_name: str, upload_id: str) -> list[str]:
+        """
+        Fetch distinct values from a given column for the current upload.
+        Used for validating LLM-inferred filters like 'Funnel'.
+        """
+        query = f"SELECT DISTINCT {column_name} FROM revenue_tracker WHERE upload_id = '{upload_id}'"
+        result = await self.execute_raw_sql(query)
+        values = [r[column_name] for r in result if r.get(column_name)]
+        return [v.strip().lower() for v in values]
+
     def execute_raw_sql(self, sql: str) -> Dict[str, Any]:
         """
         Execute raw SQL query using Supabase RPC function.

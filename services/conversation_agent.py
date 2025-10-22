@@ -110,27 +110,46 @@ Return JSON:
         group_by = metadata.get('group_by', []) if metadata else []
         
         # Build filter description
+
         filter_desc = []
+
+        # Temporal filters
         if filters.get('year'):
             filter_desc.append(f"Year: {filters['year']}")
         if filters.get('month'):
             filter_desc.append(f"Month: {filters['month']}")
         if filters.get('months'):
             filter_desc.append(f"Months: {', '.join(filters['months'])}")
-        if filters.get('customer'):
-            filter_desc.append(f"Customer: {filters['customer']}")
-        if filters.get('region'):
-            filter_desc.append(f"Region: {filters['region']}")
+        if filters.get('quarter'):
+            filter_desc.append(f"Quarter: {filters['quarter']}")
+
+        # Organizational filters
         if filters.get('unit'):
             if isinstance(filters['unit'], list):
                 filter_desc.append(f"Units: {', '.join(filters['unit'])}")
             else:
                 filter_desc.append(f"Unit: {filters['unit']}")
-        if filters.get('quarter'):
-            filter_desc.append(f"Quarter: {filters['quarter']}")
+
         if filters.get('category'):
             filter_desc.append(f"Category: {filters['category']}")
-        
+
+        # Geographic filters
+        if filters.get('region'):
+            filter_desc.append(f"Region: {filters['region']}")
+
+        if filters.get('country'):
+            filter_desc.append(f"Country: {filters['country']}")
+
+        # Business entity filters
+        if filters.get('customer'):
+            filter_desc.append(f"Customer: {filters['customer']}")
+
+        if filters.get('product'):
+            filter_desc.append(f"Product: {filters['product']}")
+
+        if filters.get('project_code'):
+            filter_desc.append(f"Project: {filters['project_code']}")
+
         filter_summary = " | ".join(filter_desc) if filter_desc else "All data"
         
         system_prompt = f"""You are a financial analyst. Present SQL results clearly.

@@ -33,7 +33,15 @@ class ExcelTransformer:
             
             logger.info(f"Loaded sheet with shape: {df.shape}")
             logger.info(f"Columns: {list(df.columns)[:10]}")
-            
+
+            # 🧹 Fill null values with 0 to ensure clean data
+            null_count = df.isna().sum().sum()
+            if null_count > 0:
+                logger.info(f"Found {null_count} null values — filling with 0")
+                df = df.fillna(0)
+            else:
+                logger.info("No null values found")
+
             # Clean column names
             df.columns = df.columns.str.strip()
             
@@ -62,7 +70,10 @@ class ExcelTransformer:
         except Exception as e:
             logger.error(f"Failed to transform Excel: {str(e)}", exc_info=True)
             raise
-    
+
+
+
+
     def _filter_total_rows(self, df: pd.DataFrame) -> pd.DataFrame:
         """
         Filter out summary/total rows from dataframe.
@@ -225,16 +236,7 @@ class ExcelTransformer:
             }
     
     def extract_entity_metadata(self, records: List[Dict[str, Any]]) -> Dict[str, List[str]]:
-        """
-        Extract unique dimension values from records for entity recognition.
-        
-        Args:
-            records: List of database records
-            
-        Returns:
-            Dictionary with unique values for each dimension
-        """
-        logger.info("🔍 Extracting entity metadata from records...")
+        logger.info("Extracting entity metadata from records...")
         
         units = set()
         regions = set()
@@ -242,9 +244,9 @@ class ExcelTransformer:
         categories = set()
         products = set()
         countries = set()
+        project_codes = set()  # ✅ ADD THIS
         
         for record in records:
-            # Extract non-null values
             if record.get('unit'):
                 units.add(record['unit'])
             if record.get('region'):
@@ -257,6 +259,8 @@ class ExcelTransformer:
                 products.add(record['product'])
             if record.get('country'):
                 countries.add(record['country'])
+            if record.get('project_code'):  # ✅ ADD THIS
+                project_codes.add(record['project_code'])
         
         metadata = {
             'units': sorted(list(units)),
@@ -264,15 +268,17 @@ class ExcelTransformer:
             'customers': sorted(list(customers)),
             'categories': sorted(list(categories)),
             'products': sorted(list(products)),
-            'countries': sorted(list(countries))
+            'countries': sorted(list(countries)),
+            'project_codes': sorted(list(project_codes))  # ✅ ADD THIS
         }
         
-        logger.info(f" Extracted entity metadata:")
-        logger.info(f"    Units: {len(metadata['units'])} → {', '.join(metadata['units'][:10])}")
-        logger.info(f"    Regions: {len(metadata['regions'])} → {', '.join(metadata['regions'])}")
-        logger.info(f"    Customers: {len(metadata['customers'])} unique")
-        logger.info(f"    Categories: {len(metadata['categories'])} → {', '.join(metadata['categories'])}")
-        logger.info(f"    Products: {len(metadata['products'])} unique")
-        logger.info(f"   🗺️  Countries: {len(metadata['countries'])} → {', '.join(metadata['countries'])}")
+        logger.info(f"Extracted entity metadata:")
+        logger.info(f"   Units: {len(metadata['units'])}")
+        logger.info(f"   Regions: {len(metadata['regions'])}")
+        logger.info(f"   Customers: {len(metadata['customers'])} unique")
+        logger.info(f"   Categories: {len(metadata['categories'])}")
+        logger.info(f"   Products: {len(metadata['products'])} unique")
+        logger.info(f"   Countries: {len(metadata['countries'])}")
+        logger.info(f"   Project Codes: {len(metadata['project_codes'])} unique")  # ✅ ADD THIS
         
         return metadata

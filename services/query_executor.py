@@ -175,40 +175,43 @@ class QueryExecutor:
         return warnings
     
     def validate_result_quality(self, result, metadata, upload_id):
+        """Validate result quality with smart numeric detection"""
+        
+        # Case 1: No results
         if not result or len(result) == 0:
             return self._handle_empty_result(metadata, upload_id)
         
+        # Case 2: Single result - check for NULL or zero
         if len(result) == 1:
             first_result = result[0]
             
-            # ✅ Check if ANY numeric value exists
+            # ✅ Find ANY numeric value in the result
             revenue_value = None
-            
-            # Get all numeric values from result
             for key, value in first_result.items():
                 if isinstance(value, (int, float)) and value is not None:
                     revenue_value = value
-                    break  # Found a valid number!
+                    break
             
+            # Check for NULL
             if revenue_value is None:
-                # No numeric values at all
                 return {
                     'is_valid': True,
                     'has_warning': True,
                     'warning': 'Query matched records, but all revenue values are NULL or missing.'
                 }
             
+            # Check for zero
             if revenue_value == 0:
-                # Has value but it's zero
                 filters = metadata.get('filters_applied', {})
                 if filters:
                     return self._check_zero_result(filters, upload_id)
         
-        # ✅ Has valid numeric data
+        # Case 3: Valid data
         return {
             'is_valid': True,
             'has_warning': False
         }
+
 
 
 
