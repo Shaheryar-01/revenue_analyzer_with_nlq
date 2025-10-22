@@ -56,6 +56,10 @@ class QueryExecutor:
                 data = result.get('data', [])
                 row_count = len(data)
                 
+                # Log first result for debugging
+                if data:
+                    logger.info(f" First result: {data[0]}")
+                
                 # Post-execution validation
                 warnings = self._validate_results(data)
                 if warnings:
@@ -169,6 +173,162 @@ class QueryExecutor:
                     break
         
         return warnings
+    
+    def validate_result_quality(self, result: List[Dict], metadata: Dict[str, Any], upload_id: str) -> Dict[str, Any]:
+        """
+        Validate the quality of query results and provide helpful feedback.
+        
+        Args:
+            result: Query results
+            metadata: Query metadata with filters
+            upload_id: Upload identifier
+            
+        Returns:
+            Dictionary with validation status and suggestions
+        """
+        logger.info(" Validating result quality...")
+        
+        # Case 1: No results returned
+        if not result or len(result) == 0:
+            logger.warning("  Query returned 0 rows")
+            return self._handle_empty_result(metadata, upload_id)
+        
+        # Case 2: Single result with NULL or 0 value
+        if len(result) == 1:
+            first_result = result[0]
+            
+            # Check for NULL values
+            revenue_keys = ['revenue', 'total', 'total_projected', 'actual', 'projected', 'budget']
+            revenue_value = None
+            
+            for key in revenue_keys:
+                if key in first_result:
+                    revenue_value = first_result[key]
+                    break
+            
+            if revenue_value is None:
+                logger.warning("  Result contains NULL value")
+                return {
+                    'is_valid': True,
+                    'has_warning': True,
+                    'warning': 'Query matched records, but all revenue values are NULL or missing.'
+                }
+            
+            if revenue_value == 0:
+                logger.warning("  Result is $0")
+                # Check if data actually exists
+                filters = metadata.get('filters_applied', {})
+                if filters:
+                    return self._check_zero_result(filters, upload_id)
+        
+        # Case 3: Results look good
+        logger.info(" Result validation passed")
+        return {
+            'is_valid': True,
+            'has_warning': False
+        }
+    
+    def _handle_empty_result(self, metadata: Dict[str, Any], upload_id: str) -> Dict[str, Any]:
+        """Handle case where query returns no results"""
+        filters = metadata.get('filters_applied', {})
+        
+        if not filters:
+            return {
+                'is_valid': False,
+                'message': 'No data found. The database may be empty.'
+            }
+        
+        # Check each filter to see if it exists
+        suggestions = []
+        
+        # Get entity metadata to check against
+        entity_metadata = self.supabase.get_entity_metadata(upload_id)
+        
+        if entity_metadata:
+            # Check Unit
+            if 'region' in filters:
+                region_value = filters['region']
+                if region_value not in entity_metadata.get('regions', []):
+                    # Check if it's actually a unit
+                    if region_value in entity_metadata.get('units', []):
+                        suggestions.append(f"'{region_value}' is a Unit, not a Region. Try: 'revenue for {region_value}'")
+                    else:
+                        available = ', '.join(entity_metadata.get('regions', [])[:5])
+                        suggestions.append(f"Region '{region_value}' not found. Available regions: {available}")
+            
+            # Check Customer
+            if 'customer' in filters:
+                customer_value = filters['customer']
+                # Check if any customer contains this substring
+                matching_customers = [c for c in entity_metadata.get('customers', []) if customer_value.upper() in c.upper()]
+                if not matching_customers:
+                    available = ', '.join([c[:30] + '...' if len(c) > 30 else c for c in entity_metadata.get('customers', [])[:3]])
+                    suggestions.append(f"Customer '{customer_value}' not found. Available customers: {available}")
+                elif len(matching_customers) == 1:
+                    suggestions.append(f"Using customer: {matching_customers[0]}")
+            
+            # Check Product
+            if 'product' in filters:
+                product_values = filters['product'] if isinstance(filters['product'], list) else [filters['product']]
+                for product_value in product_values:
+                    # Check if it's actually a unit
+                    if product_value in entity_metadata.get('units', []):
+                        suggestions.append(f"'{product_value}' is a Unit, not a Product. Try: 'revenue by unit'")
+        
+        if suggestions:
+            message = "No data found matching your filters.\n\n" + "\n".join(f"• {s}" for s in suggestions)
+        else:
+            filter_desc = ', '.join([f"{k}: {v}" for k, v in filters.items()])
+            message = f"No data found for filters: {filter_desc}"
+        
+        return {
+            'is_valid': False,
+            'message': message
+        }
+    
+    def _check_zero_result(self, filters: Dict[str, Any], upload_id: str) -> Dict[str, Any]:
+        """Check if $0 result is because no data exists or values are truly zero"""
+        try:
+            # Build a count query with same filters
+            filter_conditions = []
+            for key, value in filters.items():
+                if key in ['region', 'unit', 'customer', 'category', 'product']:
+                    if isinstance(value, list):
+                        values_str = ','.join([f"'{v}'" for v in value])
+                        filter_conditions.append(f"{key} IN ({values_str})")
+                    else:
+                        filter_conditions.append(f"{key} = '{value}'")
+            
+            where_clause = ' AND '.join(filter_conditions)
+            count_sql = f"SELECT COUNT(*) as count FROM revenue_tracker WHERE upload_id = '{upload_id}'"
+            if where_clause:
+                count_sql += f" AND {where_clause}"
+            
+            count_result = self.supabase.execute_raw_sql(count_sql)
+            
+            if count_result.get('success') and count_result.get('data'):
+                count = count_result['data'][0].get('count', 0)
+                
+                if count > 0:
+                    filter_desc = ', '.join([f"{k}: {v}" for k, v in filters.items()])
+                    return {
+                        'is_valid': True,
+                        'has_warning': True,
+                        'warning': f'Found {count} records matching your filters ({filter_desc}), but total revenue is $0. All values may be zero or NULL.'
+                    }
+                else:
+                    return {
+                        'is_valid': False,
+                        'message': 'No records found matching your filters.'
+                    }
+        
+        except Exception as e:
+            logger.error(f"Error checking zero result: {str(e)}")
+        
+        return {
+            'is_valid': True,
+            'has_warning': False
+        }
     
     def test_query(self, sql: str, upload_id: str, limit: int = 5) -> Dict[str, Any]:
         """

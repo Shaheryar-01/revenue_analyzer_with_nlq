@@ -81,11 +81,27 @@ Return JSON:
                 'reason': f'Error: {str(e)}'
             }
     
-    def generate_insights_from_sql(self, upload_id: str, user_question: str, sql_results: list, metadata: dict = None) -> str:
+    def generate_insights_from_sql(self, upload_id: str, user_question: str, sql_results: list, metadata: dict = None, validation: dict = None) -> str:
+        
+        
+        warning_message = None
+        
         """Generate response using ONLY provided metadata - NO hallucinations"""
         
         logger.info("Generating insights from SQL results")
         logger.info(f"Metadata provided: {metadata}")
+        logger.info(f"Validation: {validation}")
+        
+        # Handle validation failures or warnings
+        if validation:
+            if not validation.get('is_valid', True):
+                # Validation failed - return helpful message
+                return validation.get('message', 'No data found matching your query.')
+            
+            if validation.get('has_warning', False):
+                # Has warning - we'll append it to the response
+                warning_message = validation.get('warning', '')
+        
         
         # Extract filter details
         filters = metadata.get('filters_applied', {}) if metadata else {}
@@ -105,8 +121,15 @@ Return JSON:
             filter_desc.append(f"Customer: {filters['customer']}")
         if filters.get('region'):
             filter_desc.append(f"Region: {filters['region']}")
+        if filters.get('unit'):
+            if isinstance(filters['unit'], list):
+                filter_desc.append(f"Units: {', '.join(filters['unit'])}")
+            else:
+                filter_desc.append(f"Unit: {filters['unit']}")
         if filters.get('quarter'):
             filter_desc.append(f"Quarter: {filters['quarter']}")
+        if filters.get('category'):
+            filter_desc.append(f"Category: {filters['category']}")
         
         filter_summary = " | ".join(filter_desc) if filter_desc else "All data"
         
@@ -117,6 +140,7 @@ Return JSON:
 2. State ALL filters that were applied
 3. If data is grouped by year, show breakdown by year
 4. Format numbers with currency and thousands separators
+5. If results are empty or zero, state this clearly
 
 ## PROVIDED METADATA:
 Metric: {metric}
@@ -155,6 +179,26 @@ If single value:
 • Filters: Year: 2025 | Quarter: Q1
 • Calculation: SUM of monthly projected values"
 
+If comparison (grouped by unit/region/customer):
+"**Revenue Comparison:**
+• AMS: $50,000
+• CRM: $45,000
+• BSD: $35,000
+
+**Details:**
+• Metric: Actual Revenue
+• Filters: All data
+• Breakdown: By unit
+• Calculation: SUM of actual values"
+
+If percentage result:
+"**Target Achievement: 87.5%**
+
+**Details:**
+• Calculation: (Actual / Budget) × 100
+• Filters: Year: 2025
+• Performance: Currently at 87.5% of annual target"
+
 ## NEVER:
 - Invent years (use only from results)
 - Assume filters (state only provided filters)
@@ -177,6 +221,10 @@ Format into transparent response."""}
             
             formatted_response = response.choices[0].message.content
             
+            # Append warning if present
+            if warning_message:
+                formatted_response += f"\n\n **Note:** {warning_message}"
+            
             # Store in history
             if upload_id not in self.conversation_history:
                 self.conversation_history[upload_id] = []
@@ -195,7 +243,10 @@ Format into transparent response."""}
         except Exception as e:
             logger.error(f"Error generating insights: {str(e)}")
             if sql_results:
-                return f"Results: {json.dumps(sql_results, indent=2)}\n\n(Based on {metric} revenue with filters: {filter_summary})"
+                base_response = f"Results: {json.dumps(sql_results, indent=2)}\n\n(Based on {metric} revenue with filters: {filter_summary})"
+                if warning_message:
+                    base_response += f"\n\n {warning_message}"
+                return base_response
             else:
                 return "No results found."
     
@@ -212,6 +263,11 @@ Respond naturally to:
 - Capability questions
 
 Keep responses brief. Remind users you analyze revenue data (actual/projected/budget).
+
+Example responses:
+- "Hello! I can help you analyze your revenue data. Try asking about actual revenue, budget performance, or customer comparisons."
+- "You're welcome! Feel free to ask any questions about your revenue data."
+- "I can answer questions about revenue metrics (actual, projected, budget), compare performance across units/regions/customers, identify trends, and much more. What would you like to know?"
 """
 
         try:

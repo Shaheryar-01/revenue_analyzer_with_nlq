@@ -29,13 +29,13 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 settings = get_settings()
-logger.info("Starting AI Revenue Analyzer with Supabase")
+logger.info("Starting AI Revenue Analyzer with Supabase v2.1 - Entity Recognition Enabled")
 
 # Initialize FastAPI
 app = FastAPI(
     title="AI Revenue Analyzer",
-    description="AI-powered data analysis with Supabase",
-    version="2.0.0"
+    description="AI-powered data analysis with Supabase and Entity Recognition",
+    version="2.1.0"
 )
 
 # CORS
@@ -66,7 +66,7 @@ os.makedirs(TEMP_DIR, exist_ok=True)
 
 @app.post("/webhook/upload", response_model=UploadResponse)
 async def upload_file_webhook(file: UploadFile = File(...)):
-    """Upload Excel file and save to Supabase database"""
+    """Upload Excel file and save to Supabase database with entity extraction"""
     logger.info(f"Upload request received: {file.filename}")
     
     try:
@@ -107,6 +107,22 @@ async def upload_file_webhook(file: UploadFile = File(...)):
             os.remove(temp_path)
             raise HTTPException(status_code=500, detail=insert_result['error'])
         
+        # 🆕 STEP: Extract entity metadata for intelligent querying
+        logger.info("=" * 80)
+        logger.info("EXTRACTING ENTITY METADATA")
+        logger.info("=" * 80)
+        
+        entity_metadata = excel_transformer.extract_entity_metadata(records)
+        
+        logger.info(f" Entity extraction complete:")
+        logger.info(f"    {len(entity_metadata.get('units', []))} business units")
+        logger.info(f"    {len(entity_metadata.get('regions', []))} regions")
+        logger.info(f"    {len(entity_metadata.get('customers', []))} customers")
+        logger.info(f"    {len(entity_metadata.get('categories', []))} categories")
+        
+        # 🆕 STEP: Save entity metadata to database
+        supabase_manager.save_entity_metadata(upload_id, entity_metadata)
+        
         # Save upload metadata
         total_rows = len(records) // 12  # Divide by 12 months to get original row count
         supabase_manager.save_upload_metadata(upload_id, file.filename, total_rows)
@@ -115,7 +131,7 @@ async def upload_file_webhook(file: UploadFile = File(...)):
         os.remove(temp_path)
         logger.info(f"Temp file removed: {temp_path}")
         
-        message = f"File uploaded successfully! Loaded {total_rows} projects with 12 months of data ({len(records)} total records) into database."
+        message = f"File uploaded successfully! Loaded {total_rows} projects with 12 months of data ({len(records)} total records) into database. Entity recognition enabled."
         
         return UploadResponse(
             success=True,
@@ -125,7 +141,13 @@ async def upload_file_webhook(file: UploadFile = File(...)):
                 'sheet_count': 1,
                 'sheet_names': ['Monthly Tracker'],
                 'total_rows': total_rows,
-                'total_records': len(records)
+                'total_records': len(records),
+                'entities_extracted': {
+                    'units': len(entity_metadata.get('units', [])),
+                    'regions': len(entity_metadata.get('regions', [])),
+                    'customers': len(entity_metadata.get('customers', [])),
+                    'categories': len(entity_metadata.get('categories', []))
+                }
             },
             ready_for_queries=True,
             message=message
@@ -151,7 +173,7 @@ async def upload_file_webhook(file: UploadFile = File(...)):
 
 @app.post("/webhook/chat/{upload_id}", response_model=ChatResponse)
 async def chat_webhook(upload_id: str, message: ChatMessage):
-    """Chat interface with SQL generation"""
+    """Chat interface with SQL generation and entity recognition"""
     logger.info(f"Chat request for upload_id: {upload_id}")
     logger.info(f"User message: {message.message}")
     
@@ -173,7 +195,7 @@ async def chat_webhook(upload_id: str, message: ChatMessage):
                     upload_id,
                     message.message
                 ),
-                timeout=30.0
+                timeout=90.0
             )
             logger.info(f"Intent: {intent_result['intent']}")
         except asyncio.TimeoutError:
@@ -198,13 +220,27 @@ async def chat_webhook(upload_id: str, message: ChatMessage):
         
         # STEP 3: Generate SQL for NEEDS_ANALYSIS
         if intent_result["intent"] == "NEEDS_ANALYSIS":
+            # 🆕 STEP 1.5: Fetch entity metadata for intelligent SQL generation
             logger.info("=" * 80)
-            logger.info("STEP 2: GENERATING SQL")
+            logger.info("STEP 1.5: FETCHING ENTITY METADATA")
             logger.info("=" * 80)
             
+            entity_metadata = supabase_manager.get_entity_metadata(upload_id)
+            
+            if entity_metadata:
+                logger.info(f" Entity metadata loaded: {len(entity_metadata.get('units', []))} units, {len(entity_metadata.get('regions', []))} regions")
+            else:
+                logger.warning("  No entity metadata found - proceeding without entity recognition")
+            
+            logger.info("=" * 80)
+            logger.info("STEP 2: GENERATING SQL WITH ENTITY AWARENESS")
+            logger.info("=" * 80)
+            
+            # 🆕 Pass entity_metadata to SQL generator
             sql_result = sql_generator.generate_sql(
                 intent_result["analysis_query"],
-                upload_id
+                upload_id,
+                entity_metadata=entity_metadata  # 🆕 NEW PARAMETER
             )
             
             if not sql_result.get('can_answer'):
@@ -236,21 +272,35 @@ async def chat_webhook(upload_id: str, message: ChatMessage):
                     error=execution_result['error']
                 )
             
+            # 🆕 STEP 3.5: Validate result quality
+            logger.info("=" * 80)
+            logger.info("STEP 3.5: VALIDATING RESULT QUALITY")
+            logger.info("=" * 80)
+            
+            validation = query_executor.validate_result_quality(
+                execution_result['result'],
+                sql_result.get('metadata', {}),
+                upload_id
+            )
+            
+            logger.info(f"Validation result: {validation}")
+            
             # STEP 5: Generate Natural Language Response
             logger.info("=" * 80)
             logger.info("STEP 4: GENERATING NATURAL LANGUAGE RESPONSE")
             logger.info("=" * 80)
             
-            # 🔥 UPDATED LINE - Pass metadata to prevent hallucinations
+            # 🆕 Pass validation to response generator
             insights = await asyncio.wait_for(
                 asyncio.to_thread(
                     conversation_agent.generate_insights_from_sql,
                     upload_id,
                     message.message,
                     execution_result['result'],
-                    sql_result.get('metadata', {})  # ← ADDED THIS PARAMETER
+                    sql_result.get('metadata', {}),
+                    validation=validation  # 🆕 NEW PARAMETER
                 ),
-                timeout=30.0
+                timeout=90.0
             )
             
             return ChatResponse(
@@ -274,7 +324,7 @@ async def chat_webhook(upload_id: str, message: ChatMessage):
                     upload_id,
                     message.message
                 ),
-                timeout=30.0
+                timeout=90.0
             )
             
             return ChatResponse(
@@ -347,8 +397,9 @@ async def health_check():
     return {
         "status": "healthy",
         "timestamp": datetime.now().isoformat(),
-        "version": "2.0.0",
-        "database": "supabase"
+        "version": "2.1.0",
+        "database": "supabase",
+        "features": ["entity_recognition", "result_validation", "yoy_queries"]
     }
 
 @app.delete("/api/cleanup")
@@ -357,20 +408,17 @@ async def cleanup_all_uploads():
     Deletes all records from Supabase tables for a complete reset.
     """
     try:
-        logger.info("⚠️ Received full cleanup request — deleting all records from Supabase tables")
+        logger.info(" Received full cleanup request – deleting all records from Supabase tables")
 
         # ✅ Delete all rows from actual data tables
         supabase_manager.supabase.table("revenue_tracker").delete().not_.is_("id", None).execute()
-        supabase_manager.supabase.table("upload_metadata").delete().gt("upload_id", 0).execute()
+        supabase_manager.supabase.table("upload_metadata").delete().gt("upload_id", "").execute()
 
-        # ⚠️ Skip revenue_summary (it's a VIEW)
-        logger.info("ℹ️ Skipping 'revenue_summary' because it is a view and not directly deletable")
-
-        logger.info("✅ All real tables cleared successfully")
-        return {"success": True, "message": "All real tables cleared (revenue_summary is a view, skipped)"}
+        logger.info(" All real tables cleared successfully")
+        return {"success": True, "message": "All tables cleared successfully"}
 
     except Exception as e:
-        logger.error(f"❌ Failed to clear all tables: {e}", exc_info=True)
+        logger.error(f" Failed to clear all tables: {e}", exc_info=True)
         return {"success": False, "error": str(e)}
 
 

@@ -1,4 +1,4 @@
-# app/services/supabase_client.py
+
 from supabase import create_client, Client
 from config.settings import get_settings
 import logging
@@ -63,18 +63,65 @@ class SupabaseManager:
             logger.error(f"Failed to save upload metadata: {str(e)}")
             return False
     
+    def save_entity_metadata(self, upload_id: str, entity_metadata: Dict[str, List[str]]) -> bool:
+        """
+        Save entity metadata to upload_metadata table.
+        
+        Args:
+            upload_id: Upload identifier
+            entity_metadata: Dictionary with dimension values
+            
+        Returns:
+            True if successful
+        """
+        try:
+            logger.info(f"💾 Saving entity metadata for upload_id: {upload_id}")
+            
+            self.supabase.table('upload_metadata').update({
+                'entity_metadata': entity_metadata
+            }).eq('upload_id', upload_id).execute()
+            
+            logger.info(" Entity metadata saved successfully")
+            return True
+            
+        except Exception as e:
+            logger.error(f" Failed to save entity metadata: {str(e)}", exc_info=True)
+            return False
+
+    def get_entity_metadata(self, upload_id: str) -> Optional[Dict[str, List[str]]]:
+        """
+        Retrieve entity metadata for an upload.
+        
+        Args:
+            upload_id: Upload identifier
+            
+        Returns:
+            Dictionary with dimension values or None
+        """
+        try:
+            response = self.supabase.table('upload_metadata').select(
+                'entity_metadata'
+            ).eq('upload_id', upload_id).execute()
+            
+            if response.data and len(response.data) > 0:
+                metadata = response.data[0].get('entity_metadata')
+                if metadata:
+                    logger.info(f" Retrieved entity metadata for {upload_id}")
+                    logger.info(f"   Units: {len(metadata.get('units', []))}, Regions: {len(metadata.get('regions', []))}, Customers: {len(metadata.get('customers', []))}")
+                    return metadata
+                else:
+                    logger.warning(f" No entity metadata found for {upload_id}")
+                    return None
+            
+            return None
+            
+        except Exception as e:
+            logger.error(f" Failed to get entity metadata: {str(e)}", exc_info=True)
+            return None
+    
     def execute_raw_sql(self, sql: str) -> Dict[str, Any]:
         """
         Execute raw SQL query using Supabase RPC function.
-        
-        Note: You need to create this RPC function in Supabase:
-        
-        CREATE OR REPLACE FUNCTION execute_custom_query(query_text TEXT)
-        RETURNS TABLE(result JSONB) AS $$
-        BEGIN
-            RETURN QUERY EXECUTE query_text;
-        END;
-        $$ LANGUAGE plpgsql SECURITY DEFINER;
         
         Args:
             sql: SQL query to execute

@@ -1,4 +1,4 @@
-# app/services/excel_transformer.py
+
 import pandas as pd
 import logging
 from typing import List, Dict, Any
@@ -47,7 +47,7 @@ class ExcelTransformer:
             
             logger.info(f"After basic filtering: {len(df)} rows")
             
-            # 🔥 NEW: Filter out TOTAL rows
+            # Filter out TOTAL rows
             df = self._filter_total_rows(df)
             
             logger.info(f"After filtering totals: {len(df)} data rows")
@@ -223,3 +223,56 @@ class ExcelTransformer:
                 'valid': False,
                 'message': f'Failed to validate file: {str(e)}'
             }
+    
+    def extract_entity_metadata(self, records: List[Dict[str, Any]]) -> Dict[str, List[str]]:
+        """
+        Extract unique dimension values from records for entity recognition.
+        
+        Args:
+            records: List of database records
+            
+        Returns:
+            Dictionary with unique values for each dimension
+        """
+        logger.info("🔍 Extracting entity metadata from records...")
+        
+        units = set()
+        regions = set()
+        customers = set()
+        categories = set()
+        products = set()
+        countries = set()
+        
+        for record in records:
+            # Extract non-null values
+            if record.get('unit'):
+                units.add(record['unit'])
+            if record.get('region'):
+                regions.add(record['region'])
+            if record.get('customer'):
+                customers.add(record['customer'])
+            if record.get('category'):
+                categories.add(record['category'])
+            if record.get('product'):
+                products.add(record['product'])
+            if record.get('country'):
+                countries.add(record['country'])
+        
+        metadata = {
+            'units': sorted(list(units)),
+            'regions': sorted(list(regions)),
+            'customers': sorted(list(customers)),
+            'categories': sorted(list(categories)),
+            'products': sorted(list(products)),
+            'countries': sorted(list(countries))
+        }
+        
+        logger.info(f" Extracted entity metadata:")
+        logger.info(f"    Units: {len(metadata['units'])} → {', '.join(metadata['units'][:10])}")
+        logger.info(f"    Regions: {len(metadata['regions'])} → {', '.join(metadata['regions'])}")
+        logger.info(f"    Customers: {len(metadata['customers'])} unique")
+        logger.info(f"    Categories: {len(metadata['categories'])} → {', '.join(metadata['categories'])}")
+        logger.info(f"    Products: {len(metadata['products'])} unique")
+        logger.info(f"   🗺️  Countries: {len(metadata['countries'])} → {', '.join(metadata['countries'])}")
+        
+        return metadata
