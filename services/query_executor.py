@@ -174,40 +174,24 @@ class QueryExecutor:
         
         return warnings
     
-    def validate_result_quality(self, result: List[Dict], metadata: Dict[str, Any], upload_id: str) -> Dict[str, Any]:
-        """
-        Validate the quality of query results and provide helpful feedback.
-        
-        Args:
-            result: Query results
-            metadata: Query metadata with filters
-            upload_id: Upload identifier
-            
-        Returns:
-            Dictionary with validation status and suggestions
-        """
-        logger.info(" Validating result quality...")
-        
-        # Case 1: No results returned
+    def validate_result_quality(self, result, metadata, upload_id):
         if not result or len(result) == 0:
-            logger.warning("  Query returned 0 rows")
             return self._handle_empty_result(metadata, upload_id)
         
-        # Case 2: Single result with NULL or 0 value
         if len(result) == 1:
             first_result = result[0]
             
-            # Check for NULL values
-            revenue_keys = ['revenue', 'total', 'total_projected', 'actual', 'projected', 'budget']
+            # ✅ Check if ANY numeric value exists
             revenue_value = None
             
-            for key in revenue_keys:
-                if key in first_result:
-                    revenue_value = first_result[key]
-                    break
+            # Get all numeric values from result
+            for key, value in first_result.items():
+                if isinstance(value, (int, float)) and value is not None:
+                    revenue_value = value
+                    break  # Found a valid number!
             
             if revenue_value is None:
-                logger.warning("  Result contains NULL value")
+                # No numeric values at all
                 return {
                     'is_valid': True,
                     'has_warning': True,
@@ -215,19 +199,19 @@ class QueryExecutor:
                 }
             
             if revenue_value == 0:
-                logger.warning("  Result is $0")
-                # Check if data actually exists
+                # Has value but it's zero
                 filters = metadata.get('filters_applied', {})
                 if filters:
                     return self._check_zero_result(filters, upload_id)
         
-        # Case 3: Results look good
-        logger.info(" Result validation passed")
+        # ✅ Has valid numeric data
         return {
             'is_valid': True,
             'has_warning': False
         }
-    
+
+
+
     def _handle_empty_result(self, metadata: Dict[str, Any], upload_id: str) -> Dict[str, Any]:
         """Handle case where query returns no results"""
         filters = metadata.get('filters_applied', {})
