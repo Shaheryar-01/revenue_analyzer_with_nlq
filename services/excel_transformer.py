@@ -1,4 +1,3 @@
-
 import pandas as pd
 import logging
 from typing import List, Dict, Any
@@ -37,7 +36,7 @@ class ExcelTransformer:
             # 🧹 Fill null values with 0 to ensure clean data
             null_count = df.isna().sum().sum()
             if null_count > 0:
-                logger.info(f"Found {null_count} null values — filling with 0")
+                logger.info(f"Found {null_count} null values – filling with 0")
                 df = df.fillna(0)
             else:
                 logger.info("No null values found")
@@ -176,7 +175,7 @@ class ExcelTransformer:
         return records
     
     def _clean_value(self, value) -> str:
-        """Clean string values"""
+        """Clean string values and normalize to lowercase for case-insensitive matching"""
         if pd.isna(value) or value is None:
             return None
         
@@ -186,7 +185,8 @@ class ExcelTransformer:
         if value_str == '=' or value_str == '':
             return None
         
-        return value_str
+        # ✅ Normalize to lowercase for consistent case-insensitive matching
+        return value_str.lower()
     
     def _clean_numeric(self, value) -> float:
         """Clean numeric values"""
@@ -236,6 +236,10 @@ class ExcelTransformer:
             }
     
     def extract_entity_metadata(self, records: List[Dict[str, Any]]) -> Dict[str, List[str]]:
+        """
+        Extract entity metadata from records.
+        NOTE: Values are already lowercase from _clean_value()
+        """
         logger.info("Extracting entity metadata from records...")
         
         units = set()
@@ -244,7 +248,7 @@ class ExcelTransformer:
         categories = set()
         products = set()
         countries = set()
-        project_codes = set()  # ✅ ADD THIS
+        project_codes = set()
         
         for record in records:
             if record.get('unit'):
@@ -259,7 +263,7 @@ class ExcelTransformer:
                 products.add(record['product'])
             if record.get('country'):
                 countries.add(record['country'])
-            if record.get('project_code'):  # ✅ ADD THIS
+            if record.get('project_code'):
                 project_codes.add(record['project_code'])
         
         metadata = {
@@ -269,7 +273,7 @@ class ExcelTransformer:
             'categories': sorted(list(categories)),
             'products': sorted(list(products)),
             'countries': sorted(list(countries)),
-            'project_codes': sorted(list(project_codes))  # ✅ ADD THIS
+            'project_codes': sorted(list(project_codes))
         }
         
         logger.info(f"Extracted entity metadata:")
@@ -279,6 +283,6 @@ class ExcelTransformer:
         logger.info(f"   Categories: {len(metadata['categories'])}")
         logger.info(f"   Products: {len(metadata['products'])} unique")
         logger.info(f"   Countries: {len(metadata['countries'])}")
-        logger.info(f"   Project Codes: {len(metadata['project_codes'])} unique")  # ✅ ADD THIS
+        logger.info(f"   Project Codes: {len(metadata['project_codes'])} unique")
         
         return metadata

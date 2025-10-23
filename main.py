@@ -17,25 +17,140 @@ from services.conversation_agent import ConversationAgent
 from models.schemas import UploadResponse, ChatMessage, ChatResponse, FileInfo
 from config.settings import get_settings
 
+
+
+def resolve_entity_from_metadata(entity_text: str, entity_metadata: dict) -> str:
+    """
+    Resolve the correct entity type (e.g., product, customer, region)
+    based on normalized metadata values.
+    Returns the entity type if found, else None.
+    """
+    if not entity_metadata or not entity_text:
+        return None
+
+    text = str(entity_text).strip().lower()
+
+    # Check all entity types in metadata
+    for entity_type, values in entity_metadata.items():
+        # ensure it's a list
+        if not isinstance(values, list):
+            continue
+        for v in values:
+            if str(v).strip().lower() == text:
+                return entity_type
+
+    return None
+
+
+def pre_resolve_entities(user_message: str, entity_metadata: dict) -> dict:
+    """
+    Deterministically resolve entities in user message against full metadata lists.
+    Uses SUBSTRING MATCHING to handle partial names like 'novus' or 'ambit'.
+    
+    Returns:
+        dict: {
+            'entity_value': {
+                'type': 'product',  # column name (singular)
+                'confidence': 'certain',
+                'alternatives': []  # if ambiguous
+            }
+        }
+    """
+    if not entity_metadata:
+        return {}
+    
+    resolved = {}
+    
+    # Extract potential entity words from message (lowercase, split by spaces)
+    words = user_message.lower().split()
+    
+    # Also check for multi-word entities (e.g., "novus product" or "adib bank")
+    # We'll check both individual words and pairs
+    potential_entities = words.copy()
+    for i in range(len(words) - 1):
+        potential_entities.append(f"{words[i]} {words[i+1]}")
+    
+    for entity_text in potential_entities:
+        entity_text = entity_text.strip()
+        
+        # Skip very short words (likely articles, prepositions)
+        if len(entity_text) < 2:
+            continue
+        
+        # Skip common question words
+        skip_words = ['what', 'total', 'show', 'get', 'for', 'the', 'and', 'or', 'by', 
+                     'actual', 'budget', 'projected', 'revenue', 'sales']
+        if entity_text in skip_words:
+            continue
+        
+        matches = []
+        matched_values = {}  # Store which actual values matched for logging
+        
+        # Check each entity type in metadata (check FULL lists with SUBSTRING matching)
+        for entity_type, values in entity_metadata.items():
+            if not isinstance(values, list):
+                continue
+            
+            # SUBSTRING MATCH - Check if entity_text appears anywhere in any value
+            matching_values = [v for v in values if entity_text in v]
+            
+            if matching_values:
+                matches.append(entity_type)
+                matched_values[entity_type] = matching_values
+        
+        if len(matches) == 1:
+            # UNAMBIGUOUS - found in exactly one entity type
+            entity_column = matches[0].rstrip('s')  # 'products' -> 'product'
+            resolved[entity_text] = {
+                'type': entity_column,
+                'confidence': 'certain',
+                'alternatives': [],
+                'matched_values': matched_values[matches[0]][:3]  # Store first 3 matches for logging
+            }
+            logger.info(f"[PRE-RESOLVED] '{entity_text}' -> {entity_column} (certain, matched {len(matched_values[matches[0]])} values)")
+            logger.info(f"   Sample matches: {matched_values[matches[0]][:3]}")
+            
+        elif len(matches) > 1:
+            # AMBIGUOUS - found in multiple entity types
+            # Use priority order: products > project_codes > categories > units > regions > countries > customers
+            priority_order = ['products', 'project_codes', 'categories', 'units', 
+                            'regions', 'countries', 'customers']
+            
+            for priority_type in priority_order:
+                if priority_type in matches:
+                    entity_column = priority_type.rstrip('s')
+                    resolved[entity_text] = {
+                        'type': entity_column,
+                        'confidence': 'preferred',
+                        'alternatives': [m.rstrip('s') for m in matches if m != priority_type],
+                        'matched_values': matched_values[priority_type][:3]
+                    }
+                    logger.info(f"[PRE-RESOLVED] '{entity_text}' -> {entity_column} (preferred from {matches})")
+                    logger.info(f"   Sample matches: {matched_values[priority_type][:3]}")
+                    break
+    
+    return resolved
+
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('app.log'),
+        logging.FileHandler('app.log', encoding='utf-8'),
         logging.StreamHandler(sys.stdout)
     ]
 )
 logger = logging.getLogger(__name__)
 
 settings = get_settings()
-logger.info("Starting AI Revenue Analyzer with Supabase v2.1 - Entity Recognition Enabled")
+logger.info("Starting AI Revenue Analyzer with Supabase v2.3 - Substring Matching + ILIKE for All Entities")
 
 # Initialize FastAPI
 app = FastAPI(
     title="AI Revenue Analyzer",
-    description="AI-powered data analysis with Supabase and Entity Recognition",
-    version="2.1.0"
+    description="AI-powered data analysis with Supabase and Universal ILIKE Matching",
+    version="2.3.0"
 )
 
 # CORS
@@ -55,9 +170,9 @@ try:
     query_executor = QueryExecutor()
     conversation_agent = ConversationAgent()
     
-    logger.info("All services initialized successfully")
+    logger.info("[OK] All services initialized successfully")
 except Exception as e:
-    logger.error(f"Failed to initialize services: {str(e)}")
+    logger.error(f"[ERROR] Failed to initialize services: {str(e)}")
     raise
 
 # Temporary directory for file uploads
@@ -67,7 +182,7 @@ os.makedirs(TEMP_DIR, exist_ok=True)
 @app.post("/webhook/upload", response_model=UploadResponse)
 async def upload_file_webhook(file: UploadFile = File(...)):
     """Upload Excel file and save to Supabase database with entity extraction"""
-    logger.info(f"Upload request received: {file.filename}")
+    logger.info(f"[UPLOAD] Request received: {file.filename}")
     
     try:
         # Validate file type
@@ -79,14 +194,14 @@ async def upload_file_webhook(file: UploadFile = File(...)):
         
         # Generate unique upload ID
         upload_id = str(uuid.uuid4())
-        logger.info(f"Generated upload_id: {upload_id}")
+        logger.info(f"[UPLOAD] Generated upload_id: {upload_id}")
         
         # Save file temporarily
         temp_path = os.path.join(TEMP_DIR, f"{upload_id}_{file.filename}")
         with open(temp_path, "wb") as f:
             content = await file.read()
             f.write(content)
-        logger.info(f"File saved temporarily: {temp_path}")
+        logger.info(f"[UPLOAD] File saved temporarily: {temp_path}")
         
         # Validate file structure
         validation = excel_transformer.validate_excel_structure(temp_path)
@@ -95,52 +210,41 @@ async def upload_file_webhook(file: UploadFile = File(...)):
             raise HTTPException(status_code=400, detail=validation['message'])
         
         # Transform Excel to database records
-        logger.info("Transforming Excel to database format...")
+        logger.info("[UPLOAD] Transforming Excel to database format...")
         records = excel_transformer.transform_excel_to_records(temp_path, upload_id)
-        logger.info(f"Generated {len(records)} database records")
+        logger.info(f"[UPLOAD] Generated {len(records)} database records")
         
         # Insert into Supabase
-        logger.info("Inserting data into Supabase...")
+        logger.info("[UPLOAD] Inserting data into Supabase...")
         insert_result = supabase_manager.insert_revenue_data(records)
         
         if not insert_result['success']:
             os.remove(temp_path)
             raise HTTPException(status_code=500, detail=insert_result['error'])
         
-        # 🆕 STEP: Extract entity metadata for intelligent querying
+        # STEP: Extract entity metadata for intelligent querying
         logger.info("=" * 80)
-        logger.info("EXTRACTING ENTITY METADATA")
+        logger.info("[METADATA] EXTRACTING ENTITY METADATA")
         logger.info("=" * 80)
 
         # Step 2: Save upload metadata (creates record)
         total_rows = len(records) // 12
         supabase_manager.save_upload_metadata(upload_id, file.filename, total_rows)
 
-        # Step 3: Extract entities
+        # Step 3: Extract entities (already lowercase from excel_transformer)
         entity_metadata = excel_transformer.extract_entity_metadata(records)
         
-        logger.info(f" Entity extraction complete:")
-        logger.info(f"    {len(entity_metadata.get('units', []))} business units")
-        logger.info(f"    {len(entity_metadata.get('regions', []))} regions")
-        logger.info(f"    {len(entity_metadata.get('customers', []))} customers")
-        logger.info(f"    {len(entity_metadata.get('categories', []))} categories")
+        logger.info(f"[METADATA] Entity extraction complete:")
+        logger.info(f"    Units: {len(entity_metadata.get('units', []))}")
+        logger.info(f"    Regions: {len(entity_metadata.get('regions', []))}")
+        logger.info(f"    Customers: {len(entity_metadata.get('customers', []))}")
+        logger.info(f"    Categories: {len(entity_metadata.get('categories', []))}")
+        logger.info(f"    Products: {len(entity_metadata.get('products', []))}")
         
 
-
-        # --- AUTO NORMALIZATION PATCH ---
-        normalized_metadata = {}
-
-        for key, values in entity_metadata.items():
-            if isinstance(values, list):
-                normalized_metadata[key.lower()] = [str(v).strip().lower() for v in values if v]
-            else:
-                normalized_metadata[key.lower()] = str(values).strip().lower() if values else values
-
-        entity_metadata = normalized_metadata
-        logger.info(f"Normalized entity metadata keys and values: {entity_metadata}")
-        # --- END PATCH ---
-
-
+        # NO NORMALIZATION NEEDED - Already lowercase from excel_transformer
+        logger.info(f"[METADATA] Entity metadata is already normalized (lowercase)")
+        
         
         # Step 4: Update with entity metadata
         supabase_manager.save_entity_metadata(upload_id, entity_metadata)
@@ -148,9 +252,9 @@ async def upload_file_webhook(file: UploadFile = File(...)):
         
         # Clean up temp file
         os.remove(temp_path)
-        logger.info(f"Temp file removed: {temp_path}")
+        logger.info(f"[UPLOAD] Temp file removed: {temp_path}")
         
-        message = f"File uploaded successfully! Loaded {total_rows} projects with 12 months of data ({len(records)} total records) into database. Entity recognition enabled."
+        message = f"File uploaded successfully! Loaded {total_rows} projects with 12 months of data ({len(records)} total records) into database. Entity recognition with substring matching enabled."
         
         return UploadResponse(
             success=True,
@@ -165,7 +269,8 @@ async def upload_file_webhook(file: UploadFile = File(...)):
                     'units': len(entity_metadata.get('units', [])),
                     'regions': len(entity_metadata.get('regions', [])),
                     'customers': len(entity_metadata.get('customers', [])),
-                    'categories': len(entity_metadata.get('categories', []))
+                    'categories': len(entity_metadata.get('categories', [])),
+                    'products': len(entity_metadata.get('products', []))
                 }
             },
             ready_for_queries=True,
@@ -175,7 +280,7 @@ async def upload_file_webhook(file: UploadFile = File(...)):
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Upload failed: {str(e)}", exc_info=True)
+        logger.error(f"[ERROR] Upload failed: {str(e)}", exc_info=True)
         # Clean up temp file if exists
         if 'temp_path' in locals() and os.path.exists(temp_path):
             os.remove(temp_path)
@@ -192,9 +297,9 @@ async def upload_file_webhook(file: UploadFile = File(...)):
 
 @app.post("/webhook/chat/{upload_id}", response_model=ChatResponse)
 async def chat_webhook(upload_id: str, message: ChatMessage):
-    """Chat interface with SQL generation and entity recognition"""
-    logger.info(f"Chat request for upload_id: {upload_id}")
-    logger.info(f"User message: {message.message}")
+    """Chat with uploaded data"""
+    logger.info(f"[CHAT] Request for upload_id: {upload_id}")
+    logger.info(f"[CHAT] User message: {message.message}")
     
     try:
         # Verify upload exists
@@ -204,34 +309,20 @@ async def chat_webhook(upload_id: str, message: ChatMessage):
         
         # STEP 1: Determine Intent
         logger.info("=" * 80)
-        logger.info("STEP 1: DETERMINING INTENT")
+        logger.info("[STEP 1] DETERMINING INTENT")
         logger.info("=" * 80)
         
-        try:
-            intent_result = await asyncio.wait_for(
-                asyncio.to_thread(
-                    conversation_agent.determine_intent_sql,
-                    upload_id,
-                    message.message
-                ),
-                timeout=90.0
-            )
-            logger.info(f"Intent: {intent_result['intent']}")
-        except asyncio.TimeoutError:
-            return ChatResponse(
-                success=False,
-                response="Request timed out. Please try a simpler question.",
-                analysis_performed=False,
-                upload_id=upload_id,
-                timestamp=datetime.now().isoformat(),
-                error="Timeout"
-            )
+        intent_result = conversation_agent.determine_intent_sql(
+            upload_id,
+            message.message
+        )
+        logger.info(f"[INTENT] {intent_result['intent']}")
         
         # STEP 2: Handle OUT_OF_SCOPE
         if intent_result["intent"] == "OUT_OF_SCOPE":
             return ChatResponse(
                 success=True,
-                response=f"I can only answer questions about your uploaded revenue data. {intent_result.get('reason', '')}",
+                response="I specialize in analyzing revenue data. I can help you with questions about actual revenue, projected revenue, budget, customer analysis, regional comparisons, and more. What would you like to know about your data?",
                 analysis_performed=False,
                 upload_id=upload_id,
                 timestamp=datetime.now().isoformat()
@@ -239,27 +330,54 @@ async def chat_webhook(upload_id: str, message: ChatMessage):
         
         # STEP 3: Generate SQL for NEEDS_ANALYSIS
         if intent_result["intent"] == "NEEDS_ANALYSIS":
-            # 🆕 STEP 1.5: Fetch entity metadata for intelligent SQL generation
+            # STEP 1.5: Fetch entity metadata for intelligent SQL generation
             logger.info("=" * 80)
-            logger.info("STEP 1.5: FETCHING ENTITY METADATA")
+            logger.info("[STEP 1.5] FETCHING ENTITY METADATA")
             logger.info("=" * 80)
             
             entity_metadata = supabase_manager.get_entity_metadata(upload_id)
             
             if entity_metadata:
-                logger.info(f" Entity metadata loaded: {len(entity_metadata.get('units', []))} units, {len(entity_metadata.get('regions', []))} regions")
+                logger.info(f"[METADATA] Loaded: {len(entity_metadata.get('units', []))} units, {len(entity_metadata.get('regions', []))} regions, {len(entity_metadata.get('products', []))} products")
             else:
-                logger.warning("  No entity metadata found - proceeding without entity recognition")
+                logger.warning("[METADATA] No entity metadata found - proceeding without entity recognition")
             
+
+            # NO NORMALIZATION NEEDED - Already lowercase from database
+            logger.info(f"[METADATA] Entity metadata already normalized from database")
+
+            # STEP 1.7: PRE-RESOLVE ENTITIES DETERMINISTICALLY WITH SUBSTRING MATCHING
             logger.info("=" * 80)
-            logger.info("STEP 2: GENERATING SQL WITH ENTITY AWARENESS")
+            logger.info("[STEP 1.7] PRE-RESOLVING ENTITIES (SUBSTRING MATCHING)")
             logger.info("=" * 80)
             
-            # 🆕 Pass entity_metadata to SQL generator
+            # DEBUG: Log input to pre-resolution
+            logger.info(f"[DEBUG] User message: '{message.message}'")
+            logger.info(f"[DEBUG] Message words: {message.message.lower().split()}")
+            
+            resolved_entities = pre_resolve_entities(message.message, entity_metadata)
+            
+            # DEBUG: Log pre-resolution results
+            logger.info(f"[DEBUG] Pre-resolution returned {len(resolved_entities)} entities")
+            if resolved_entities:
+                logger.info(f"[PRE-RESOLVE] Found {len(resolved_entities)} entities:")
+                for entity_value, resolution in resolved_entities.items():
+                    logger.info(f"   -> '{entity_value}' = {resolution['type']} ({resolution['confidence']})")
+                    if 'matched_values' in resolution:
+                        logger.info(f"      Matched: {resolution['matched_values']}")
+            else:
+                logger.info("[PRE-RESOLVE] No entities pre-resolved (query may use temporal/aggregate filters only)")
+
+            logger.info("=" * 80)
+            logger.info("[STEP 2] GENERATING SQL WITH ENTITY AWARENESS")
+            logger.info("=" * 80)
+            
+            # Pass entity_metadata AND resolved_entities to SQL generator
             sql_result = sql_generator.generate_sql(
                 intent_result["analysis_query"],
                 upload_id,
-                entity_metadata=entity_metadata  # 🆕 NEW PARAMETER
+                entity_metadata=entity_metadata,
+                resolved_entities=resolved_entities
             )
             
             if not sql_result.get('can_answer'):
@@ -273,7 +391,7 @@ async def chat_webhook(upload_id: str, message: ChatMessage):
             
             # STEP 4: Execute SQL
             logger.info("=" * 80)
-            logger.info("STEP 3: EXECUTING SQL")
+            logger.info("[STEP 3] EXECUTING SQL")
             logger.info("=" * 80)
             
             execution_result = query_executor.execute_sql(
@@ -291,9 +409,9 @@ async def chat_webhook(upload_id: str, message: ChatMessage):
                     error=execution_result['error']
                 )
             
-            # 🆕 STEP 3.5: Validate result quality
+            # STEP 3.5: Validate result quality
             logger.info("=" * 80)
-            logger.info("STEP 3.5: VALIDATING RESULT QUALITY")
+            logger.info("[STEP 3.5] VALIDATING RESULT QUALITY")
             logger.info("=" * 80)
             
             validation = query_executor.validate_result_quality(
@@ -302,14 +420,14 @@ async def chat_webhook(upload_id: str, message: ChatMessage):
                 upload_id
             )
             
-            logger.info(f"Validation result: {validation}")
+            logger.info(f"[VALIDATION] Result: {validation}")
             
             # STEP 5: Generate Natural Language Response
             logger.info("=" * 80)
-            logger.info("STEP 4: GENERATING NATURAL LANGUAGE RESPONSE")
+            logger.info("[STEP 4] GENERATING NATURAL LANGUAGE RESPONSE")
             logger.info("=" * 80)
             
-            # 🆕 Pass validation to response generator
+            # Pass validation to response generator
             insights = await asyncio.wait_for(
                 asyncio.to_thread(
                     conversation_agent.generate_insights_from_sql,
@@ -317,7 +435,7 @@ async def chat_webhook(upload_id: str, message: ChatMessage):
                     message.message,
                     execution_result['result'],
                     sql_result.get('metadata', {}),
-                    validation=validation  # 🆕 NEW PARAMETER
+                    validation=validation
                 ),
                 timeout=90.0
             )
@@ -334,7 +452,7 @@ async def chat_webhook(upload_id: str, message: ChatMessage):
         # STEP 6: Handle CONVERSATIONAL
         else:
             logger.info("=" * 80)
-            logger.info("HANDLING CONVERSATIONAL RESPONSE")
+            logger.info("[CONVERSATIONAL] HANDLING CONVERSATIONAL RESPONSE")
             logger.info("=" * 80)
             
             conversational_response = await asyncio.wait_for(
@@ -357,7 +475,7 @@ async def chat_webhook(upload_id: str, message: ChatMessage):
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Chat failed: {str(e)}", exc_info=True)
+        logger.error(f"[ERROR] Chat failed: {str(e)}", exc_info=True)
         return ChatResponse(
             success=False,
             response=f"Error: {str(e)}",
@@ -370,7 +488,7 @@ async def chat_webhook(upload_id: str, message: ChatMessage):
 @app.delete("/api/upload/{upload_id}")
 async def delete_upload(upload_id: str):
     """Delete upload data from database"""
-    logger.info(f"Delete request for upload_id: {upload_id}")
+    logger.info(f"[DELETE] Request for upload_id: {upload_id}")
     
     try:
         success = supabase_manager.delete_upload(upload_id)
@@ -389,13 +507,13 @@ async def delete_upload(upload_id: str):
             raise HTTPException(status_code=404, detail="Upload not found")
             
     except Exception as e:
-        logger.error(f"Delete failed: {str(e)}", exc_info=True)
+        logger.error(f"[ERROR] Delete failed: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/upload/{upload_id}", response_model=FileInfo)
 async def get_upload_info(upload_id: str):
     """Get upload information"""
-    logger.info(f"Info request for upload_id: {upload_id}")
+    logger.info(f"[INFO] Request for upload_id: {upload_id}")
     
     upload_info = supabase_manager.get_upload_info(upload_id)
     if not upload_info:
@@ -416,9 +534,9 @@ async def health_check():
     return {
         "status": "healthy",
         "timestamp": datetime.now().isoformat(),
-        "version": "2.1.0",
+        "version": "2.3.0",
         "database": "supabase",
-        "features": ["entity_recognition", "result_validation", "yoy_queries"]
+        "features": ["entity_recognition", "result_validation", "yoy_queries", "lowercase_normalization", "substring_matching", "universal_ilike"]
     }
 
 @app.delete("/api/cleanup")
@@ -427,17 +545,17 @@ async def cleanup_all_uploads():
     Deletes all records from Supabase tables for a complete reset.
     """
     try:
-        logger.info(" Received full cleanup request – deleting all records from Supabase tables")
+        logger.info("[CLEANUP] Received full cleanup request - deleting all records from Supabase tables")
 
-        # ✅ Delete all rows from actual data tables
+        # Delete all rows from actual data tables
         supabase_manager.supabase.table("revenue_tracker").delete().not_.is_("id", None).execute()
         supabase_manager.supabase.table("upload_metadata").delete().gt("upload_id", "").execute()
 
-        logger.info(" All real tables cleared successfully")
+        logger.info("[CLEANUP] All real tables cleared successfully")
         return {"success": True, "message": "All tables cleared successfully"}
 
     except Exception as e:
-        logger.error(f" Failed to clear all tables: {e}", exc_info=True)
+        logger.error(f"[ERROR] Failed to clear all tables: {e}", exc_info=True)
         return {"success": False, "error": str(e)}
 
 
