@@ -45,7 +45,8 @@ def resolve_entity_from_metadata(entity_text: str, entity_metadata: dict) -> str
 def pre_resolve_entities(user_message: str, entity_metadata: dict) -> dict:
     """
     Deterministically resolve entities in user message against full metadata lists.
-    Uses SUBSTRING MATCHING to handle partial names like 'novus' or 'ambit'.
+    Uses WORD-BOUNDARY SUBSTRING MATCHING to handle partial names like 'novus' or 'ambit'
+    while avoiding false matches like 'unit' in 'united bank'.
     
     Returns:
         dict: {
@@ -70,29 +71,52 @@ def pre_resolve_entities(user_message: str, entity_metadata: dict) -> dict:
     for i in range(len(words) - 1):
         potential_entities.append(f"{words[i]} {words[i+1]}")
     
+    # Skip words that are SQL/analysis keywords
+    skip_words = ['what', 'total', 'show', 'get', 'for', 'the', 'and', 'or', 'by', 
+                 'actual', 'budget', 'projected', 'revenue', 'sales', 'which', 'had',
+                 'has', 'have', 'highest', 'lowest', 'most', 'least', 'from', 'us',
+                 'bought', 'sold', 'customer', 'product', 'unit', 'region', 'category']
+    
     for entity_text in potential_entities:
         entity_text = entity_text.strip()
         
         # Skip very short words (likely articles, prepositions)
-        if len(entity_text) < 2:
+        if len(entity_text) < 3:  # Increased from 2 to 3 to avoid 'us', 'me', etc.
             continue
         
-        # Skip common question words
-        skip_words = ['what', 'total', 'show', 'get', 'for', 'the', 'and', 'or', 'by', 
-                     'actual', 'budget', 'projected', 'revenue', 'sales']
+        # Skip common question/analysis words
         if entity_text in skip_words:
             continue
         
         matches = []
         matched_values = {}  # Store which actual values matched for logging
         
-        # Check each entity type in metadata (check FULL lists with SUBSTRING matching)
+        # Check each entity type in metadata (check FULL lists with WORD-BOUNDARY matching)
         for entity_type, values in entity_metadata.items():
             if not isinstance(values, list):
                 continue
             
-            # SUBSTRING MATCH - Check if entity_text appears anywhere in any value
-            matching_values = [v for v in values if entity_text in v]
+            # WORD-BOUNDARY SUBSTRING MATCH
+            # Match if entity_text appears as a complete word or at word boundaries
+            matching_values = []
+            for v in values:
+                # Check if entity_text is at start, end, or surrounded by word boundaries
+                v_lower = v.lower()
+                
+                # Exact match
+                if entity_text == v_lower:
+                    matching_values.append(v)
+                # Match at start of string followed by space or dash
+                elif v_lower.startswith(entity_text + ' ') or v_lower.startswith(entity_text + '-') or v_lower.startswith(entity_text + '_'):
+                    matching_values.append(v)
+                # Match at end of string preceded by space or dash
+                elif v_lower.endswith(' ' + entity_text) or v_lower.endswith('-' + entity_text) or v_lower.endswith('_' + entity_text):
+                    matching_values.append(v)
+                # Match in middle surrounded by spaces or dashes
+                elif (' ' + entity_text + ' ') in v_lower or ('-' + entity_text + '-') in v_lower or ('_' + entity_text + '_') in v_lower:
+                    matching_values.append(v)
+                elif (' ' + entity_text + '-') in v_lower or ('-' + entity_text + ' ') in v_lower:
+                    matching_values.append(v)
             
             if matching_values:
                 matches.append(entity_type)

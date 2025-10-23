@@ -28,9 +28,9 @@ class ConversationAgent:
 Classify into:
 
 1. **NEEDS_ANALYSIS**: Questions requiring database queries
-   - Revenue questions (actual/projected/budget) ✅
-   - Financial metrics ✅
-   - Customer/product analysis ✅
+   - Revenue questions (actual/projected/budget)
+   - Financial metrics
+   - Customer/product analysis
    - Examples: "total budget?", "projected revenue?", "actual sales?", "top customers"
    
 2. **CONVERSATIONAL**: General chat
@@ -160,6 +160,7 @@ Return JSON:
 3. If data is grouped by year, show breakdown by year
 4. Format numbers with currency and thousands separators
 5. If results are empty or zero, state this clearly
+6. **ALWAYS include entity names (unit/product/customer/region) in responses when present in results**
 
 ## PROVIDED METADATA:
 Metric: {metric}
@@ -171,57 +172,83 @@ Aggregation: {aggregation}
 **[Main Answer with numbers from results]**
 
 **Details:**
-• Metric: {metric.capitalize()} Revenue
-• Filters: {filter_summary}
-{f"• Breakdown: By {', '.join(group_by)}" if group_by else ""}
-• Calculation: {aggregation.upper()} of {metric} values
+- Metric: {metric.capitalize()} Revenue
+- Filters: {filter_summary}
+{f"- Breakdown: By {', '.join(group_by)}" if group_by else ""}
+- Calculation: {aggregation.upper()} of {metric} values
 
 ## EXAMPLES:
 
 If grouped by year:
 "**Revenue Breakdown:**
-• 2023: $5,000
-• 2024: $6,500  
-• 2025: $7,200
+- 2023: $5,000
+- 2024: $6,500  
+- 2025: $7,200
 
 **Details:**
-• Metric: Actual Revenue
-• Filters: Month: MAR
-• Breakdown: By year
-• Calculation: SUM of monthly actual values"
+- Metric: Actual Revenue
+- Filters: Month: MAR
+- Breakdown: By year
+- Calculation: SUM of monthly actual values"
 
 If single value:
 "**Total: $18,700**
 
 **Details:**
-• Metric: Projected Revenue
-• Filters: Year: 2025 | Quarter: Q1
-• Calculation: SUM of monthly projected values"
+- Metric: Projected Revenue
+- Filters: Year: 2025 | Quarter: Q1
+- Calculation: SUM of monthly projected values"
 
 If comparison (grouped by unit/region/customer):
 "**Revenue Comparison:**
-• AMS: $50,000
-• CRM: $45,000
-• BSD: $35,000
+- AMS: $50,000
+- CRM: $45,000
+- BSD: $35,000
 
 **Details:**
-• Metric: Actual Revenue
-• Filters: All data
-• Breakdown: By unit
-• Calculation: SUM of actual values"
+- Metric: Actual Revenue
+- Filters: All data
+- Breakdown: By unit
+- Calculation: SUM of actual values"
+
+**CRITICAL: For "which X had highest/most" queries:**
+"**Highest Revenue Unit: AMS - $50,000**
+
+**Details:**
+- Metric: Actual Revenue
+- Filters: All data
+- Breakdown: By unit
+- Calculation: SUM of actual values"
+
+"**Top Customer: ADIB Bank - $125,000**
+
+**Details:**
+- Metric: Actual Revenue
+- Filters: All data
+- Breakdown: By customer
+- Calculation: SUM of actual values"
+
+"**Best-Selling Product: Novus ATM Controller - $75,000**
+
+**Details:**
+- Metric: Actual Revenue
+- Filters: All data
+- Breakdown: By product
+- Calculation: SUM of actual values"
 
 If percentage result:
 "**Target Achievement: 87.5%**
 
 **Details:**
-• Calculation: (Actual / Budget) × 100
-• Filters: Year: 2025
-• Performance: Currently at 87.5% of annual target"
+- Calculation: (Actual / Budget) × 100
+- Filters: Year: 2025
+- Performance: Currently at 87.5% of annual target"
 
 ## NEVER:
 - Invent years (use only from results)
 - Assume filters (state only provided filters)
 - Add extra explanations not based on data
+- **Omit entity names when they exist in results (unit, product, customer, region, category)**
 """
 
         try:
@@ -233,7 +260,7 @@ If percentage result:
 
 SQL Results: {json.dumps(sql_results, indent=2)}
 
-Format into transparent response."""}
+Format into transparent response. **CRITICAL: If results contain entity names (unit, product, customer, region), ALWAYS include them in the response.**"""}
                 ],
                 temperature=0.3
             )
