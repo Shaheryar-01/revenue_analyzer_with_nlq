@@ -386,6 +386,51 @@ Example 11: "Revenue for project code 22-06-02-24"
     "filters_applied": {{"project_code": "22-06-02-24"}},
     "group_by": [],
     "aggregation": "sum"
+
+Example 12: "Which category consistently exceeded its monthly revenue targets?"
+{{
+  "can_answer": true,
+  "sql": "SELECT category, SUM(COALESCE(actual, 0)) as revenue, SUM(COALESCE(budget, 0)) as target, (SUM(COALESCE(actual, 0)) / NULLIF(SUM(COALESCE(budget, 0)), 0) * 100) as achievement_pct FROM revenue_tracker WHERE upload_id = '{upload_id}' AND category IS NOT NULL GROUP BY category HAVING (SUM(COALESCE(actual, 0)) / NULLIF(SUM(COALESCE(budget, 0)), 0) * 100) > 100 ORDER BY achievement_pct DESC",
+  "metadata": {{
+    "metric_used": "actual",
+    "filters_applied": {{}},
+    "group_by": ["category"],
+    "aggregation": "sum"
+  }}
+}}
+
+Example 13: "Which customers achieved over 110% of their projected target?"
+{{
+  "can_answer": true,
+  "sql": "SELECT customer, SUM(COALESCE(projected, 0)) as projected, SUM(COALESCE(actual, 0)) as actual, (SUM(COALESCE(actual, 0)) / NULLIF(SUM(COALESCE(projected, 0)), 0) * 100) as achievement_pct FROM revenue_tracker WHERE upload_id = '{upload_id}' AND customer IS NOT NULL GROUP BY customer HAVING (SUM(COALESCE(actual, 0)) / NULLIF(SUM(COALESCE(projected, 0)), 0) * 100) > 110 ORDER BY achievement_pct DESC",
+  "metadata": {{
+    "metric_used": "actual",
+    "filters_applied": {{}},
+    "group_by": ["customer"],
+    "aggregation": "sum"
+  }}
+}}
+Example 14: "Which unit has the largest positive variance percentage?"
+{{
+  "can_answer": true,
+  "sql": "SELECT unit, SUM(COALESCE(actual, 0)) as actual, SUM(COALESCE(projected, 0)) as projected, ((SUM(COALESCE(actual, 0)) - SUM(COALESCE(projected, 0))) / NULLIF(SUM(COALESCE(projected, 0)), 0) * 100) as variance_percentage FROM revenue_tracker WHERE upload_id = '{upload_id}' AND unit IS NOT NULL GROUP BY unit ORDER BY variance_percentage DESC NULLS LAST LIMIT 1",
+  "metadata": {{
+    "metric_used": "actual",
+    "filters_applied": {{}},
+    "group_by": ["unit"],
+    "aggregation": "sum"
+  }}
+}}
+
+Example 15: "Which customers contributed between $50,000 and $150,000 this year?"
+{{
+  "can_answer": true,
+  "sql": "SELECT customer, SUM(COALESCE(actual, 0)) as revenue FROM revenue_tracker WHERE upload_id = '{upload_id}' AND customer IS NOT NULL AND year = 2025 GROUP BY customer HAVING SUM(COALESCE(actual, 0)) BETWEEN 50000 AND 150000 ORDER BY revenue DESC",
+  "metadata": {{
+    "metric_used": "actual",
+    "filters_applied": {{"year": 2025}},
+    "group_by": ["customer"],
+    "aggregation": "sum"
   }}
 }}
 ```
