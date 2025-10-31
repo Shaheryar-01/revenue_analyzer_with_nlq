@@ -151,7 +151,108 @@ Return JSON:
             filter_desc.append(f"Project: {filters['project_code']}")
 
         filter_summary = " | ".join(filter_desc) if filter_desc else "All data"
-        
+        # ✅ NEW: COMPARISON MODE RESPONSE HANDLING (no LLM needed)
+        # If grouped by only one entity AND we have multiple rows → this is a comparison query
+        if group_by and len(group_by) == 1 and len(sql_results) > 1:
+            group_column = group_by[0]
+            metric_col = metric if metric in sql_results[0] else "revenue"
+
+            # Convert results into (name, value)
+            comparison_pairs = []
+            for row in sql_results:
+                name = str(row.get(group_column, "Unknown"))
+                value = float(row.get(metric_col, 0) or 0)
+                comparison_pairs.append((name, value))
+
+            # Sort highest → lowest
+            comparison_pairs.sort(key=lambda x: x[1], reverse=True)
+
+            # Build response
+            response = "**Revenue Comparison:**\n\n"
+            for name, value in comparison_pairs:
+                response += f"- **{name}**: ${value:,.2f}\n"
+
+            if len(comparison_pairs) == 2:
+                (n1, v1), (n2, v2) = comparison_pairs
+                diff = v1 - v2
+                pct = (abs(diff) / v2 * 100) if v2 != 0 else 0
+                multiple = (v1 / v2) if v2 != 0 else float('inf')
+                direction = "higher" if diff > 0 else "lower"
+
+                response += (
+                    f"\n**Difference:**\n"
+                    f"→ {n1} is **${abs(diff):,.2f} ({pct:.1f}%)** {direction} than {n2}\n"
+                    f"→ That is **{multiple:.2f}×** the value of {n2}\n"
+                )
+
+            # Store history
+            if upload_id not in self.conversation_history:
+                self.conversation_history[upload_id] = []
+            self.conversation_history[upload_id].append({
+                'question': user_question,
+                'answer': response,
+                'metadata': metadata,   # ✅ STORE METADATA
+                'sql_results': sql_results,
+                'timestamp': datetime.now().isoformat()
+            })
+
+            return response  # ✅ Return early — NO LLM CALL needed
+
+        # ✅ NEW: FALLBACK COMPARISON USING PREVIOUS RESULT
+        if upload_id in self.conversation_history and "compare" in user_question.lower():
+            
+            # Look for the most recent previous result with numeric value
+            prev_result = None
+            for past in reversed(self.conversation_history[upload_id]):
+                if past.get("sql_results") and len(past["sql_results"]) == 1:
+                    prev_result = past["sql_results"][0]
+                    break
+
+            if prev_result and len(sql_results) == 1:
+
+                # Identify numeric column in previous and current rows
+                def extract_numeric(row):
+                    for k, v in row.items():
+                        try:
+                            return float(v)
+                        except:
+                            continue
+                    return None
+
+                previous_value = extract_numeric(prev_result)
+                current_value = extract_numeric(sql_results[0])
+
+                if previous_value is None or current_value is None:
+                    return "Comparison failed — unable to find numeric values."
+
+                # Compute differences
+                diff = current_value - previous_value
+                pct = (abs(diff) / previous_value * 100) if previous_value != 0 else 0
+                multiple = (current_value / previous_value) if previous_value != 0 else float('inf')
+                direction = "higher" if diff > 0 else "lower"
+
+                response = f"""**Comparison Result**
+
+- Previous: ${previous_value:,.2f}
+- Current: ${current_value:,.2f}
+
+**Difference:**  
+→ Current is **${abs(diff):,.2f} ({pct:.1f}%)** {direction} than previous  
+→ That is **{multiple:.2f}×** the previous value
+"""
+
+                # ✅ Store the comparison result in history
+                self.conversation_history[upload_id].append({
+                    'question': user_question,
+                    'answer': response,
+                    'metadata': metadata,
+                    'sql_results': sql_results,
+                    'timestamp': datetime.now().isoformat()
+                })
+
+                return response
+
+
         system_prompt = f"""You are a financial analyst. Present SQL results clearly.
 
 ## CRITICAL RULES:
@@ -278,6 +379,8 @@ Format into transparent response. **CRITICAL: If results contain entity names (u
             self.conversation_history[upload_id].append({
                 'question': user_question,
                 'answer': formatted_response,
+                'metadata': metadata,
+                'sql_results': sql_results,
                 'timestamp': datetime.now().isoformat()
             })
             
@@ -331,7 +434,20 @@ Example responses:
         except Exception as e:
             logger.error(f"Error: {str(e)}")
             return "I'm here to help analyze your revenue data. What would you like to know?"
-    
+
+    def add_message(self, upload_id, question, answer, metadata=None, sql_results=None):
+        if upload_id not in self.conversation_history:
+            self.conversation_history[upload_id] = []
+
+        self.conversation_history[upload_id].append({
+            "question": question,
+            "answer": answer,
+            "metadata": metadata or {},
+            "sql_results": sql_results,
+            "timestamp": datetime.now().isoformat()
+        })
+
+
     def get_conversation_history(self, upload_id: str) -> list:
         """Get conversation history"""
         return self.conversation_history.get(upload_id, [])

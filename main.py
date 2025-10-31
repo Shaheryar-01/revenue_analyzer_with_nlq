@@ -401,7 +401,8 @@ async def chat_webhook(upload_id: str, message: ChatMessage):
                 intent_result["analysis_query"],
                 upload_id,
                 entity_metadata=entity_metadata,
-                resolved_entities=resolved_entities
+                resolved_entities=resolved_entities,
+                conversation_history=conversation_agent.conversation_history.get(upload_id, [])
             )
             
             if not sql_result.get('can_answer'):
@@ -464,6 +465,16 @@ async def chat_webhook(upload_id: str, message: ChatMessage):
                 timeout=90.0
             )
             
+            # ✅ SAVE CONVERSATION HISTORY (REQUIRED FOR COMPARISONS LATER)
+            conversation_agent.add_message(
+                upload_id=upload_id,
+                question=message.message,
+                answer=insights,
+                metadata=sql_result.get("metadata", {}),
+                sql_results=sql_result.get("sql_results")
+            )
+
+
             return ChatResponse(
                 success=True,
                 response=insights,

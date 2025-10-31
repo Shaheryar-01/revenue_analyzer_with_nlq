@@ -75,51 +75,115 @@ class SQLGenerator:
         return None
 
 
+    def generate_sql(
+        self,
+        user_question: str,
+        upload_id: str,
+        entity_metadata: dict = None,
+        resolved_entities: dict = None,
+        conversation_history=None
+    ):
+        """Generate SQL with entity awareness, comparison mode, and full metadata."""
 
-    def generate_sql(self, user_question: str, upload_id: str, entity_metadata: dict = None, resolved_entities: dict = None, conversation_history=None):
-        """Generate SQL with entity awareness and complete metadata"""
-        
+        import json
+        import re
+
         logger.info(f"Generating SQL for: {user_question}")
+
+        # Normalize entity metadata (standardizes casing / keys)
         if entity_metadata:
-            logger.info(f"   Using entity metadata: Units={len(entity_metadata.get('units', []))}, Regions={len(entity_metadata.get('regions', []))}")
+            logger.info(f"Using entity metadata: Units={len(entity_metadata.get('units', []))}, Regions={len(entity_metadata.get('regions', []))}")
             entity_metadata = normalize_entity_metadata(entity_metadata)
 
-        
-        # Build schema definition with entity metadata
+        # -------------------------------------------
+        #  COMPARISON DETECTION (AMS vs CRM, etc.)
+        # -------------------------------------------
+        compare_keywords = ["compare", "vs", "versus", "relative", "difference", "compare with", "compare to"]
+        user_lower = user_question.lower()
+        is_comparison = any(k in user_lower for k in compare_keywords)
+
+        if is_comparison and conversation_history:
+            logger.info("[COMPARE MODE] Comparison detected. Checking previous filters...")
+
+            last_query = None
+            for item in reversed(conversation_history):
+                meta = item.get("metadata", {})
+                if meta.get("filters_applied"):
+                    last_query = meta
+                    break
+
+            if last_query:
+                previous_filters = last_query.get("filters_applied", {}).copy()
+                logger.info(f"[COMPARE MODE] Previous filters detected: {previous_filters}")
+
+                # Extract NEW comparison word (last token or quoted expression)
+                match = re.findall(r"'([^']+)'|\"([^\"]+)\"|([A-Za-z0-9_-]+)$", user_question)
+                if match:
+                    new_value = next(v for group in match for v in group if v).strip()
+                    logger.info(f"[COMPARE MODE] New comparison value detected: {new_value}")
+
+                    # Identify correct column using metadata
+                    col = self._resolve_entity_column(new_value, entity_metadata)
+
+                    if col:
+                        logger.info(f"[COMPARE MODE] Entity '{new_value}' resolved to column: {col}")
+
+                        # Ensure list type
+                        existing = previous_filters.get(col, [])
+                        if not isinstance(existing, list):
+                            existing = [existing] if existing else []
+
+                        if new_value not in existing:
+                            existing.append(new_value)
+
+                        previous_filters[col] = existing
+
+                        # Update resolved_entities forcefully
+                        if resolved_entities is None:
+                            resolved_entities = {}
+
+                        for v in existing:
+                            resolved_entities[v] = {"type": col, "confidence": "certain"}
+
+                        last_query["filters_applied"] = previous_filters
+                        logger.info(f"[COMPARE MODE] Final comparison filter: {previous_filters[col]}")
+
+        # -------------------------------------------
+        # BUILD SCHEMA + CONVERSATION HISTORY CONTEXT
+        # -------------------------------------------
         schema_definition = self._build_schema_with_entities(upload_id, entity_metadata)
-        
+
         context = ""
         if conversation_history:
             context = "\n## CONVERSATION HISTORY:\n"
             for item in conversation_history[-3:]:
                 context += f"Q: {item.get('question', '')}\nA: {item.get('answer', '')}\n\n"
-        
 
-        # Add pre-resolved entities section if available
+        # -------------------------------------------
+        # PRE–RESOLVED ENTITY SECTION (FORCING CORRECT COLUMN)
+        # -------------------------------------------
         resolved_section = ""
         if resolved_entities:
             resolved_section = "\n## PRE-RESOLVED ENTITIES (USE THESE!):\n\n"
-            resolved_section += "The following entities were deterministically matched against your data:\n\n"
-            for entity_value, resolution in resolved_entities.items():
-                entity_type = resolution['type']
-                confidence = resolution['confidence']
-                if confidence == 'certain':
-                    resolved_section += f"   ** '{entity_value}' ** -> Use ** {entity_type} ** column (100% match)\n"
-                else:
-                    alternatives = resolution.get('alternatives', [])
-                    alt_text = f" (also in: {', '.join(alternatives)})" if alternatives else ""
-                    resolved_section += f"   WARNING: ** '{entity_value}' ** -> Use ** {entity_type} ** column (preferred{alt_text})\n"
-            
-            resolved_section += "\n** CRITICAL: When generating SQL, ALWAYS use the column specified above for these entities. **\n"
-            resolved_section += "Example: If 'novus' is resolved to 'product', use WHERE product ILIKE '%novus%' (NOT customer)\n\n"
-        
-        system_prompt = f"""{schema_definition}{resolved_section}
+            resolved_section += "These values MUST map to these exact columns:\n\n"
+            for value, res in resolved_entities.items():
+                resolved_section += f"  - '{value}' → **{res['type']}** (confidence: {res['confidence']})\n"
+            resolved_section += "\nAlways use ILIKE '%value%' for text-based entity matches.\n\n"
 
+        # -------------------------------------------
+        # MASTER SYSTEM PROMPT (DO NOT MODIFY)
+        # -------------------------------------------
+        system_prompt = (
+            schema_definition
+            + resolved_section
+            + context
+            + """
 ## YOUR TASK:
 1. Generate valid PostgreSQL query
 2. Table: revenue_tracker
 3. MANDATORY: WHERE upload_id = '{upload_id}'
 4. Return COMPLETE metadata about ALL filters used
+
 
 ## METADATA REQUIREMENTS:
 You MUST extract and return ALL filters applied:
@@ -278,7 +342,7 @@ Example 3: "Projected revenue for ADIB in Q1"
 }}
 ```
 
-Example 4: "Compare AMS vs CRM" (using entity metadata - both are Units)
+Example 4A: "Compare AMS vs CRM" (using entity metadata - both are Units)
 ```json
 {{
   "can_answer": true,
@@ -292,6 +356,20 @@ Example 4: "Compare AMS vs CRM" (using entity metadata - both are Units)
 }}
 ```
 
+Example 4B: "Compare Novus vs Rendezvous" (Product Comparison)
+```json
+{{
+  "can_answer": true,
+  "sql": "SELECT product, SUM(COALESCE(actual, 0)) as revenue FROM revenue_tracker WHERE upload_id = '{upload_id}' AND (product ILIKE '%novus%' OR product ILIKE '%rendezvous%') AND product IS NOT NULL GROUP BY product ORDER BY revenue DESC NULLS LAST",
+  "metadata": {{
+    "metric_used": "actual",
+    "filters_applied": {{"product": ["novus", "rendezvous"]}},
+    "group_by": ["product"],
+    "aggregation": "sum"
+  }}
+}}
+``` 
+
 Example 5: "Total revenue for Novus product"
 ```json
 {{
@@ -304,7 +382,7 @@ Example 5: "Total revenue for Novus product"
     "aggregation": "sum"
   }}
 }}
-```
+``` 
 
 Example 6: "Revenue for Ambit products"
 ```json
@@ -386,6 +464,8 @@ Example 11: "Revenue for project code 22-06-02-24"
     "filters_applied": {{"project_code": "22-06-02-24"}},
     "group_by": [],
     "aggregation": "sum"
+    }}
+}}
 
 Example 12: "Which category consistently exceeded its monthly revenue targets?"
 {{
@@ -434,6 +514,26 @@ Example 15: "Which customers contributed between $50,000 and $150,000 this year?
   }}
 }}
 ```
+### Rule 5: Comparison Mode (Multi-Value Filtering)
+
+If `filters_applied` contains a list of values for the same entity (e.g., product = ["novus", "rendezvous"]):
+
+YOU MUST:
+1. Use OR with ILIKE for text columns
+2. GROUP BY that entity
+3. Return the results together in a comparison format.
+
+Example:
+WHERE (product ILIKE '%novus%' OR product ILIKE '%rendezvous%')
+AND product IS NOT NULL
+GROUP BY product
+ORDER BY revenue DESC NULLS LAST;
+
+Metadata MUST store multiple values:
+"filters_applied": { "product": ["novus", "rendezvous"] }
+"group_by": ["product"]
+"aggregation": "sum"
+
 
 ## YEAR-OVER-YEAR QUERIES - ALWAYS USE CTE:
 
@@ -461,8 +561,8 @@ LIMIT 1
 - ONLY use = for project_code (numeric codes)
 - NEVER use LAG() with GROUP BY without CTE
 
-{context}
 """
+        ).replace("{upload_id}", upload_id)
 
         try:
             response = self.client.chat.completions.create(
@@ -474,70 +574,58 @@ LIMIT 1
                 temperature=0.1,
                 response_format={"type": "json_object"}
             )
-            
+
             result = json.loads(response.choices[0].message.content)
-            logger.info(f"Generated SQL: {result.get('sql', 'N/A')[:100]}")
-            logger.info(f"Metadata: {result.get('metadata', {})}")
-            
-            if result.get('can_answer') and result.get('sql'):
-                # Validate query
-                validation_errors = self.validate_sql_query(result['sql'], upload_id)
-                if validation_errors:
-                    logger.error(f"Validation errors: {validation_errors}")
-                    return {
-                        'can_answer': False,
-                        'explanation': f"Query validation failed: {', '.join(validation_errors)}"
-                    }
-                
-                # Extract actual filters from SQL for accuracy
-                extracted_filters = self._extract_filters_from_sql(result['sql'])
-                
-                # Merge with metadata
-                if 'filters_applied' not in result['metadata']:
-                    result['metadata']['filters_applied'] = {}
-                result['metadata']['filters_applied'].update(extracted_filters)
-                
-                logger.info(f"   Final metadata: {result['metadata']}")
+            logger.info(f"Generated SQL: {result.get('sql', '')[:120]}")
 
-                # AUTO DISAMBIGUATION PATCH
-                try:
-                    filters_applied = result["metadata"].get("filters_applied", {})
-                    if filters_applied and entity_metadata:
-                        corrected_filters = {}
-                        for key, val in list(filters_applied.items()):
-                            if isinstance(val, list):
-                                # Handle multi-value filters
-                                corrected_list = []
-                                for v in val:
-                                    correct_col = self._resolve_entity_column(v, entity_metadata)
-                                    if correct_col:
-                                        corrected_list.append((correct_col, v))
-                                for col, v in corrected_list:
-                                    corrected_filters.setdefault(col, []).append(v)
+            if not (result.get("can_answer") and result.get("sql")):
+                return result
+
+            # Validate SQL
+            validation_errors = self.validate_sql_query(result['sql'], upload_id)
+            if validation_errors:
+                return {
+                    'can_answer': False,
+                    'explanation': f"Query validation failed: {', '.join(validation_errors)}"
+                }
+
+            # Extract filters back from SQL to ensure accuracy
+            extracted_filters = self._extract_filters_from_sql(result['sql'])
+            result["metadata"].setdefault("filters_applied", {})
+            result["metadata"]["filters_applied"].update(extracted_filters)
+
+            # Auto-fix incorrect entity column assignment
+            if entity_metadata:
+                corrected = {}
+                for key, value in result["metadata"]["filters_applied"].items():
+                    if isinstance(value, list):
+                        for item in value:
+                            col = self._resolve_entity_column(item, entity_metadata)
+                            if col:
+                                corrected.setdefault(col, []).append(item)
                             else:
-                                correct_col = self._resolve_entity_column(val, entity_metadata)
-                                if correct_col and correct_col != key:
-                                    logger.info(f"[AUTO FIX] Reassigned filter: {key} -> {correct_col} for '{val}'")
-                                    corrected_filters.setdefault(correct_col, val)
-                                else:
-                                    corrected_filters.setdefault(key, val)
+                                corrected.setdefault(key, []).append(item)
+                    else:
+                        col = self._resolve_entity_column(value, entity_metadata)
+                        if col:
+                            corrected[col] = value
+                        else:
+                            corrected[key] = value
 
-                        # Apply the corrected filters
-                        result["metadata"]["filters_applied"] = corrected_filters
+                result["metadata"]["filters_applied"] = corrected
 
-                except Exception as e:
-                    logger.warning(f"[AUTO FIX] Filter disambiguation failed: {e}")
-                    
-            
             return result
-            
+
         except Exception as e:
-            logger.error(f"Error generating SQL: {str(e)}", exc_info=True)
+            logger.error(f"SQL Generation Failure: {e}", exc_info=True)
             return {
-                'can_answer': False,
-                'explanation': f"Error: {str(e)}"
+                "can_answer": False, 
+                "explanation": str(e)
             }
-    
+        
+
+
+
     def _build_schema_with_entities(self, upload_id: str, entity_metadata: dict = None) -> str:
         """Build schema definition with entity metadata for better accuracy"""
         

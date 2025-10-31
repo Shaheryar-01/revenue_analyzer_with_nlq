@@ -217,11 +217,17 @@ class SupabaseManager:
             
             # Apply additional filters
             for column, value in filters.items():
+
+                # If filtering with multiple values (comparison mode)
                 if isinstance(value, list):
-                    query = query.in_(column, value)
+                    # Example: (product.ilike.%novus%,product.ilike.%rendezvous%)
+                    or_conditions = ",".join([f"{column}.ilike.%{v}%" for v in value])
+                    query = query.or_(or_conditions)
+
+                # Single value string filter → always ILIKE
                 else:
-                    query = query.eq(column, value)
-            
+                    query = query.ilike(column, f"%{value}%")
+
             response = query.execute()
             
             return {
